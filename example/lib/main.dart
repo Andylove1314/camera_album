@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:camera_album/camera_album.dart';
+
+import 'newpage.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,7 +18,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
 
   @override
   void initState() {
@@ -36,10 +39,6 @@ class _MyAppState extends State<MyApp> {
     // message was in flight, we want to discard the reply rather than calling
     // setState to update our non-existent appearance.
     if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
   }
 
   @override
@@ -49,10 +48,58 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
-        ),
+        body: Home(),
       ),
     );
   }
 }
+
+class Home extends StatefulWidget {
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(child: Center(
+      child: Stack(children: <Widget>[
+
+        ///原生view
+        getPlatformTextView(),
+
+        IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () async {
+              String res =
+              await CameraAlbum.openAlbum(null, callback: (path) {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) {
+                      return NewPage(
+                        path,
+                      );
+                    }));
+              });
+              print(res);
+            })
+      ],),
+    ),);
+  }
+
+  Widget getPlatformTextView() {
+    if (Platform.isAndroid) {
+      return Container(child: AndroidView(
+          viewType: "platform_text_view",
+          creationParams: <String, dynamic>{"text": "Android Text View"},
+          creationParamsCodec: const StandardMessageCodec()),color: Colors.green,);
+    } else if (Platform.isIOS) {
+      return UiKitView(
+          viewType: "platform_text_view",
+          creationParams: <String, dynamic>{"text": "iOS Label"},
+          creationParamsCodec: const StandardMessageCodec());
+    } else {
+      return Text("Not supported");
+    }
+  }
+}
+
