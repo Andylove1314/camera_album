@@ -18,6 +18,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -84,7 +85,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     protected ImageView mIvPictureLeftBack;
     protected ImageView mIvArrow;
     protected View titleViewBg;
-    protected TextView mTvPictureTitle, mTvPictureRight, mTvPictureOk, mTvEmpty,
+    protected LinearLayout albumTitleLin, taskGuideImage, bottomCamera;
+    protected TextView businesTitle, mTvPictureTitle, mTvPictureOk, mTvEmpty,
             mTvPictureImgNum, mTvPicturePreview, mTvPlayPause, mTvStop, mTvQuit,
             mTvMusicStatus, mTvMusicTotal, mTvMusicTime;
     protected RecyclerPreloadView mRecyclerView;
@@ -152,9 +154,16 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         super.initWidgets();
         container = findViewById(R.id.container);
         titleViewBg = findViewById(R.id.titleViewBg);
+        businesTitle = findViewById(R.id.business_title);
+        businesTitle.setText("Enhance+");
+        taskGuideImage = findViewById(R.id.task_guide_tip_icon);
+        taskGuideImage.setOnClickListener(this);
+        bottomCamera = findViewById(R.id.camera_bottom);
+        bottomCamera.setOnClickListener(this);
         mIvPictureLeftBack = findViewById(R.id.pictureLeftBack);
         mTvPictureTitle = findViewById(R.id.picture_title);
-        mTvPictureRight = findViewById(R.id.picture_right);
+        albumTitleLin = findViewById(R.id.album_title_button_lin);
+        albumTitleLin.setOnClickListener(this);
         mTvPictureOk = findViewById(R.id.picture_tv_ok);
         mCbOriginal = findViewById(R.id.cb_original);
         mIvArrow = findViewById(R.id.ivArrow);
@@ -175,11 +184,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         mBottomLayout.setVisibility(config.selectionMode == PictureConfig.SINGLE
                 && config.isSingleDirectReturn ? View.GONE : View.VISIBLE);
         mIvPictureLeftBack.setOnClickListener(this);
-        mTvPictureRight.setOnClickListener(this);
         mTvPictureOk.setOnClickListener(this);
         mTvPictureImgNum.setOnClickListener(this);
-        mTvPictureTitle.setOnClickListener(this);
-        mIvArrow.setOnClickListener(this);
         String title = config.chooseMode == PictureMimeType.ofAudio() ?
                 getString(R.string.picture_all_audio) : getString(R.string.picture_camera_roll);
         mTvPictureTitle.setText(title);
@@ -320,18 +326,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 mTvPictureTitle.setTextSize(config.style.pictureTitleTextSize);
             }
 
-            if (config.style.pictureRightDefaultTextColor != 0) {
-                mTvPictureRight.setTextColor(config.style.pictureRightDefaultTextColor);
-            } else {
-                if (config.style.pictureCancelTextColor != 0) {
-                    mTvPictureRight.setTextColor(config.style.pictureCancelTextColor);
-                }
-            }
-
-            if (config.style.pictureRightTextSize != 0) {
-                mTvPictureRight.setTextSize(config.style.pictureRightTextSize);
-            }
-
             if (config.style.pictureLeftBackIcon != 0) {
                 mIvPictureLeftBack.setImageResource(config.style.pictureLeftBackIcon);
             }
@@ -355,9 +349,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             }
             if (config.style.pictureContainerBackgroundColor != 0) {
                 container.setBackgroundColor(config.style.pictureContainerBackgroundColor);
-            }
-            if (!TextUtils.isEmpty(config.style.pictureRightDefaultText)) {
-                mTvPictureRight.setText(config.style.pictureRightDefaultText);
             }
             if (!TextUtils.isEmpty(config.style.pictureUnCompleteText)) {
                 mTvPictureOk.setText(config.style.pictureUnCompleteText);
@@ -724,7 +715,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.pictureLeftBack || id == R.id.picture_right) {
+        if (id == R.id.pictureLeftBack) {
             if (folderWindow != null && folderWindow.isShowing()) {
                 folderWindow.dismiss();
             } else {
@@ -732,12 +723,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             }
             return;
         }
-        if (id == R.id.picture_title || id == R.id.ivArrow) {
+        if (id == R.id.album_title_button_lin) {
             if (folderWindow.isShowing()) {
                 folderWindow.dismiss();
             } else {
                 if (!folderWindow.isEmpty()) {
-                    folderWindow.showAsDropDown(titleViewBg);
+                    folderWindow.showAsDropDown(albumTitleLin);
                     if (!config.isSingleDirectReturn) {
                         List<LocalMedia> selectedImages = mAdapter.getSelectedData();
                         folderWindow.updateFolderCheckStatus(selectedImages);
@@ -746,6 +737,34 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             }
             return;
         }
+
+        if (id == R.id.task_guide_tip_icon){
+            ToastUtils.s(this,"task...");
+            return;
+        }
+
+        if (id == R.id.camera_bottom){
+            // Check the permissions
+            if (PermissionChecker.checkSelfPermission(this, Manifest.permission.CAMERA)) {
+                if (PermissionChecker
+                        .checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) &&
+                        PermissionChecker
+                                .checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    startCamera();
+                } else {
+                    PermissionChecker.requestPermissions(this, new String[]{
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE}, PictureConfig.APPLY_CAMERA_STORAGE_PERMISSIONS_CODE);
+                }
+            } else {
+                PermissionChecker
+                        .requestPermissions(this,
+                                new String[]{Manifest.permission.CAMERA}, PictureConfig.APPLY_CAMERA_PERMISSIONS_CODE);
+            }
+            return;
+        }
+
+
 
         if (id == R.id.picture_id_preview) {
             onPreview();

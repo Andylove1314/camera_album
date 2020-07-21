@@ -16,7 +16,6 @@ import com.luck.picture.lib.config.PictureMimeType
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.language.LanguageConfig
 import com.luck.picture.lib.listener.OnResultCallbackListener
-import com.luck.picture.lib.style.PictureCropParameterStyle
 import com.luck.picture.lib.style.PictureParameterStyle
 import com.luck.picture.lib.tools.SdkVersionUtils
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -27,6 +26,7 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.Registrar
+import java.util.*
 
 
 /** CameraAlbumPlugin */
@@ -133,9 +133,9 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
               .openGallery(PictureMimeType.ofAll()) // 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
               .imageEngine(GlideEngine.createGlideEngine()) // 外部传入图片加载引擎，必传项
               .isWeChatStyle(false) // 是否开启微信图片选择风格
-              .isUseCustomCamera(true) // 是否使用自定义相机
+              .isUseCustomCamera(false) // 是否使用自定义相机
               .setLanguage(LanguageConfig.ENGLISH) // 设置语言，默认中文
-              .isPageStrategy(true) // 是否开启分页策略 & 每页多少条；默认开启
+              .isPageStrategy(false) // 是否开启分页策略 & 每页多少条；默认开启
               .setPictureStyle(getWhiteStyle()) // 动态自定义相册主题
 //              .setPictureCropStyle(mCropParameterStyle) // 动态自定义裁剪主题
 //              .setPictureWindowAnimationStyle(mWindowAnimationStyle) // 自定义相册启动退出动画
@@ -167,10 +167,10 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
               .selectionMode(if (false) PictureConfig.MULTIPLE else PictureConfig.SINGLE) // 多选 or 单选
               .isSingleDirectReturn(true) // 单选模式下是否直接返回，PictureConfig.SINGLE模式下有效
               .isPreviewImage(true) // 是否可预览图片
-              .isPreviewVideo(true) // 是否可预览视频
+              .isPreviewVideo(false) // 是否可预览视频
               //.querySpecifiedFormatSuffix(PictureMimeType.ofJPEG())// 查询指定后缀格式资源
               .isEnablePreviewAudio(true) // 是否可播放音频
-              .isCamera(true) // 是否显示拍照按钮
+              .isCamera(false) // 是否显示拍照按钮
               //.isMultipleSkipCrop(false)// 多图裁剪时是否支持跳过，默认支持
               //.isMultipleRecyclerAnimation(false)// 多图裁剪底部列表显示动画效果
               .isZoomAnim(true) // 图片列表点击 缩放效果 默认true
@@ -227,11 +227,14 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
     var res:Result? = result
 
     override fun onResult(result: List<LocalMedia>) {
+      val arr = ArrayList<Any?>()
       for (media in result) {
-        Log.i("所选文件", "原图:" + media.path)
-        cha?.invokeMethod("onMessage", media.androidQToPath)
-        res?.success("选择了照片")
+        Log.i("所选文件", "原图:" + media.androidQToPath)
+        arr.add(media.androidQToPath)
       }
+
+      cha?.invokeMethod("onMessage", arr)
+      res?.success("选择了照片")
     }
 
     override fun onCancel() {

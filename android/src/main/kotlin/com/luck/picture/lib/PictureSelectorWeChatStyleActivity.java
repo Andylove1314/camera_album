@@ -128,7 +128,6 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
      * Hide views that are not needed by the parent container
      */
     private void goneParentView() {
-        mTvPictureRight.setVisibility(View.GONE);
         mTvPictureImgNum.setVisibility(View.GONE);
         mTvPictureOk.setVisibility(View.GONE);
     }

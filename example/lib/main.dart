@@ -72,11 +72,11 @@ class _HomeState extends State<Home> {
             icon: Icon(Icons.add),
             onPressed: () async {
               String res =
-              await CameraAlbum.openAlbum(null, callback: (path) {
+              await CameraAlbum.openAlbum(null, callback: (paths) {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) {
                       return NewPage(
-                        path,
+                        paths[0],
                       );
                     }));
               });

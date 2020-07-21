@@ -8,14 +8,18 @@
     android:fitsSystemWindows="true"
     tools:context="com.luck.picture.lib.PictureSelectorActivity">
 
-    <include layout="@layout/picture_title_bar" />
 
+    <!--appbar-->
+    <include layout="@layout/picture_title_bar"/>
+
+    <!-- 底部操作栏 暂时不用-->
     <RelativeLayout
         android:id="@+id/rl_bottom"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_alignParentBottom="true"
         android:background="?attr/picture.bottom.bg"
+        android:visibility="gone"
         android:gravity="center_vertical">
 
         <TextView
@@ -74,16 +78,91 @@
 
     </RelativeLayout>
 
-    <com.luck.picture.lib.widget.RecyclerPreloadView
-        android:id="@+id/picture_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/rl_bottom"
-        android:layout_below="@id/titleViewBg"
-        android:layout_marginLeft="2dp"
-        android:layout_marginRight="2dp"
-        android:overScrollMode="never" />
+   <!--相册照片-->
+   <LinearLayout
+       android:layout_alignBottom="@+id/app_bar"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:orientation="vertical"
+       android:gravity="center_horizontal"
+       android:layout_marginTop="50dp">
 
+       <LinearLayout
+           android:id="@+id/album_title_button_lin"
+           android:layout_width="wrap_content"
+           android:layout_height="45dp"
+           android:orientation="horizontal"
+           android:gravity="center"
+           android:background="@drawable/ablum_title_button_bg"
+           >
+
+           <TextView
+               android:id="@+id/picture_title"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_centerHorizontal="true"
+               android:ellipsize="end"
+               android:gravity="center"
+               android:maxEms="8"
+               android:maxLines="1"
+               android:text="@string/picture_camera_roll"
+               android:textColor="?picture.title.textColor"
+               android:textSize="17sp" />
+
+           <ImageView
+               android:id="@+id/ivArrow"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_alignTop="@id/picture_title"
+               android:layout_alignBottom="@id/picture_title"
+               android:layout_toRightOf="@id/picture_title"
+               android:scaleType="centerInside"
+               android:src="?attr/picture.arrow_down.icon" />
+
+       </LinearLayout>
+
+       <com.luck.picture.lib.widget.RecyclerPreloadView
+           android:id="@+id/picture_recycler"
+           android:layout_width="match_parent"
+           android:layout_height="0dp"
+           android:layout_weight="1"
+           android:layout_above="@id/rl_bottom"
+           android:layout_below="@id/titleViewBg"
+           android:layout_marginLeft="2dp"
+           android:layout_marginRight="2dp"
+           android:overScrollMode="never" />
+
+       <LinearLayout
+           android:id="@+id/camera_bottom"
+           android:layout_width="match_parent"
+           android:layout_height="87dp"
+           android:background="#ffF7F7F7"
+           android:orientation="vertical"
+           android:gravity="center">
+
+
+           <ImageView
+               android:layout_width="28dp"
+               android:layout_height="24dp"
+               android:scaleType="centerInside"
+               android:src="@drawable/super_self_icon_camera" />
+
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginTop="10dp"
+               android:layout_centerVertical="true"
+               android:gravity="center"
+               android:text="Take a picture"
+               android:textColor="#ff444444"
+               android:textSize="15sp" />
+
+       </LinearLayout>
+
+
+   </LinearLayout>
+
+   <!--无数据-->
     <TextView
         android:id="@+id/tv_empty"
         android:layout_width="match_parent"
