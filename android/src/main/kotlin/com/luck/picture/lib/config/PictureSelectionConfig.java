@@ -159,6 +159,12 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isFallbackVersion2;
     public boolean isFallbackVersion3;
 
+    /**
+     * task业务专用
+     */
+    public String title;
+    public List<String> guides;
+
     protected void initDefaultValue() {
         chooseMode = PictureMimeType.ofImage();
         camera = false;

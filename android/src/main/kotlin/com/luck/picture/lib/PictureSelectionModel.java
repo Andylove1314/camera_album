@@ -1396,4 +1396,23 @@ public class PictureSelectionModel {
             throw new NullPointerException("This PictureSelector is Null");
         }
     }
+
+    /**
+     * @param title//业务相关
+     * @return
+     */
+    public PictureSelectionModel setTask(String title) {
+       selectionConfig.title = title;
+        return this;
+    }
+
+    /**
+     * @param guides//业务相关
+     * @return
+     */
+    public PictureSelectionModel setGuidea(List<String> guides) {
+        selectionConfig.guides = guides;
+        return this;
+    }
+
 }

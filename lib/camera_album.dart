@@ -19,9 +19,9 @@ class CameraAlbum {
       switch (call.method) {
 
         case "onMessage":
-          var paths = call.arguments;
-          print('回传数据：$paths');
-          callback(paths);
+          var backs = call.arguments;
+          print('native回传数据：$backs');
+          callback(backs);
           return null;
         default:
           throw UnsupportedError("Unrecognized JSON message");

@@ -62,26 +62,24 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Stack(children: <Widget>[
+    return Stack(alignment: Alignment.center,children: <Widget>[
 
-        ///原生view
-        getPlatformTextView(),
+      ///原生view
+      getPlatformTextView(),
 
-        IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () async {
-              CameraAlbum.openAlbum({'title':'Paint video'}, callback: (paths) {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) {
-                      return NewPage(
-                        paths[0],
-                      );
-                    }));
-              });
-            })
-      ],),
-    );
+      IconButton(
+          icon: Icon(Icons.add),
+          onPressed: () async {
+            CameraAlbum.openAlbum({'title':'Paint video','input':'image','isMulti':false,'guides':['http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-06/30/JZ2JU3e1501ea2a2673101b2bd8ef6b6fbb96.png','http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-06/30/JZ2JU3e1501ea2a2673101b2bd8ef6b6fbb96.png','http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-06/30/JZ2JU3e1501ea2a2673101b2bd8ef6b6fbb96.png']}, callback: (backs) {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) {
+                    return NewPage(
+                      backs['paths'][0],
+                    );
+                  }));
+            });
+          })
+    ],);
   }
 
   Widget getPlatformTextView() {

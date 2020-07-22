@@ -160,7 +160,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         container = findViewById(R.id.container);
         titleViewBg = findViewById(R.id.titleViewBg);
         businesTitle = findViewById(R.id.business_title);
-        businesTitle.setText("Enhance+");
+        businesTitle.setText(config.title);
         taskGuideImage = findViewById(R.id.task_guide_tip_icon);
         taskGuideImage.setOnClickListener(this);
         bottomCamera = findViewById(R.id.camera_bottom);
@@ -747,10 +747,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (id == R.id.task_guide_tip_icon){
             guideViewid.setVisibility(View.VISIBLE);
             List<String> arr = new ArrayList<>();
-            arr.add("http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-06/30/JZ2JU3e1501ea2a2673101b2bd8ef6b6fbb96.png");
-            arr.add("http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-06/30/JZ2JU3e1501ea2a2673101b2bd8ef6b6fbb96.png");
-            arr.add("http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-06/30/JZ2JU3e1501ea2a2673101b2bd8ef6b6fbb96.png");
-            guideViewid.setArr(arr);
+            guideViewid.setArr(config.guides);
             return;
         }
 
