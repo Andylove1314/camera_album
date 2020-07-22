@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -15,11 +17,22 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
+  Uint8List _image;
 
   @override
   void initState() {
     super.initState();
     initPlatformState();
+
+    var channel = MethodChannel('flutter/camera_album');
+    channel.setMethodCallHandler((call) {
+      setState(() {
+        print(call.arguments);
+        _platformVersion = "${call.arguments["file"]}";
+        _image = call.arguments["image"];
+      });
+      return;
+    });
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -47,10 +60,51 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          brightness: Brightness.light,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          title: Text(_platformVersion),
         ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+        body: Column(
+          children: <Widget>[
+            Expanded(
+              child: Stack(
+                alignment: Alignment.center,
+                children: <Widget>[
+                  Container(
+                    child: LayoutBuilder(
+                      builder: (c, cc) {
+                        return UiKitView(
+                          viewType: "platform_gallery_view",
+                          creationParams: <String, dynamic>{
+                            "text": "iOS Label 选照片",
+                            "y": 0,
+                            "height": cc.maxHeight - kToolbarHeight,
+                          },
+                          creationParamsCodec: const StandardMessageCodec(),
+                        );
+                      },
+                    ),
+                  ),
+                  Container(
+                      color: Colors.red,
+                      width: 200,
+                      height: 200,
+                      child: _image == null
+                          ? Container()
+                          : Image.memory(
+                              _image,
+                            )),
+                ],
+              ),
+            ),
+            FlatButton(
+              child: Text("拍照"),
+              onPressed: () {
+
+              },
+            ),
+          ],
         ),
       ),
     );
