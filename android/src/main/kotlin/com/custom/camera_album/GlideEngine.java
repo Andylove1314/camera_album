@@ -42,6 +42,7 @@ public class GlideEngine implements ImageEngine {
     public void loadImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView) {
         Glide.with(context)
                 .load(url)
+                .placeholder(R.drawable.task_guide_default_page_icon)
                 .into(imageView);
     }
 

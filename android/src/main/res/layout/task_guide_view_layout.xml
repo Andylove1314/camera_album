@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white"
+    android:clickable="true">
+
+    <!--关闭按钮-->
+    <LinearLayout
+        android:id="@+id/task_guide_tip_icon_close"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentRight="true"
+        android:gravity="center"
+        android:layout_gravity="right|center">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="15dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/enhance_guide_close_icon_native"/>
+
+    </LinearLayout>
+
+    <com.youth.banner.Banner
+        android:id="@+id/task_guide_banner"
+        tools:ignore="MissingClass"
+        xmlns:banner="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        banner:banner_indicator_normal_color="#1f000000"
+        banner:banner_indicator_selected_color="#45000000"
+        banner:banner_indicator_selected_width="8dp"
+        banner:banner_indicator_height="8dp"
+        banner:banner_indicator_marginTop="10dp"
+        banner:banner_indicator_marginBottom="30dp"
+        banner:banner_indicator_space="7dp"
+        banner:banner_auto_loop="false" />
+
+
+</LinearLayout>

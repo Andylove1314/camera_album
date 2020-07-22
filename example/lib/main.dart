@@ -62,7 +62,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    return Container(child: Center(
+    return Center(
       child: Stack(children: <Widget>[
 
         ///原生view
@@ -71,8 +71,7 @@ class _HomeState extends State<Home> {
         IconButton(
             icon: Icon(Icons.add),
             onPressed: () async {
-              String res =
-              await CameraAlbum.openAlbum(null, callback: (paths) {
+              CameraAlbum.openAlbum({'title':'Paint video'}, callback: (paths) {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) {
                       return NewPage(
@@ -80,10 +79,9 @@ class _HomeState extends State<Home> {
                       );
                     }));
               });
-              print(res);
             })
       ],),
-    ),);
+    );
   }
 
   Widget getPlatformTextView() {

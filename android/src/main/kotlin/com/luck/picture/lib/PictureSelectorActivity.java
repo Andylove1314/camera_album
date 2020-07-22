@@ -1,6 +1,7 @@
 package com.luck.picture.lib;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
@@ -29,6 +30,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
+import com.custom.camera_album.task.GuideView;
+import com.custom.camera_album.task.ImageAdapter;
 import com.luck.picture.lib.adapter.PictureImageGridAdapter;
 import com.luck.picture.lib.animators.AlphaInAnimationAdapter;
 import com.luck.picture.lib.animators.AnimationType;
@@ -68,6 +71,7 @@ import com.luck.picture.lib.widget.FolderPopWindow;
 import com.luck.picture.lib.widget.RecyclerPreloadView;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.model.CutInfo;
+import com.youth.banner.Banner;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -105,6 +109,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private long intervalClickTime = 0;
     private int allFolderSize;
     private int mOpenCameraCount;
+    private GuideView guideViewid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,6 +165,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         taskGuideImage.setOnClickListener(this);
         bottomCamera = findViewById(R.id.camera_bottom);
         bottomCamera.setOnClickListener(this);
+        guideViewid = findViewById(R.id.guide_view_id);
         mIvPictureLeftBack = findViewById(R.id.pictureLeftBack);
         mTvPictureTitle = findViewById(R.id.picture_title);
         albumTitleLin = findViewById(R.id.album_title_button_lin);
@@ -739,7 +745,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         }
 
         if (id == R.id.task_guide_tip_icon){
-            ToastUtils.s(this,"task...");
+            guideViewid.setVisibility(View.VISIBLE);
+            List<String> arr = new ArrayList<>();
+            arr.add("http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-06/30/JZ2JU3e1501ea2a2673101b2bd8ef6b6fbb96.png");
+            arr.add("http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-06/30/JZ2JU3e1501ea2a2673101b2bd8ef6b6fbb96.png");
+            arr.add("http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-06/30/JZ2JU3e1501ea2a2673101b2bd8ef6b6fbb96.png");
+            guideViewid.setArr(arr);
             return;
         }
 
@@ -824,6 +835,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     /**
      * Complete
      */
+    @SuppressLint("StringFormatMatches")
     private void onComplete() {
         List<LocalMedia> result = mAdapter.getSelectedData();
         int size = result.size();
@@ -863,7 +875,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     return;
                 }
                 if (PictureMimeType.isHasVideo(mimeType) && config.minVideoSelectNum > 0 && size < config.minVideoSelectNum) {
-                    String str = getString(R.string.picture_min_video_num, config.minVideoSelectNum);
+                    @SuppressLint("StringFormatMatches") String str = getString(R.string.picture_min_video_num, config.minVideoSelectNum);
                     showPromptDialog(str);
                     return;
                 }
@@ -873,12 +885,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (config.returnEmpty && size == 0) {
             if (config.selectionMode == PictureConfig.MULTIPLE) {
                 if (config.minSelectNum > 0 && size < config.minSelectNum) {
-                    String str = getString(R.string.picture_min_img_num, config.minSelectNum);
+                    @SuppressLint("StringFormatMatches") String str = getString(R.string.picture_min_img_num, config.minSelectNum);
                     showPromptDialog(str);
                     return;
                 }
                 if (config.minVideoSelectNum > 0 && size < config.minVideoSelectNum) {
-                    String str = getString(R.string.picture_min_video_num, config.minVideoSelectNum);
+                    @SuppressLint("StringFormatMatches") String str = getString(R.string.picture_min_video_num, config.minVideoSelectNum);
                     showPromptDialog(str);
                     return;
                 }
@@ -1717,6 +1729,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      *
      * @param media
      */
+    @SuppressLint("StringFormatMatches")
     private void dispatchHandleMultiple(LocalMedia media) {
         List<LocalMedia> selectedData = mAdapter.getSelectedData();
         int count = selectedData.size();

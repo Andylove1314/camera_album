@@ -177,4 +177,12 @@
         android:textSize="14sp"
         android:visibility="gone" />
 
+    <!--功能引导-->
+    <com.custom.camera_album.task.GuideView
+        android:id="@+id/guide_view_id"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
+
 </RelativeLayout>
