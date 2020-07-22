@@ -7,21 +7,21 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.luck.picture.lib.R;
-import com.youth.banner.Banner;
-import com.youth.banner.indicator.CircleIndicator;
+import com.zhpan.bannerview.BannerViewPager;
+import com.zhpan.indicator.enums.IndicatorSlideMode;
+import com.zhpan.indicator.enums.IndicatorStyle;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**任务引导*/
 public class GuideView extends LinearLayout {
 
-    private Banner taskBanner;
+    private BannerViewPager mViewPager;
     private LinearLayout guideClose;
     private ImageAdapter adapter;
-    private List<String> arr = new ArrayList<>();
 
     public GuideView(Context context) {
         this(context,null);
@@ -29,17 +29,21 @@ public class GuideView extends LinearLayout {
 
     ///刷新数据
     public void setArr(List<String> data) {
-        this.arr = data;
-        adapter.updateData(arr);
+        mViewPager
+                .setIndicatorStyle(IndicatorStyle.ROUND_RECT)
+                .setOrientation(ViewPager2.ORIENTATION_HORIZONTAL)
+                .setPageMargin(50)
+                .setIndicatorSliderWidth(20)
+                .setIndicatorHeight(20)
+                .setAdapter(adapter).create(data);
     }
 
     public GuideView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         LayoutInflater.from(context).inflate(R.layout.task_guide_view_layout, this);
         /// banner
-        adapter = new ImageAdapter(context,arr);
-        taskBanner = findViewById(R.id.task_guide_banner);
-        taskBanner.setAdapter(adapter).setIndicator(new CircleIndicator(context)).setStartPosition(0);
+        adapter = new ImageAdapter(context);
+        mViewPager = findViewById(R.id.task_guide_banner);
 
         ///close
         guideClose = findViewById(R.id.task_guide_tip_icon_close);

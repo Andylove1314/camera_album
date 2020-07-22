@@ -33,6 +33,15 @@
         android:text="@string/picture_camera_roll_num"
         android:textColor="@color/picture_color_4d"
         android:textSize="16sp" />
+    
+    <ImageView
+        android:id="@+id/album_selected_icon"
+        android:layout_width="18dp"
+        android:layout_height="14dp"
+        android:src="@drawable/green_duigou_native"
+        android:layout_marginRight="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="true"/>
 
 
 </RelativeLayout>

@@ -1415,4 +1415,22 @@ public class PictureSelectionModel {
         return this;
     }
 
+    /**
+     * @param bottomCamera//业务相关
+     * @return
+     */
+    public PictureSelectionModel showBottomCamera(boolean bottomCamera) {
+        selectionConfig.showBottomCamera = bottomCamera;
+        return this;
+    }
+
+    /**
+     * @param album//业务相关
+     * @return
+     */
+    public PictureSelectionModel showAlbum(boolean album) {
+        selectionConfig.showAlbum = album;
+        return this;
+    }
+
 }

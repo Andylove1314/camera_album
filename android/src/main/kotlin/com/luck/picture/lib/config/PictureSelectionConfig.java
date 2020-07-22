@@ -164,6 +164,8 @@ public final class PictureSelectionConfig implements Parcelable {
      */
     public String title;
     public List<String> guides;
+    public boolean showBottomCamera = true;
+    public boolean showAlbum = true;
 
     protected void initDefaultValue() {
         chooseMode = PictureMimeType.ofImage();

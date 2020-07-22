@@ -62,8 +62,16 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
         String imagePath = folder.getFirstImagePath();
         boolean isChecked = folder.isChecked();
         int checkedNum = folder.getCheckedNum();
+        ///里面有选择的图
         holder.tvSign.setVisibility(checkedNum > 0 ? View.VISIBLE : View.INVISIBLE);
         holder.itemView.setSelected(isChecked);
+
+        ///当前相册选中对勾
+        if (folder.isChecked()){
+            holder.albumSelectedIcon.setVisibility(View.VISIBLE);
+        }else {
+            holder.albumSelectedIcon.setVisibility(View.GONE);
+        }
         if (config.style != null && config.style.pictureAlbumStyle != 0) {
             holder.itemView.setBackgroundResource(config.style.pictureAlbumStyle);
         }
@@ -100,13 +108,15 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView ivFirstImage;
+        ImageView ivFirstImage,albumSelectedIcon;
         TextView tvFolderName, tvSign;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ivFirstImage = itemView.findViewById(R.id.first_image);
             tvFolderName = itemView.findViewById(R.id.tv_folder_name);
+            albumSelectedIcon = itemView.findViewById(R.id.album_selected_icon);
+
             tvSign = itemView.findViewById(R.id.tv_sign);
             if (config.style != null && config.style.pictureFolderCheckedDotStyle != 0) {
                 tvSign.setBackgroundResource(config.style.pictureFolderCheckedDotStyle);

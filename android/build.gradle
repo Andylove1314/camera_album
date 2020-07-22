@@ -75,6 +75,7 @@ dependencies {
     /// ucrop
     implementation files('src/libs/ucrop-release.aar')
 //    implementation 'com.github.yalantis:ucrop:2.2'
-    ///banner
-    implementation 'com.youth.banner:banner:2.1.0'
+    /// banner
+    implementation 'com.github.zhpanvip:BannerViewPager:3.1.0'
+    implementation 'androidx.viewpager2:viewpager2:1.0.0'
 }

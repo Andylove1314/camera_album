@@ -31,7 +31,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.custom.camera_album.task.GuideView;
-import com.custom.camera_album.task.ImageAdapter;
 import com.luck.picture.lib.adapter.PictureImageGridAdapter;
 import com.luck.picture.lib.animators.AlphaInAnimationAdapter;
 import com.luck.picture.lib.animators.AnimationType;
@@ -71,7 +70,6 @@ import com.luck.picture.lib.widget.FolderPopWindow;
 import com.luck.picture.lib.widget.RecyclerPreloadView;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.model.CutInfo;
-import com.youth.banner.Banner;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -163,8 +161,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         businesTitle.setText(config.title);
         taskGuideImage = findViewById(R.id.task_guide_tip_icon);
         taskGuideImage.setOnClickListener(this);
-        bottomCamera = findViewById(R.id.camera_bottom);
-        bottomCamera.setOnClickListener(this);
         guideViewid = findViewById(R.id.guide_view_id);
         mIvPictureLeftBack = findViewById(R.id.pictureLeftBack);
         mTvPictureTitle = findViewById(R.id.picture_title);
@@ -178,6 +174,17 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         mRecyclerView = findViewById(R.id.picture_recycler);
         mBottomLayout = findViewById(R.id.rl_bottom);
         mTvEmpty = findViewById(R.id.tv_empty);
+        ///是否展示相册
+        if (!config.showAlbum){
+            albumTitleLin.setVisibility(View.INVISIBLE);
+            mRecyclerView.setVisibility(View.INVISIBLE);
+        }
+        ///是否展示相机底部按钮
+        bottomCamera = findViewById(R.id.camera_bottom);
+        bottomCamera.setOnClickListener(this);
+        if (!config.showBottomCamera){
+            bottomCamera.setVisibility(View.GONE);
+        }
         isNumComplete(numComplete);
         if (!numComplete) {
             animation = AnimationUtils.loadAnimation(this, R.anim.picture_anim_modal_in);
@@ -746,7 +753,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
 
         if (id == R.id.task_guide_tip_icon){
             guideViewid.setVisibility(View.VISIBLE);
-            List<String> arr = new ArrayList<>();
             guideViewid.setArr(config.guides);
             return;
         }
