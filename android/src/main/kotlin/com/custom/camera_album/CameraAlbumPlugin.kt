@@ -135,6 +135,7 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
       var type: String? = call?.argument<String>("input")
       var guides: List<String>? = call?.argument<List<String>>("guides")
       var isMulti: Boolean? = call?.argument<Boolean>("isMulti")
+      var multiCount: Int = call?.argument<Int>("multiCount")?:5
 
       ///文件类型
       var picType = if ("video".equals(type)) PictureMimeType.ofVideo() else PictureMimeType.ofImage()
@@ -151,9 +152,9 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
               .isPageStrategy(false) // 是否开启分页策略 & 每页多少条；默认开启
               .setPictureStyle(getWhiteStyle()) // 动态自定义相册主题
               .isMaxSelectEnabledMask(false) // 选择数到了最大阀值列表是否启用蒙层效果
-              .maxSelectNum(5) // 最大图片选择数量
+              .maxSelectNum(multiCount) // 最大图片选择数量
               .minSelectNum(1) // 最小选择数量
-              .maxVideoSelectNum(5) // 视频最大选择数量
+              .maxVideoSelectNum(multiCount) // 视频最大选择数量
               //.minVideoSelectNum(1)// 视频最小选择数量
               //.closeAndroidQChangeVideoWH(!SdkVersionUtils.checkedAndroid_Q())// 关闭在AndroidQ下获取图片或视频宽高相反自动转换
               .imageSpanCount(4) // 每行显示个数
