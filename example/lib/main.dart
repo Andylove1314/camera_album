@@ -95,7 +95,7 @@ class _HomeState extends State<Home> {
                 'input': 'image',
                 'firstCamera': false,
                 'showBottomCamera': false,
-                'showGridCamera':true,
+                'showGridCamera':false,
                 'showAlbum':true,
                 'isMulti': true,
                 'multiCount': 5,

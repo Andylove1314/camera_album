@@ -143,12 +143,12 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
       
 
       ///文件类型
-      var picType = if ("video".equals(type)) PictureMimeType.ofVideo() else PictureMimeType.ofImage()
+      var picType = if ("video" == type) PictureMimeType.ofVideo() else PictureMimeType.ofImage()
 
       //相册
       var cameraOrAlbum = PictureSelector.create(con)
               .openGallery(picType)
-      ///悠闲相机
+      ///优先相机
       if (firstCamera == true){
         PictureSelector.create(con)
                 .openCamera(picType)
@@ -164,19 +164,16 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
               .maxSelectNum(multiCount) // 最大图片选择数量
               .minSelectNum(1) // 最小选择数量
               .maxVideoSelectNum(multiCount) // 视频最大选择数量
-              //.minVideoSelectNum(1)// 视频最小选择数量
-              //.closeAndroidQChangeVideoWH(!SdkVersionUtils.checkedAndroid_Q())// 关闭在AndroidQ下获取图片或视频宽高相反自动转换
               .imageSpanCount(4) // 每行显示个数
               .isReturnEmpty(false) // 未选择数据时点击按钮是否可以返回
               .closeAndroidQChangeWH(true) //如果图片有旋转角度则对换宽高,默认为true
               .closeAndroidQChangeVideoWH(!SdkVersionUtils.checkedAndroid_Q()) // 如果视频有旋转角度则对换宽高,默认为false
-              //.isAndroidQTransform(false)// 是否需要处理Android Q 拷贝至应用沙盒的操作，只针对compress(false); && .isEnableCrop(false);有效,默认处理
               .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) // 设置相册Activity方向，不设置默认使用系统
               .isOriginalImageControl(true) // 是否显示原图控制按钮，如果设置为true则用户可以自由选择是否使用原图，压缩、裁剪功能将会失效
               .selectionMode(if (isMulti == true) PictureConfig.MULTIPLE else PictureConfig.SINGLE) // 多选 or 单选
               .isSingleDirectReturn(true) // 单选模式下是否直接返回，PictureConfig.SINGLE模式下有效
               .isPreviewImage(true) // 是否可预览图片
-              .isPreviewVideo(false) // 是否可预览视频
+              .isPreviewVideo(true) // 是否可预览视频
               .isEnablePreviewAudio(false) // 是否可播放音频
               .isCamera(showGridCamera == true) // 是否显示拍照按钮
               .isEnableCrop(false) // 是否裁剪
@@ -217,7 +214,7 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
       val paths = ArrayList<Any?>()
       val durs = ArrayList<Any?>()
       for (media in result) {
-        var path = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) media.androidQToPath else media.path
+        var path = if (SdkVersionUtils.checkedAndroid_Q()) media.androidQToPath else media.path
         Log.i("所选文件路径", "原图:$path")
         paths.add(path)
         var dur = media.duration

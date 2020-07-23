@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.os.SystemClock;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -194,8 +195,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             titleViewBg.setOnClickListener(this);
         }
         mTvPicturePreview.setVisibility(config.chooseMode != PictureMimeType.ofAudio() && config.enablePreview ? View.VISIBLE : View.GONE);
-        mBottomLayout.setVisibility(config.selectionMode == PictureConfig.SINGLE
-                && config.isSingleDirectReturn ? View.GONE : View.VISIBLE);
+        mBottomLayout.setVisibility((config.selectionMode == PictureConfig.SINGLE
+                && config.isSingleDirectReturn) || config.showBottomCamera ? View.GONE : View.VISIBLE);
         mIvPictureLeftBack.setOnClickListener(this);
         mTvPictureOk.setOnClickListener(this);
         mTvPictureImgNum.setOnClickListener(this);
@@ -840,6 +841,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      */
     @SuppressLint("StringFormatMatches")
     private void onComplete() {
+        Log.i("dddddddd","yes");
         List<LocalMedia> result = mAdapter.getSelectedData();
         int size = result.size();
         LocalMedia image = result.size() > 0 ? result.get(0) : null;
