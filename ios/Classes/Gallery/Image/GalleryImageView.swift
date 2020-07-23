@@ -125,7 +125,7 @@ extension GalleryImageView: UICollectionViewDataSource, UICollectionViewDelegate
             guard let image = image?.jpegData(compressionQuality: 0.5), let info = info else { return }
             print(info)
             let file = (info["PHImageFileSandboxExtensionTokenKey"] as? NSString)?.components(separatedBy: ";").last ?? ""
-            SwiftCameraAlbumPlugin.channel.invokeMethod("selected", arguments: ["identifier": item.asset.burstIdentifier ?? "", "image": image, "file": file])
+            SwiftCameraAlbumPlugin.channel.invokeMethod("onMessage", arguments: ["identifier": [item.asset.burstIdentifier ?? ""], "image": [image], "paths": [file]])
         }
     } else if images.contains(item) {
       guard let index = images.firstIndex(of: item) else { return }

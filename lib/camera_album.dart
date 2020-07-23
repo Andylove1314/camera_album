@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+
+export 'ui_kit_album.dart';
 
 class CameraAlbum {
   static const MethodChannel _channel =
@@ -28,6 +31,10 @@ class CameraAlbum {
           throw UnsupportedError("Unrecognized JSON message");
       }
     });
+
+    if (Platform.isIOS) {
+      return "";
+    }
 
     return _channel.invokeMethod('openAlbum',business);
   }
