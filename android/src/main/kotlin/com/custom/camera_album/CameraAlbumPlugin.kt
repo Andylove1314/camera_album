@@ -138,6 +138,7 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
       var multiCount: Int = call?.argument<Int>("multiCount")?:5
       var firstCamera: Boolean? = call?.argument<Boolean>("firstCamera")
       var showBottomCamera: Boolean? = call?.argument<Boolean>("showBottomCamera")
+      var showGridCamera: Boolean? = call?.argument<Boolean>("showGridCamera")
       var showAlbum: Boolean? = call?.argument<Boolean>("showAlbum")
       
 
@@ -177,7 +178,7 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
               .isPreviewImage(true) // 是否可预览图片
               .isPreviewVideo(false) // 是否可预览视频
               .isEnablePreviewAudio(false) // 是否可播放音频
-              .isCamera(false) // 是否显示拍照按钮
+              .isCamera(showGridCamera == true) // 是否显示拍照按钮
               .isEnableCrop(false) // 是否裁剪
               .isCompress(false) // 是否压缩
               .synOrAsy(true) //同步true或异步false 压缩 默认同步
