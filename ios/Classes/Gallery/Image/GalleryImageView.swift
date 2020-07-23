@@ -29,21 +29,26 @@ class GalleryImageView: UIView {
         
         arrowButton = ArrowButton()
         addSubview(arrowButton)
+        
+        arrowButton.g_pin(on: .top)
         arrowButton.g_pin(on: .centerX)
         arrowButton.g_pin(height: 40)
-        
         arrowButton.addTarget(self, action: #selector(arrowButtonTouched(_:)), for: .touchUpInside)
         
         let layout = UICollectionViewFlowLayout()
         layout.minimumInteritemSpacing = cellSpacing
         layout.minimumLineSpacing = cellSpacing
         
-        collectionView = UICollectionView(frame: CGRect(x: 0, y: 50, width: frame.width, height: frame.height), collectionViewLayout: layout)
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = UIColor.white
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(GalleryImageCell.self, forCellWithReuseIdentifier: String(describing: GalleryImageCell.self))
         addSubview(collectionView)
+        collectionView.g_pin(on: .top, constant: 40)
+        collectionView.g_pin(on: .left)
+        collectionView.g_pin(on:.right)
+        collectionView.g_pin(on: .bottom)
         
         library.reload {
             if let album = self.library.albums.first {

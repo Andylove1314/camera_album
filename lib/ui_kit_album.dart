@@ -27,9 +27,7 @@ class _UIKitAlbumState extends State<UIKitAlbum> {
           return UiKitView(
             viewType: "platform_gallery_view",
             creationParams: <String, dynamic>{
-              "text": "iOS Label 选照片",
-              "y": 0,
-              "height": cc.maxHeight - kToolbarHeight,
+              "text": "选照片",
             },
             creationParamsCodec: const StandardMessageCodec(),
           );
