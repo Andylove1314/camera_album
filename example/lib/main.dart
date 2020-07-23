@@ -74,7 +74,7 @@ class _HomeState extends State<Home> {
                 'title': 'Paint video',
                 'input': 'image',
                 'firstCamera': false,
-                'showBottomCamera': true,
+                'showBottomCamera': false,
                 'showGridCamera':true,
                 'showAlbum':true,
                 'isMulti': true,
