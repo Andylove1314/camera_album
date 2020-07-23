@@ -22,6 +22,30 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Allow remini access to your media database</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Are you allowed to use Bluetooth?</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Is remini allowed to use the calendar?</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Remini requires access to camera so that user may use camera to take a photo in the app and have it enhanced by the app.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Is remini allowed to access your address book?</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>We need to get the relevant data around you through your geographic location information.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need to get the relevant data around you through your geographic location information.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Is remini allowed to use your microphone?</string>
+	<key>NSMotionUsageDescription</key>
+	<string>Is remini allowed to visit your exercise and fitness?</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Remini requires access to Photo Library so that user may select a photo in the app and have it enhanced by the app.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Remini requires access to Photo Library so that user may select a photo in the app and have it enhanced by the app.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Are remini allowed to use speech recognition?</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -41,5 +65,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>io.flutter.embedded_views_preview</key>
+	<true/>
 </dict>
 </plist>

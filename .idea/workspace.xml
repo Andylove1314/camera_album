@@ -5,9 +5,86 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="05804282-5afa-4076-b53f-b8605338765f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/example/lib/main.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Classes/Gallery/Album/AlbumCell.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Classes/Gallery/Album/ArrowButton.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Classes/Gallery/Album/DropdownView.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Classes/Gallery/Common/Album.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Classes/Gallery/Common/Constraints.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Classes/Gallery/Common/GalleryBundle.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Classes/Gallery/Common/Image.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Classes/Gallery/Common/ImagesLibrary.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Classes/Gallery/Common/UIScrollView+Extensions.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Classes/Gallery/Image/GalleryImageCell.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Classes/Gallery/Image/GalleryImageView.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Classes/PlatformTextView.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Resources/Gallery.bundle/gallery_camera_flash_auto@2x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Resources/Gallery.bundle/gallery_camera_flash_auto@3x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Resources/Gallery.bundle/gallery_camera_flash_off@2x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Resources/Gallery.bundle/gallery_camera_flash_off@3x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Resources/Gallery.bundle/gallery_camera_flash_on@2x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Resources/Gallery.bundle/gallery_camera_flash_on@3x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Resources/Gallery.bundle/gallery_camera_focus@2x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Resources/Gallery.bundle/gallery_camera_focus@3x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Resources/Gallery.bundle/gallery_camera_rotate@2x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Resources/Gallery.bundle/gallery_camera_rotate@3x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Resources/Gallery.bundle/gallery_close@2x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Resources/Gallery.bundle/gallery_close@3x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Resources/Gallery.bundle/gallery_empty_view_image@2x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Resources/Gallery.bundle/gallery_empty_view_image@3x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Resources/Gallery.bundle/gallery_page_indicator@2x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Resources/Gallery.bundle/gallery_page_indicator@3x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Resources/Gallery.bundle/gallery_permission_view_camera@2x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Resources/Gallery.bundle/gallery_placeholder@2x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Resources/Gallery.bundle/gallery_title_arrow@2x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Resources/Gallery.bundle/gallery_title_arrow@3x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Resources/Gallery.bundle/gallery_video_cell_camera@2x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Resources/Gallery.bundle/gallery_video_view_camera@2x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Classes/Gallery/Album/AlbumCell.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Classes/Gallery/Album/ArrowButton.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Classes/Gallery/Album/DropdownView.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Classes/Gallery/Common/Album.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Classes/Gallery/Common/Constraints.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Classes/Gallery/Common/GalleryBundle.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Classes/Gallery/Common/Image.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Classes/Gallery/Common/ImagesLibrary.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Classes/Gallery/Common/UIScrollView+Extensions.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Classes/Gallery/Image/GalleryImageCell.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Classes/Gallery/Image/GalleryImageView.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Classes/PlatformTextView.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Resources/Gallery.bundle/gallery_camera_flash_auto@2x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Resources/Gallery.bundle/gallery_camera_flash_auto@3x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Resources/Gallery.bundle/gallery_camera_flash_off@2x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Resources/Gallery.bundle/gallery_camera_flash_off@3x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Resources/Gallery.bundle/gallery_camera_flash_on@2x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Resources/Gallery.bundle/gallery_camera_flash_on@3x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Resources/Gallery.bundle/gallery_camera_focus@2x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Resources/Gallery.bundle/gallery_camera_focus@3x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Resources/Gallery.bundle/gallery_camera_rotate@2x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Resources/Gallery.bundle/gallery_camera_rotate@3x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Resources/Gallery.bundle/gallery_close@2x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Resources/Gallery.bundle/gallery_close@3x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Resources/Gallery.bundle/gallery_empty_view_image@2x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Resources/Gallery.bundle/gallery_empty_view_image@3x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Resources/Gallery.bundle/gallery_page_indicator@2x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Resources/Gallery.bundle/gallery_page_indicator@3x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Resources/Gallery.bundle/gallery_permission_view_camera@2x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Resources/Gallery.bundle/gallery_placeholder@2x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Resources/Gallery.bundle/gallery_title_arrow@2x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Resources/Gallery.bundle/gallery_title_arrow@3x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Resources/Gallery.bundle/gallery_video_cell_camera@2x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Resources/Gallery.bundle/gallery_video_view_camera@2x.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/example/ios/Podfile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/example/ios/Podfile.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/example/ios/Runner.xcodeproj/project.pbxproj" beforeDir="false" afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/example/ios/Runner.xcodeproj/project.pbxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/example/ios/Runner/Info.plist" beforeDir="false" afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/example/ios/Runner/Info.plist" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Classes/SwiftCameraAlbumPlugin.swift" beforeDir="false" afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/Classes/SwiftCameraAlbumPlugin.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/camera_album.podspec" beforeDir="false" afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/ios/camera_album.podspec" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/lib/camera_album.dart" beforeDir="false" afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/camera_album/lib/camera_album.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/ios/Podfile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/example/ios/Podfile.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/ios/Runner.xcodeproj/project.pbxproj" beforeDir="false" afterPath="$PROJECT_DIR$/example/ios/Runner.xcodeproj/project.pbxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/ios/Runner/Info.plist" beforeDir="false" afterPath="$PROJECT_DIR$/example/ios/Runner/Info.plist" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/Classes/SwiftCameraAlbumPlugin.swift" beforeDir="false" afterPath="$PROJECT_DIR$/ios/Classes/SwiftCameraAlbumPlugin.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/camera_album.podspec" beforeDir="false" afterPath="$PROJECT_DIR$/ios/camera_album.podspec" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/camera_album.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/camera_album.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
