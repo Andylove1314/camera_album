@@ -28,7 +28,7 @@ class _NewPagePageState extends State<NewPage> {
     var images = List<Widget>();
     widget?.paths?.forEach((path) {
 
-      images.add(Image.file(File(path)));
+      images.add(Platform.isIOS ? Image.memory(path) : Image.file(File(path)));
 
     });
     return images;

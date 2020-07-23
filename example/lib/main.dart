@@ -61,12 +61,32 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return Platform.isIOS ? Column(
+      children: <Widget>[
+        Expanded(
+          child: Stack(
+            alignment: Alignment.center,
+            children: <Widget>[
+              UIKitAlbum(callback: (info) {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return NewPage(
+                    info['image'],
+                  );
+                }));
+              },),
+            ],
+          ),
+        ),
+        FlatButton(
+          child: Text("拍照"),
+          onPressed: () {
+
+          },
+        ),
+      ],
+    ) : Stack(
       alignment: Alignment.center,
       children: <Widget>[
-        ///原生view
-        getPlatformTextView(),
-
         IconButton(
             icon: Icon(Icons.add),
             onPressed: () async {
@@ -94,24 +114,5 @@ class _HomeState extends State<Home> {
             })
       ],
     );
-  }
-
-  Widget getPlatformTextView() {
-    if (Platform.isAndroid) {
-      return Container(
-        child: AndroidView(
-            viewType: "platform_text_view",
-            creationParams: <String, dynamic>{"text": "Android Text View"},
-            creationParamsCodec: const StandardMessageCodec()),
-        color: Colors.green,
-      );
-    } else if (Platform.isIOS) {
-      return UiKitView(
-          viewType: "platform_text_view",
-          creationParams: <String, dynamic>{"text": "iOS Label"},
-          creationParamsCodec: const StandardMessageCodec());
-    } else {
-      return Text("Not supported");
-    }
   }
 }
