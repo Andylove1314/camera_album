@@ -126,12 +126,12 @@ extension GalleryImageView: UICollectionViewDataSource, UICollectionViewDelegate
     let item = items[(indexPath as NSIndexPath).item]
     
     if imageLimit == 1 {
-        item.resolve { (image, info) in
-            guard let image = image?.jpegData(compressionQuality: 0.5), let info = info else { return }
-            print(info)
-            let file = (info["PHImageFileSandboxExtensionTokenKey"] as? NSString)?.components(separatedBy: ";").last ?? ""
-            SwiftCameraAlbumPlugin.channel.invokeMethod("onMessage", arguments: ["identifier": [item.asset.burstIdentifier ?? ""], "image": [image], "paths": [file]])
-        }
+//        item.resolve { (image, info) in
+//            guard let info = info else { return }
+//            print(info)
+//            let file = (info["PHImageFileSandboxExtensionTokenKey"] as? NSString)?.components(separatedBy: ";").last ?? ""
+            SwiftCameraAlbumPlugin.channel.invokeMethod("onMessage", arguments: ["identifier": [item.asset.localIdentifier], /*"paths": [file]]*/])
+//        }
     } else if images.contains(item) {
       guard let index = images.firstIndex(of: item) else { return }
       images.remove(at: index)

@@ -70,7 +70,7 @@ class _HomeState extends State<Home> {
               UIKitAlbum(callback: (info) {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return NewPage(
-                    info['image'],
+                    info['identifier'],
                   );
                 }));
               },),

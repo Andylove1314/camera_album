@@ -11,6 +11,16 @@ public class Image: Equatable {
   init(asset: PHAsset) {
     self.asset = asset
   }
+    
+   static func initWith(identifier: String) -> Image? {
+       let fetchResult = PHAsset.fetchAssets(withLocalIdentifiers: [identifier], options: nil)
+       let asset = fetchResult.firstObject
+       if let asset = asset {
+           return Image(asset: asset)
+       }
+       return nil
+   }
+    
 }
 
 // MARK: - UIImage
@@ -39,6 +49,22 @@ extension Image {
         completion(image, info)
     }
   }
+
+    /// Resolve mageData synchronously
+    ///
+    /// - Parameter size: The target size
+    /// - Returns: The resolved Data, otherwise nil
+    public func resolveImageData(completion: @escaping (Data?, [AnyHashable : Any]?) -> Void) {
+      let options = PHImageRequestOptions()
+      options.isNetworkAccessAllowed = true
+      options.isSynchronous = true
+        options.resizeMode = .fast
+        PHImageManager.default().requestImageData(for: asset, options: options) { (imageData, dataUTI, orientation, info) in
+            // TODO: - iOS 11 HEIF/HEIC图片转JPG
+            // https://www.jianshu.com/p/a63c7d5d98a9
+            completion(imageData, info)
+        }
+    }
 
   /// Resolve an array of Image
   ///

@@ -16,12 +16,11 @@ class CameraAlbum {
   }
 
   ///打开相册插件
-  static Future<String> openAlbum(Map<String, dynamic> business,{callback}) async {
-
+  static Future<String> openAlbum(Map<String, dynamic> business,
+      {callback}) async {
     ///回调监听
     _channel.setMethodCallHandler((MethodCall call) async {
       switch (call.method) {
-
         case "onMessage":
           var backs = call.arguments;
           print('native回传数据：$backs');
@@ -36,7 +35,10 @@ class CameraAlbum {
       return "";
     }
 
-    return _channel.invokeMethod('openAlbum',business);
+    return _channel.invokeMethod('openAlbum', business);
   }
 
+  static Future requestImage({@required identifier}) {
+    return _channel.invokeMethod("requestImageData", {"identifier": identifier});
+  }
 }

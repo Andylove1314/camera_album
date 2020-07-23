@@ -1,5 +1,6 @@
 import Flutter
 import UIKit
+import Photos
 
 public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
     
@@ -16,6 +17,18 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-    result("iOS " + UIDevice.current.systemVersion)
+    switch call.method {
+    case "requestImageData":
+        let params = call.arguments as! NSDictionary
+        let identifier = params["identifier"] as! String
+        if let image = Image.initWith(identifier: identifier) {
+        image.resolveImageData { (imageData, info) in
+            if let imageData = imageData {
+                    result(imageData)
+                }
+            }
+        }
+    default: break
+    }
   }
 }
