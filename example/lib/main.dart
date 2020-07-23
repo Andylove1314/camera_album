@@ -61,58 +61,75 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    return Platform.isIOS ? Column(
-      children: <Widget>[
-        Expanded(
-          child: Stack(
-            alignment: Alignment.center,
-            children: <Widget>[
-              UIKitAlbum(callback: (info) {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return NewPage(
-                    info['identifier'],
-                  );
-                }));
-              },),
-            ],
-          ),
-        ),
-        FlatButton(
-          child: Text("拍照"),
-          onPressed: () {
-
-          },
-        ),
-      ],
-    ) : Stack(
+    return Stack(
       alignment: Alignment.center,
       children: <Widget>[
         IconButton(
             icon: Icon(Icons.add),
             onPressed: () async {
-              CameraAlbum.openAlbum({
-                'title': 'Paint video',
-                'input': 'image',
-                'firstCamera': false,
-                'showBottomCamera': true,
-                'showGridCamera':true,
-                'showAlbum':true,
-                'isMulti': true,
-                'multiCount': 5,
-                'guides': [
-                  'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/VHByy0e26624d87a5a1156eea6711d5125858.jpg',
-                  'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/Vt8Rtc3d879d7ce5278fb0655ab0d90503d86.jpg',
-                  'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/djwxl6cc4e8157b1bc1d90dd1a34268572d1a.jpg'
-                ]
-              }, callback: (backs) {
+              if (Platform.isIOS) {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return NewPage(
-                    backs['paths'],
-                  );
+                  return PhotoPicker();
                 }));
-              });
-            })
+              } else {
+                CameraAlbum.openAlbum({
+                  'title': 'Paint video',
+                  'input': 'image',
+                  'firstCamera': false,
+                  'showBottomCamera': true,
+                  'showGridCamera': true,
+                  'showAlbum': true,
+                  'isMulti': true,
+                  'multiCount': 5,
+                  'guides': [
+                    'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/VHByy0e26624d87a5a1156eea6711d5125858.jpg',
+                    'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/Vt8Rtc3d879d7ce5278fb0655ab0d90503d86.jpg',
+                    'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/djwxl6cc4e8157b1bc1d90dd1a34268572d1a.jpg'
+                  ]
+                }, callback: (backs) {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return NewPage(
+                      backs['paths'],
+                    );
+                  }));
+                });
+              }
+            }),
       ],
+    );
+  }
+}
+
+class PhotoPicker extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("照片选择")),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: Stack(
+              alignment: Alignment.center,
+              children: <Widget>[
+                UIKitAlbum(
+                  callback: (info) {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return NewPage(
+                        info['identifier'],
+                      );
+                    }));
+                  },
+                ),
+              ],
+            ),
+          ),
+          FlatButton(
+            child: Text("拍照"),
+            onPressed: () {},
+          ),
+        ],
+      ),
     );
   }
 }
