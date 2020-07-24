@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:camera_album/camera_album.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -42,5 +44,43 @@ class _UIKitAlbumState extends State<UIKitAlbum> {
         },
       ),
     );
+  }
+}
+
+class UIKitRequestImage extends StatefulWidget {
+  final MediaType mediaType;
+  final String identifier;
+  final ValueChanged onDone;
+  final Widget child;
+
+  const UIKitRequestImage(
+      {Key key,
+      this.mediaType = MediaType.image,
+      @required this.identifier,
+      this.onDone,
+      this.child})
+      : super(key: key);
+
+  @override
+  _UIKitRequestImageState createState() => _UIKitRequestImageState();
+}
+
+class _UIKitRequestImageState extends State<UIKitRequestImage> {
+  @override
+  void initState() {
+    CameraAlbum.requestImageFile(identifier: widget.identifier).then((value) {
+      widget.onDone(File(value));
+    });
+    if (widget.mediaType == MediaType.video) {
+      CameraAlbum.requestVideoFile(identifier: widget.identifier).then((value) {
+        widget.onDone(File(value));
+      });
+    }
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.child;
   }
 }

@@ -57,29 +57,9 @@ class RequestImage extends StatefulWidget {
 }
 
 class _RequestImageState extends State<RequestImage> {
-  var _image;
+  File _file;
 
   VideoPlayerController _controller;
-
-  @override
-  void initState() {
-    CameraAlbum.requestImageFile(identifier: widget.identifier).then((value) {
-      setState(() {
-        _image = value;
-      });
-    });
-    if (widget.mediaType == MediaType.video) {
-      CameraAlbum.requestVideoFile(identifier: widget.identifier).then((value) {
-        File file = File(value);
-        _controller = VideoPlayerController.file(file);
-        _controller.initialize().then((value) {
-          _controller.play();
-          setState(() {});
-        });
-      });
-    }
-    super.initState();
-  }
 
   @override
   void dispose() {
@@ -89,20 +69,46 @@ class _RequestImageState extends State<RequestImage> {
 
   @override
   Widget build(BuildContext context) {
-    if (_image == null) {
-      return CupertinoActivityIndicator();
-    } else {
-      if (widget.mediaType == MediaType.video) {
-        return Container(
-          color: Colors.black,
-          child: (_controller == null || !_controller.value.initialized) ? Text("initialized...") : AspectRatio(
-            aspectRatio: _controller.value.aspectRatio,
-            child: VideoPlayer(_controller),
-          ),
+    return UIKitRequestImage(
+      mediaType: widget.mediaType,
+      identifier: widget.identifier,
+      onDone: (file) {
+        setState(
+          () {
+            _file = file;
+            if (widget.mediaType == MediaType.video) {
+              _controller = VideoPlayerController.file(file);
+              _controller.initialize().then((value) {
+                _controller.play();
+                setState(() {});
+              });
+            } else {
+              setState(() {});
+            }
+          },
         );
-      } else {
-        return Image.file(File(_image));
-      }
-    }
+      },
+      child: Builder(
+        builder: (BuildContext context) {
+          if (_file == null) {
+            return CupertinoActivityIndicator();
+          } else {
+            if (widget.mediaType == MediaType.video) {
+              return Container(
+                color: Colors.black,
+                child: (_controller == null || !_controller.value.initialized)
+                    ? Text("initialized...")
+                    : AspectRatio(
+                        aspectRatio: _controller.value.aspectRatio,
+                        child: VideoPlayer(_controller),
+                      ),
+              );
+            } else {
+              return Image.file(_file);
+            }
+          }
+        },
+      ),
+    );
   }
 }
