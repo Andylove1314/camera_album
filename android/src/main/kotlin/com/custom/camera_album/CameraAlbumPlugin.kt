@@ -149,6 +149,7 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
       var showBottomCamera: Boolean? = call?.argument<Boolean>("showBottomCamera")
       var showGridCamera: Boolean? = call?.argument<Boolean>("showGridCamera")
       var showAlbum: Boolean? = call?.argument<Boolean>("showAlbum")
+      var cute: Boolean? = call?.argument<Boolean>("cute")
 
 
       ///文件类型
@@ -185,7 +186,7 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
               .isPreviewVideo(true) // 是否可预览视频
               .isEnablePreviewAudio(false) // 是否可播放音频
               .isCamera(showGridCamera == true) // 是否显示拍照按钮
-              .isEnableCrop(false) // 是否裁剪
+              .isEnableCrop(cute == true) // 是否裁剪
               .isCompress(false) // 是否压缩
               .synOrAsy(true) //同步true或异步false 压缩 默认同步
               .hideBottomControls(true) // 是否显示uCrop工具栏，默认不显示
