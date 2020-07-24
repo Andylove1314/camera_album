@@ -291,10 +291,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 @Override
                 public void onClick(View view) {
                     guideView.setVisibility(View.VISIBLE);
-                    SharedPreferences sharedPreferences = getSharedPreferences("remini_native_guide",0);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString(config.actionId,"native_showed");
-                    editor.commit();
                 }
             });
 
@@ -303,6 +299,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             String action = sharedPreferences.getString(config.actionId + "", "");
             if (TextUtils.isEmpty(action)){
                 guideView.setVisibility(View.VISIBLE);
+                ///展示过了
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString(config.actionId,"native_showed");
+                editor.commit();
             }else {
                 guideView.setVisibility(View.GONE);
             }
