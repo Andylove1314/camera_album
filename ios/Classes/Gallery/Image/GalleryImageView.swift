@@ -50,16 +50,40 @@ class GalleryImageView: UIView {
         collectionView.g_pin(on:.right)
         collectionView.g_pin(on: .bottom)
         
-        library.reload {
-            if let album = self.library.albums.first {
-                self.selectedAlbum = album
-                self.show(album: album)
-            }
-        }
+        check()
+        
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - Logic
+
+    func check() {
+      if Permission.Photos.status == .notDetermined {
+        Permission.Photos.request { [weak self] in
+          self?.check()
+        }
+
+        return
+      }
+        
+      DispatchQueue.main.async { [weak self] in
+        guard Permission.Photos.status == .authorized else {
+            let permissionView = PermissionView()
+            self?.addSubview(permissionView)
+            permissionView.g_pinEdges()
+          return
+        }
+        
+        self?.library.reload {
+            if let album = self?.library.albums.first {
+                self?.selectedAlbum = album
+                self?.show(album: album)
+            }
+        }
+      }
     }
 
     @objc func arrowButtonTouched(_ button: ArrowButton) {
