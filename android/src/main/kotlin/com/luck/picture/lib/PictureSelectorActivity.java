@@ -3,6 +3,7 @@ package com.luck.picture.lib;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
@@ -88,8 +89,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     protected ImageView mIvPictureLeftBack;
     protected ImageView mIvArrow;
     protected View titleViewBg;
-    protected LinearLayout albumTitleLin, taskGuideImage, bottomCamera;
-    protected TextView businesTitle, mTvPictureTitle, mTvPictureOk, mTvEmpty,
+    protected LinearLayout albumTitleLin;
+    protected TextView mTvPictureTitle, mTvPictureOk, mTvEmpty,
             mTvPictureImgNum, mTvPicturePreview, mTvPlayPause, mTvStop, mTvQuit,
             mTvMusicStatus, mTvMusicTotal, mTvMusicTime;
     protected RecyclerPreloadView mRecyclerView;
@@ -108,7 +109,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private long intervalClickTime = 0;
     private int allFolderSize;
     private int mOpenCameraCount;
-    private GuideView guideViewid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,15 +158,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         super.initWidgets();
         container = findViewById(R.id.container);
         titleViewBg = findViewById(R.id.titleViewBg);
-        businesTitle = findViewById(R.id.business_title);
-        businesTitle.setText(config.title);
-        taskGuideImage = findViewById(R.id.task_guide_tip_icon);
-        taskGuideImage.setOnClickListener(this);
-        guideViewid = findViewById(R.id.guide_view_id);
         mIvPictureLeftBack = findViewById(R.id.pictureLeftBack);
         mTvPictureTitle = findViewById(R.id.picture_title);
-        albumTitleLin = findViewById(R.id.album_title_button_lin);
-        albumTitleLin.setOnClickListener(this);
         mTvPictureOk = findViewById(R.id.picture_tv_ok);
         mCbOriginal = findViewById(R.id.cb_original);
         mIvArrow = findViewById(R.id.ivArrow);
@@ -175,17 +168,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         mRecyclerView = findViewById(R.id.picture_recycler);
         mBottomLayout = findViewById(R.id.rl_bottom);
         mTvEmpty = findViewById(R.id.tv_empty);
-        ///是否展示相册
-        if (!config.showAlbum){
-            albumTitleLin.setVisibility(View.INVISIBLE);
-            mRecyclerView.setVisibility(View.INVISIBLE);
-        }
-        ///是否展示相机底部按钮
-        bottomCamera = findViewById(R.id.camera_bottom);
-        bottomCamera.setOnClickListener(this);
-        if (!config.showBottomCamera){
-            bottomCamera.setVisibility(View.GONE);
-        }
         isNumComplete(numComplete);
         if (!numComplete) {
             animation = AnimationUtils.loadAnimation(this, R.anim.picture_anim_modal_in);
@@ -196,7 +178,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         }
         mTvPicturePreview.setVisibility(config.chooseMode != PictureMimeType.ofAudio() && config.enablePreview ? View.VISIBLE : View.GONE);
         mBottomLayout.setVisibility((config.selectionMode == PictureConfig.SINGLE
-                && config.isSingleDirectReturn) || config.showBottomCamera ? View.GONE : View.VISIBLE);
+                && config.isSingleDirectReturn)? View.GONE : View.VISIBLE);
         mIvPictureLeftBack.setOnClickListener(this);
         mTvPictureOk.setOnClickListener(this);
         mTvPictureImgNum.setOnClickListener(this);
@@ -249,6 +231,84 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 config.isCheckOriginalImage = isChecked;
             });
         }
+        _business();
+    }
+
+    /**
+     * 业务相关
+     */
+    private void _business() {
+
+        /// album page title
+        TextView businesTitle = findViewById(R.id.business_title);
+        businesTitle.setText(config.title);
+
+        ///相册切换按钮
+        albumTitleLin = findViewById(R.id.album_title_button_lin);
+        albumTitleLin.setOnClickListener(this);
+
+        ///是否展示相册
+        if (!config.showAlbum){
+            albumTitleLin.setVisibility(View.INVISIBLE);
+            mRecyclerView.setVisibility(View.INVISIBLE);
+        }
+
+        ///是否展示相机底部按钮
+        LinearLayout bottomCamera = findViewById(R.id.camera_bottom);
+        if (config.showBottomCamera){
+            bottomCamera.setVisibility(View.VISIBLE);
+            bottomCamera.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // Check the permissions
+                    if (PermissionChecker.checkSelfPermission(PictureSelectorActivity.this, Manifest.permission.CAMERA)) {
+                        if (PermissionChecker
+                                .checkSelfPermission(PictureSelectorActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) &&
+                                PermissionChecker
+                                        .checkSelfPermission(PictureSelectorActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                            startCamera();
+                        } else {
+                            PermissionChecker.requestPermissions(PictureSelectorActivity.this, new String[]{
+                                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                                    Manifest.permission.WRITE_EXTERNAL_STORAGE}, PictureConfig.APPLY_CAMERA_STORAGE_PERMISSIONS_CODE);
+                        }
+                    } else {
+                        PermissionChecker
+                                .requestPermissions(PictureSelectorActivity.this,
+                                        new String[]{Manifest.permission.CAMERA}, PictureConfig.APPLY_CAMERA_PERMISSIONS_CODE);
+                    }
+                }
+            });
+        }
+
+        ///是否有引导
+        if (config.guides != null && !config.guides.isEmpty()){
+            GuideView guideView = findViewById(R.id.guide_view_id);
+            guideView.setArr(config.guides);
+            LinearLayout taskGuideClickImage = findViewById(R.id.task_guide_tip_icon);
+            taskGuideClickImage.setVisibility(View.VISIBLE);
+            taskGuideClickImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    guideView.setVisibility(View.VISIBLE);
+                }
+            });
+
+            ///是否自动弹出引导
+            SharedPreferences sharedPreferences = getSharedPreferences("remini_native_guide",0);
+            String action = sharedPreferences.getString(config.actionId + "", "");
+            if (TextUtils.isEmpty(action)){
+                guideView.setVisibility(View.VISIBLE);
+                ///展示过了
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString(config.actionId,"native_showed");
+                editor.commit();
+            }else {
+                guideView.setVisibility(View.GONE);
+            }
+
+        }
+
     }
 
     @Override
@@ -751,35 +811,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             }
             return;
         }
-
-        if (id == R.id.task_guide_tip_icon){
-            guideViewid.setVisibility(View.VISIBLE);
-            guideViewid.setArr(config.guides);
-            return;
-        }
-
-        if (id == R.id.camera_bottom){
-            // Check the permissions
-            if (PermissionChecker.checkSelfPermission(this, Manifest.permission.CAMERA)) {
-                if (PermissionChecker
-                        .checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) &&
-                        PermissionChecker
-                                .checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    startCamera();
-                } else {
-                    PermissionChecker.requestPermissions(this, new String[]{
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE}, PictureConfig.APPLY_CAMERA_STORAGE_PERMISSIONS_CODE);
-                }
-            } else {
-                PermissionChecker
-                        .requestPermissions(this,
-                                new String[]{Manifest.permission.CAMERA}, PictureConfig.APPLY_CAMERA_PERMISSIONS_CODE);
-            }
-            return;
-        }
-
-
 
         if (id == R.id.picture_id_preview) {
             onPreview();

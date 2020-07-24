@@ -139,9 +139,10 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
       Log.i(":flutter调用参数" ,"${call.arguments}")
 
       ///业务参数
+      var actionId: String? = call?.argument<String>("actionId")
       var title: String? = call?.argument<String>("title")
-      var type: String? = call?.argument<String>("input")
-      var guides: List<String>? = call?.argument<List<String>>("guides")
+      var inType: String? = call?.argument<String>("inType")
+      var guides: List<List<String>>? = call?.argument<List<List<String>>>("guides")
       var isMulti: Boolean? = call?.argument<Boolean>("isMulti")
       var multiCount: Int = call?.argument<Int>("multiCount")?:5
       var firstCamera: Boolean? = call?.argument<Boolean>("firstCamera")
@@ -151,7 +152,7 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
 
 
       ///文件类型
-      var picType = if ("video" == type) PictureMimeType.ofVideo() else PictureMimeType.ofImage()
+      var picType = if ("video" == inType) PictureMimeType.ofVideo() else PictureMimeType.ofImage()
 
       //相册
       var cameraOrAlbum = PictureSelector.create(con)
@@ -198,12 +199,12 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
               .cutOutQuality(90) // 裁剪输出质量 默认100
               .minimumCompressSize(100) // 小于多少kb的图片不压缩.setTask(title)
               ///业务相关
-              .setTask(title)
+              .setActionId(actionId)
+              .setPageTitle(title)
               .setGuidea(guides)
               .showBottomCamera(showBottomCamera == true)
               .showAlbum(showAlbum == true)
               .forResult(MyResultCallback(channel,result))
-    } else if("configure" == call.method){
     }else {
       result.notImplemented()
     }

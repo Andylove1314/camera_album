@@ -28,7 +28,7 @@ public class GuideView extends LinearLayout {
     }
 
     ///刷新数据
-    public void setArr(List<String> data) {
+    public void setArr(List<List<String>> data) {
         mViewPager
                 .setIndicatorStyle(IndicatorStyle.ROUND_RECT)
                 .setOrientation(ViewPager2.ORIENTATION_HORIZONTAL)

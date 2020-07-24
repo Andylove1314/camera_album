@@ -1401,16 +1401,27 @@ public class PictureSelectionModel {
      * @param title//业务相关
      * @return
      */
-    public PictureSelectionModel setTask(String title) {
+    public PictureSelectionModel setPageTitle(String title) {
        selectionConfig.title = title;
         return this;
     }
+
+
+    /**
+     * @param actionId//业务相关
+     * @return
+     */
+    public PictureSelectionModel setActionId(String actionId) {
+        selectionConfig.actionId = actionId;
+        return this;
+    }
+
 
     /**
      * @param guides//业务相关
      * @return
      */
-    public PictureSelectionModel setGuidea(List<String> guides) {
+    public PictureSelectionModel setGuidea(List<List<String>> guides) {
         selectionConfig.guides = guides;
         return this;
     }

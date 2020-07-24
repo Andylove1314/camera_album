@@ -10,7 +10,9 @@ import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.zhpan.bannerview.BaseViewHolder;
 
-public class ImageHolder extends BaseViewHolder<String> {
+import java.util.List;
+
+public class ImageHolder extends BaseViewHolder<List<String>> {
     public ImageView imageView;
 
     public ImageHolder(@NonNull View view) {
@@ -19,7 +21,7 @@ public class ImageHolder extends BaseViewHolder<String> {
     }
 
     @Override
-    public void bindData(String data, int position, int pageSize) {
+    public void bindData(List<String> data, int position, int pageSize) {
 
     }
 }
