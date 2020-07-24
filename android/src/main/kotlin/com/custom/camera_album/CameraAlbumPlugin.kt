@@ -39,7 +39,11 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
 
   private val methodOpenAlbum = "openAlbum"
 
-  private var con: Activity? = null
+  private lateinit var con:Activity
+  fun setActivity(context: Activity) {
+    con = context
+  }
+
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     channel = MethodChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), "flutter/camera_album")
@@ -62,8 +66,12 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
   companion object {
     @JvmStatic
     fun registerWith(registrar: Registrar) {
-      val channel = MethodChannel(registrar.messenger(), "flutter/camera_album")
-      channel.setMethodCallHandler(CameraAlbumPlugin())
+      var plugin = CameraAlbumPlugin()
+      plugin.channel = MethodChannel(registrar.messenger(), "flutter/camera_album")
+      plugin.con = registrar.activity()
+      //method chanel
+      plugin.channel.setMethodCallHandler(plugin)
+
     }
   }
 
@@ -119,7 +127,7 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
     mPictureParameterStyle.pictureExternalPreviewDeleteStyle = R.drawable.picture_icon_black_delete
     // 外部预览界面是否显示删除按钮
     mPictureParameterStyle.pictureExternalPreviewGonePreviewDelete = true
-     return mPictureParameterStyle
+    return mPictureParameterStyle
   }
 
 
@@ -140,7 +148,7 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
       var showBottomCamera: Boolean? = call?.argument<Boolean>("showBottomCamera")
       var showGridCamera: Boolean? = call?.argument<Boolean>("showGridCamera")
       var showAlbum: Boolean? = call?.argument<Boolean>("showAlbum")
-      
+
 
       ///文件类型
       var picType = if ("video" == type) PictureMimeType.ofVideo() else PictureMimeType.ofImage()
