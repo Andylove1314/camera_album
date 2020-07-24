@@ -73,25 +73,21 @@ class _RequestImageState extends State<RequestImage> {
       mediaType: widget.mediaType,
       identifier: widget.identifier,
       onDone: (file) {
-        setState(
-          () {
-            _file = file;
-            if (widget.mediaType == MediaType.video) {
-              _controller = VideoPlayerController.file(file);
-              _controller.initialize().then((value) {
-                _controller.play();
-                setState(() {});
-              });
-            } else {
-              setState(() {});
-            }
-          },
-        );
+        _file = file;
+        if (widget.mediaType == MediaType.video) {
+          _controller = VideoPlayerController.file(file);
+          _controller.initialize().then((value) {
+            _controller.play();
+            setState(() {});
+          });
+        } else {
+          setState(() {});
+        }
       },
       child: Builder(
         builder: (BuildContext context) {
           if (_file == null) {
-            return CupertinoActivityIndicator();
+            return CupertinoActivityIndicator(radius: 200,);
           } else {
             if (widget.mediaType == MediaType.video) {
               return Container(

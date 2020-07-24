@@ -68,10 +68,11 @@ class UIKitRequestImage extends StatefulWidget {
 class _UIKitRequestImageState extends State<UIKitRequestImage> {
   @override
   void initState() {
-    CameraAlbum.requestImageFile(identifier: widget.identifier).then((value) {
-      widget.onDone(File(value));
-    });
-    if (widget.mediaType == MediaType.video) {
+    if (widget.mediaType == MediaType.image) {
+      CameraAlbum.requestImageFile(identifier: widget.identifier).then((value) {
+        widget.onDone(File(value));
+      });
+    } else if (widget.mediaType == MediaType.video) {
       CameraAlbum.requestVideoFile(identifier: widget.identifier).then((value) {
         widget.onDone(File(value));
       });
