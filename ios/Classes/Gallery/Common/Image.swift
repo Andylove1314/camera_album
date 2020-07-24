@@ -11,6 +11,16 @@ public class Image: Equatable {
   init(asset: PHAsset) {
     self.asset = asset
   }
+    
+   static func initWith(identifier: String) -> Image? {
+       let fetchResult = PHAsset.fetchAssets(withLocalIdentifiers: [identifier], options: nil)
+       let asset = fetchResult.firstObject
+       if let asset = asset {
+           return Image(asset: asset)
+       }
+       return nil
+   }
+    
 }
 
 // MARK: - UIImage
@@ -39,6 +49,43 @@ extension Image {
         completion(image, info)
     }
   }
+
+    /// Resolve mageData synchronously
+    ///
+    /// - Parameter size: The target size
+    /// - Returns: The resolved Data, otherwise nil
+    public func resolveImageData(completion: @escaping (Data?, [AnyHashable : Any]?) -> Void) {
+      let options = PHImageRequestOptions()
+      options.isNetworkAccessAllowed = true
+      options.isSynchronous = true
+        options.resizeMode = .fast
+        PHImageManager.default().requestImageData(for: asset, options: options) { (imageData, dataUTI, orientation, info) in
+            // TODO: - iOS 11 HEIF/HEIC图片转JPG
+            // https://www.jianshu.com/p/a63c7d5d98a9
+            if let imageData = imageData {
+                if imageData.imageFormat == .HEIC || imageData.imageFormat == .HEIF {
+                    if let ciImage = CIImage(data: imageData) {
+                        let context = CIContext()
+                        if let colorSpace = ciImage.colorSpace {
+                            if #available(iOS 10.0, *) {
+                                let data = context.jpegRepresentation(of: ciImage, colorSpace: colorSpace)
+                                completion(data, info)
+                            } else {
+                                /*heic文件是目前苹果公司专门制作出来的一种图片格式们目前只适合苹果用户专用，和我们熟知的JPEG、PNG等同类，HEIC是一种图像格式，由苹果公司在近几年推出，iOS11、MacOS High Sierra（10.13）以及更新的版本支持该图片格式。并不是所有的iOS设备都默认支持HEIC图像格式，只有使用A9芯片及以上的设备才可以，比如搭载最新的A11仿生的芯片的iPhone X、iPhone8、iPhone8 Plus会默认使用HEIC图像格式。
+
+                                作者：规规这小子真帅
+                                链接：https://www.zhihu.com/question/266966789/answer/356730794
+                                来源：知乎
+                                著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。*/
+                            }
+                        }
+                    }
+                } else {
+                    completion(imageData, info)
+                }
+            }
+        }
+    }
 
   /// Resolve an array of Image
   ///

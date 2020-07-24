@@ -29,21 +29,26 @@ class GalleryImageView: UIView {
         
         arrowButton = ArrowButton()
         addSubview(arrowButton)
+        
+        arrowButton.g_pin(on: .top)
         arrowButton.g_pin(on: .centerX)
         arrowButton.g_pin(height: 40)
-        
         arrowButton.addTarget(self, action: #selector(arrowButtonTouched(_:)), for: .touchUpInside)
         
         let layout = UICollectionViewFlowLayout()
         layout.minimumInteritemSpacing = cellSpacing
         layout.minimumLineSpacing = cellSpacing
         
-        collectionView = UICollectionView(frame: CGRect(x: 0, y: 50, width: frame.width, height: frame.height), collectionViewLayout: layout)
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = UIColor.white
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(GalleryImageCell.self, forCellWithReuseIdentifier: String(describing: GalleryImageCell.self))
         addSubview(collectionView)
+        collectionView.g_pin(on: .top, constant: 40)
+        collectionView.g_pin(on: .left)
+        collectionView.g_pin(on:.right)
+        collectionView.g_pin(on: .bottom)
         
         library.reload {
             if let album = self.library.albums.first {
@@ -121,12 +126,12 @@ extension GalleryImageView: UICollectionViewDataSource, UICollectionViewDelegate
     let item = items[(indexPath as NSIndexPath).item]
     
     if imageLimit == 1 {
-        item.resolve { (image, info) in
-            guard let image = image?.jpegData(compressionQuality: 0.5), let info = info else { return }
-            print(info)
-            let file = (info["PHImageFileSandboxExtensionTokenKey"] as? NSString)?.components(separatedBy: ";").last ?? ""
-            SwiftCameraAlbumPlugin.channel.invokeMethod("onMessage", arguments: ["identifier": [item.asset.burstIdentifier ?? ""], "image": [image], "paths": [file]])
-        }
+//        item.resolve { (image, info) in
+//            guard let info = info else { return }
+//            print(info)
+//            let file = (info["PHImageFileSandboxExtensionTokenKey"] as? NSString)?.components(separatedBy: ";").last ?? ""
+            SwiftCameraAlbumPlugin.channel.invokeMethod("onMessage", arguments: ["identifier": [item.asset.localIdentifier], /*"paths": [file]]*/])
+//        }
     } else if images.contains(item) {
       guard let index = images.firstIndex(of: item) else { return }
       images.remove(at: index)
