@@ -39,6 +39,12 @@ class CameraAlbum {
   }
 
   static Future requestImage({@required identifier}) {
-    return _channel.invokeMethod("requestImageData", {"identifier": identifier});
+    return _channel
+        .invokeMethod("requestImageData", {"identifier": identifier});
+  }
+
+  static Future requestVideoFile({@required identifier}) {
+    return _channel
+        .invokeMethod("requestVideoFile", {"identifier": identifier});
   }
 }

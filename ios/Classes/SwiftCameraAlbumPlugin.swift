@@ -28,6 +28,27 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
                 }
             }
         }
+    case "requestVideoFile":
+        let params = call.arguments as! NSDictionary
+        let identifier = params["identifier"] as! String
+        if let video = Video.initWith(identifier: identifier) {
+            // https://blog.csdn.net/qq_22157341/article/details/80758683
+            if let assetResource = PHAssetResource.assetResources(for: video.asset).first {
+            let fileName = assetResource.originalFilename;
+                let path = NSTemporaryDirectory() + "temp." + (fileName.components(separatedBy: ".").last ?? "")
+                try? FileManager.default.removeItem(atPath: path)
+            
+            let options = PHAssetResourceRequestOptions()
+                options.isNetworkAccessAllowed = true;
+            PHAssetResourceManager.default().writeData(for: assetResource, toFile: URL(fileURLWithPath: path), options: options) { (error) in
+                if let error = error {
+                    print(error);
+                } else {
+                    result(path)
+                }
+            }
+            }
+        }
     default: break
     }
   }

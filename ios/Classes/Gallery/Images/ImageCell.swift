@@ -30,7 +30,7 @@ extension UIImageView {
   }
 }
 
-class GalleryImageCell: UICollectionViewCell {
+class ImageCell: UICollectionViewCell {
 
     lazy var imageView: UIImageView = {
         let imageView = UIImageView()
@@ -39,7 +39,6 @@ class GalleryImageCell: UICollectionViewCell {
         return imageView
     }()
 
-    
     override init(frame: CGRect) {
       super.init(frame: frame)
       
@@ -51,7 +50,11 @@ class GalleryImageCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
- 
+    func configure(_ asset: PHAsset) {
+        imageView.layoutIfNeeded()
+        imageView.g_loadImage(asset)
+    }
+
     func configure(_ image: Image) {
         imageView.layoutIfNeeded()
         imageView.g_loadImage(image.asset)

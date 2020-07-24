@@ -13,9 +13,7 @@ public class Image: Equatable {
   }
     
    static func initWith(identifier: String) -> Image? {
-       let fetchResult = PHAsset.fetchAssets(withLocalIdentifiers: [identifier], options: nil)
-       let asset = fetchResult.firstObject
-       if let asset = asset {
+    if let asset = Utils.phAssetWith(identifier: identifier) {
            return Image(asset: asset)
        }
        return nil

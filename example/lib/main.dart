@@ -61,15 +61,16 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
+    return Column(
       children: <Widget>[
         IconButton(
-            icon: Icon(Icons.add),
+            icon: Icon(Icons.photo_library),
             onPressed: () async {
               if (Platform.isIOS) {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return PhotoPicker();
+                  return PhotoPicker(
+                    mediaType: MediaType.image,
+                  );
                 }));
               } else {
                 CameraAlbum.openAlbum({
@@ -89,6 +90,41 @@ class _HomeState extends State<Home> {
                 }, callback: (backs) {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return NewPage(
+                      MediaType.image,
+                      backs['paths'],
+                    );
+                  }));
+                });
+              }
+            }),
+        IconButton(
+            icon: Icon(Icons.video_library),
+            onPressed: () async {
+              if (Platform.isIOS) {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return PhotoPicker(
+                    mediaType: MediaType.video,
+                  );
+                }));
+              } else {
+                CameraAlbum.openAlbum({
+                  'title': 'Paint video',
+                  'input': 'video',
+                  'firstCamera': false,
+                  'showBottomCamera': true,
+                  'showGridCamera': true,
+                  'showAlbum': true,
+                  'isMulti': true,
+                  'multiCount': 5,
+                  'guides': [
+                    'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/VHByy0e26624d87a5a1156eea6711d5125858.jpg',
+                    'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/Vt8Rtc3d879d7ce5278fb0655ab0d90503d86.jpg',
+                    'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/djwxl6cc4e8157b1bc1d90dd1a34268572d1a.jpg'
+                  ]
+                }, callback: (backs) {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return NewPage(
+                      MediaType.video,
                       backs['paths'],
                     );
                   }));
@@ -101,10 +137,14 @@ class _HomeState extends State<Home> {
 }
 
 class PhotoPicker extends StatelessWidget {
+  final MediaType mediaType;
+
+  const PhotoPicker({Key key, @required this.mediaType}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("照片选择")),
+      appBar: AppBar(title: Text(" $mediaType")),
       body: Column(
         children: <Widget>[
           Expanded(
@@ -112,10 +152,12 @@ class PhotoPicker extends StatelessWidget {
               alignment: Alignment.center,
               children: <Widget>[
                 UIKitAlbum(
+                  mediaType: mediaType,
                   callback: (info) {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
                       return NewPage(
+                        mediaType,
                         info['identifier'],
                       );
                     }));
@@ -125,7 +167,7 @@ class PhotoPicker extends StatelessWidget {
             ),
           ),
           FlatButton(
-            child: Text("拍照"),
+            child: Text("flutter widget 拍摄"),
             onPressed: () {},
           ),
         ],

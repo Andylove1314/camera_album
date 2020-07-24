@@ -1,5 +1,6 @@
 import Foundation
 import Flutter
+import Photos
 
 class PlatformTextViewFactory: NSObject, FlutterPlatformViewFactory {
     
@@ -15,18 +16,20 @@ class PlatformTextViewFactory: NSObject, FlutterPlatformViewFactory {
 class PlatformTextView: NSObject,FlutterPlatformView {
     let frame: CGRect
     let viewId: Int64
-    var text: String = ""
+    var mediaType: PHAssetMediaType = .unknown
 
     init(_ frame: CGRect, viewID: Int64, args: Any?) {
         self.frame = frame
         self.viewId = viewID
         if (args is NSDictionary) {
             let dict = args as! NSDictionary
-            self.text = dict.value(forKey: "text") as! String
+            if let mediaType = dict.value(forKey: "mediaType") as? Int {
+                self.mediaType = PHAssetMediaType(rawValue: mediaType)!
+            }
         }
     }
     
     func view() -> UIView {
-        return GalleryImageView(frame: UIScreen.main.bounds)
+        return GalleryView(frame: UIScreen.main.bounds, mediaType: mediaType)
     }
 }
