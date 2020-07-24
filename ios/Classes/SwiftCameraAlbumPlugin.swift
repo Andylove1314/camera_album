@@ -18,13 +18,20 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
     switch call.method {
-    case "requestImageData":
+    case "requestImageFile":
         let params = call.arguments as! NSDictionary
         let identifier = params["identifier"] as! String
         if let image = Image.initWith(identifier: identifier) {
         image.resolveImageData { (imageData, info) in
-            if let imageData = imageData {
-                    result(imageData)
+            if let imageData = imageData, let info = info, let fileName = info["PHImageFileUTIKey"] as? String {
+                var path = NSTemporaryDirectory() + UUID().uuidString + "." + (fileName.components(separatedBy: ".").last ?? "")
+                if path.components(separatedBy: ".").last == "heic" {
+                    path = (path.components(separatedBy: ".").first ?? "") + ".jpeg"
+                }
+                
+                try? FileManager.default.removeItem(atPath: path)
+                try? imageData.write(to: URL(fileURLWithPath: path), options: .atomic)
+                result(path)
                 }
             }
         }
@@ -34,7 +41,7 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
         if let video = Video.initWith(identifier: identifier) {
             // https://blog.csdn.net/qq_22157341/article/details/80758683
             if let assetResource = PHAssetResource.assetResources(for: video.asset).first {
-            let fileName = assetResource.originalFilename;
+            let fileName = assetResource.originalFilename
                 let path = NSTemporaryDirectory() + "temp." + (fileName.components(separatedBy: ".").last ?? "")
                 try? FileManager.default.removeItem(atPath: path)
             

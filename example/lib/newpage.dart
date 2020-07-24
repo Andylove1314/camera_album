@@ -21,7 +21,6 @@ class _NewPagePageState extends State<NewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(),
-        backgroundColor: Colors.red,
         body: Container(
           child: SingleChildScrollView(
             child: Column(
@@ -64,7 +63,7 @@ class _RequestImageState extends State<RequestImage> {
 
   @override
   void initState() {
-    CameraAlbum.requestImage(identifier: widget.identifier).then((value) {
+    CameraAlbum.requestImageFile(identifier: widget.identifier).then((value) {
       setState(() {
         _image = value;
       });
@@ -74,10 +73,8 @@ class _RequestImageState extends State<RequestImage> {
         File file = File(value);
         _controller = VideoPlayerController.file(file);
         _controller.initialize().then((value) {
-           _controller.play();
-           setState(() {
-
-           });
+          _controller.play();
+          setState(() {});
         });
       });
     }
@@ -87,7 +84,7 @@ class _RequestImageState extends State<RequestImage> {
   @override
   void dispose() {
     super.dispose();
-    _controller.dispose();
+    _controller?.dispose();
   }
 
   @override
@@ -98,13 +95,13 @@ class _RequestImageState extends State<RequestImage> {
       if (widget.mediaType == MediaType.video) {
         return Container(
           color: Colors.black,
-          child: AspectRatio(
+          child: (_controller == null || !_controller.value.initialized) ? Text("initialized...") : AspectRatio(
             aspectRatio: _controller.value.aspectRatio,
             child: VideoPlayer(_controller),
           ),
         );
       } else {
-        return Image.memory(_image);
+        return Image.file(File(_image));
       }
     }
   }

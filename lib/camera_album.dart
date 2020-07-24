@@ -38,9 +38,9 @@ class CameraAlbum {
     return _channel.invokeMethod('openAlbum', business);
   }
 
-  static Future requestImage({@required identifier}) {
+  static Future requestImageFile({@required identifier}) {
     return _channel
-        .invokeMethod("requestImageData", {"identifier": identifier});
+        .invokeMethod("requestImageFile", {"identifier": identifier});
   }
 
   static Future requestVideoFile({@required identifier}) {
