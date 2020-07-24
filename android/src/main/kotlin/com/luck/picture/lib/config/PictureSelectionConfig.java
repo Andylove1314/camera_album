@@ -163,7 +163,7 @@ public final class PictureSelectionConfig implements Parcelable {
      * task业务专用
      */
     public String title;
-    public List<String> guides;
+    public List<List<String>> guides;
     public boolean showBottomCamera = true;
     public boolean showAlbum = true;
 

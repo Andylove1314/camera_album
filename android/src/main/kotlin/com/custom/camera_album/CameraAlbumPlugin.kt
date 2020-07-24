@@ -141,7 +141,7 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
       ///业务参数
       var title: String? = call?.argument<String>("title")
       var type: String? = call?.argument<String>("input")
-      var guides: List<String>? = call?.argument<List<String>>("guides")
+      var guides: List<List<String>>? = call?.argument<List<List<String>>>("guides")
       var isMulti: Boolean? = call?.argument<Boolean>("isMulti")
       var multiCount: Int = call?.argument<Int>("multiCount")?:5
       var firstCamera: Boolean? = call?.argument<Boolean>("firstCamera")

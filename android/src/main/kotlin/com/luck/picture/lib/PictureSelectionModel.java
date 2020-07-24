@@ -1410,7 +1410,7 @@ public class PictureSelectionModel {
      * @param guides//业务相关
      * @return
      */
-    public PictureSelectionModel setGuidea(List<String> guides) {
+    public PictureSelectionModel setGuidea(List<List<String>> guides) {
         selectionConfig.guides = guides;
         return this;
     }

@@ -6,11 +6,13 @@ import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.zhpan.bannerview.BaseBannerAdapter;
 
+import java.util.List;
+
 
 /**
  * 自定义布局，图片
  */
-public class ImageAdapter extends BaseBannerAdapter<String, ImageHolder> {
+public class ImageAdapter extends BaseBannerAdapter<List<String>, ImageHolder> {
 
     public ImageAdapter(Context context) {
         con = context;
@@ -19,8 +21,8 @@ public class ImageAdapter extends BaseBannerAdapter<String, ImageHolder> {
     private Context con;
 
     @Override
-    protected void onBind(ImageHolder holder, String data, int position, int pageSize) {
-        PictureSelectionConfig.imageEngine.loadImage(con,data,holder.imageView);
+    protected void onBind(ImageHolder holder,List<String>  data, int position, int pageSize) {
+        PictureSelectionConfig.imageEngine.loadImage(con,data.get(0),holder.imageView);
     }
 
     @Override
