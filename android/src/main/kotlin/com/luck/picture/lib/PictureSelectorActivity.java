@@ -161,7 +161,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         businesTitle = findViewById(R.id.business_title);
         businesTitle.setText(config.title);
         taskGuideImage = findViewById(R.id.task_guide_tip_icon);
-        taskGuideImage.setOnClickListener(this);
+        if (config.guides != null && !config.guides.isEmpty()){
+            taskGuideImage.setVisibility(View.VISIBLE);
+            taskGuideImage.setOnClickListener(this);
+        }
         guideViewid = findViewById(R.id.guide_view_id);
         mIvPictureLeftBack = findViewById(R.id.pictureLeftBack);
         mTvPictureTitle = findViewById(R.id.picture_title);
@@ -196,7 +199,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         }
         mTvPicturePreview.setVisibility(config.chooseMode != PictureMimeType.ofAudio() && config.enablePreview ? View.VISIBLE : View.GONE);
         mBottomLayout.setVisibility((config.selectionMode == PictureConfig.SINGLE
-                && config.isSingleDirectReturn) || config.showBottomCamera ? View.GONE : View.VISIBLE);
+                && config.isSingleDirectReturn)? View.GONE : View.VISIBLE);
         mIvPictureLeftBack.setOnClickListener(this);
         mTvPictureOk.setOnClickListener(this);
         mTvPictureImgNum.setOnClickListener(this);
