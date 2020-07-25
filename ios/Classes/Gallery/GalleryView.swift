@@ -26,7 +26,6 @@ class GalleryView: UIView {
     
     /// 所有视频
     var videoItems: [Video] = []
-    var videoLibrary: VideosLibrary?
     
     /// 最多选择限制
     var limit: Int = 1
@@ -96,23 +95,23 @@ class GalleryView: UIView {
           return
         }
         
-        if self?.mediaType == .image {
-            self?.imageLibrary = ImagesLibrary()
+        if let mediaType = self?.mediaType {
+            if mediaType == .video {
+                // TODO: - 暂时展示所有视频
+                let fetchResults = PHAsset.fetchAssets(with: .video, options: Utils.fetchOptions())
+                fetchResults.enumerateObjects({ (asset, _, _) in
+                  self?.videoItems.append(Video(asset: asset))
+                })
+                return
+            }
+            self?.imageLibrary = ImagesLibrary(mediaType: mediaType)
             self?.imageLibrary?.reload {
                 if let album = self?.imageLibrary?.albums.first {
                     self?.selectedAlbum = album
                     self?.show(album: album)
                 }
             }
-        } else if self?.mediaType == .video {
-            self?.videoLibrary = VideosLibrary()
-            self?.videoLibrary?.reload {
-                self?.videoItems = self?.videoLibrary?.items ?? []
-                self?.collectionView.reloadData()
-                self?.collectionView.g_scrollToTop()
-            }
         }
-        
       }
     }
 
@@ -130,7 +129,12 @@ class GalleryView: UIView {
 
     func show(album: Album) {
       arrowButton.updateText(album.collection.localizedTitle ?? "")
-      imageItems = album.items
+        if mediaType == .image {
+            imageItems = album.items
+        } else if mediaType == .video {
+            videoItems = album.videoItems
+        }
+        
       collectionView.reloadData()
       collectionView.g_scrollToTop()
     }
