@@ -4,13 +4,15 @@ import Photos
 class Album {
 
     let collection: PHAssetCollection
+    let mediaType: PHAssetMediaType
     var items: [Image] = []
     var videoItems: [Video] = []
 
     // MARK: - Initialization
 
-    init(collection: PHAssetCollection) {
+    init(collection: PHAssetCollection, mediaType: PHAssetMediaType) {
         self.collection = collection
+        self.mediaType = mediaType
     }
 
     func reload() {

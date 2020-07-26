@@ -37,28 +37,24 @@ class ImagesLibrary {
 
   fileprivate func reloadSync() {
     let types: [PHAssetCollectionType] = [.smartAlbum, .album]
-    let videoTypes: [PHAssetCollectionSubtype] = [.smartAlbumVideos]
-
-    if mediaType == .video {
-//        let options = PHFetchOptions()
-//        options.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.video.rawValue)
-        albumsFetchResults = videoTypes.map {
-            return PHAssetCollection.fetchAssetCollections(with: .album, subtype: $0, options: nil)
-        }
-    } else {
-        albumsFetchResults = types.map {
-          return PHAssetCollection.fetchAssetCollections(with: $0, subtype: .any, options: nil)
-        }
+    albumsFetchResults = types.map {
+        return PHAssetCollection.fetchAssetCollections(with: $0, subtype: .any, options: nil)
     }
     albums = []
 
     for result in albumsFetchResults {
       result.enumerateObjects({ (collection, _, _) in
-        let album = Album(collection: collection)
+        let album = Album(collection: collection, mediaType: self.mediaType)
         album.reload()
 
-        if !album.items.isEmpty {
-          self.albums.append(album)
+        if self.mediaType == .image {
+            if !album.items.isEmpty {
+              self.albums.append(album)
+            }
+        } else if self.mediaType == .video {
+            if !album.videoItems.isEmpty {
+                self.albums.append(album)
+            }
         }
       })
     }

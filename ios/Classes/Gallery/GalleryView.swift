@@ -96,14 +96,14 @@ class GalleryView: UIView {
         }
         
         if let mediaType = self?.mediaType {
-            if mediaType == .video {
-                // TODO: - 暂时展示所有视频
-                let fetchResults = PHAsset.fetchAssets(with: .video, options: Utils.fetchOptions())
-                fetchResults.enumerateObjects({ (asset, _, _) in
-                  self?.videoItems.append(Video(asset: asset))
-                })
-                return
-            }
+//            if mediaType == .video {
+//                // TODO: - 暂时展示所有视频
+//                let fetchResults = PHAsset.fetchAssets(with: .video, options: Utils.fetchOptions())
+//                fetchResults.enumerateObjects({ (asset, _, _) in
+//                  self?.videoItems.append(Video(asset: asset))
+//                })
+//                return
+//            }
             self?.imageLibrary = ImagesLibrary(mediaType: mediaType)
             self?.imageLibrary?.reload {
                 if let album = self?.imageLibrary?.albums.first {
