@@ -204,7 +204,7 @@ extension GalleryView: UICollectionViewDataSource, UICollectionViewDelegateFlowL
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     if mediaType == .video {
         let item = videoItems[(indexPath as NSIndexPath).item]
-        SwiftCameraAlbumPlugin.channel.invokeMethod("onMessage", arguments: ["identifier": [item.asset.localIdentifier], /*"paths": [file]]*/])
+        SwiftCameraAlbumPlugin.channel.invokeMethod("onMessage", arguments: ["identifier": [item.asset.localIdentifier], "duration": [item.asset.duration], /*"paths": [file]]*/])
     } else {
         let item = imageItems[(indexPath as NSIndexPath).item]
         if limit == 1 {
