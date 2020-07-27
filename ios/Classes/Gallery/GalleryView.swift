@@ -66,7 +66,7 @@ class GalleryView: UIView {
         collectionView.register(VideoCell.self, forCellWithReuseIdentifier: String(describing: VideoCell.self))
         
         addSubview(collectionView)
-        collectionView.g_pin(on: .top, constant: 40)
+        collectionView.g_pin(on: .top, constant: 45)
         collectionView.g_pin(on: .left)
         collectionView.g_pin(on:.right)
         collectionView.g_pin(on: .bottom)
@@ -117,11 +117,13 @@ class GalleryView: UIView {
 
     @objc func arrowButtonTouched(_ button: ArrowButton) {
         let dropdownView = DropdownView()
-        dropdownView.top = 120//arrowButton.frame.maxY
+        dropdownView.top = 45 + 100
+        
         dropdownView.albums = self.imageLibrary?.albums ?? []
         dropdownView.tableView.reloadData()
         (UIApplication.shared.delegate as! FlutterAppDelegate).window.addSubview(dropdownView)
         dropdownView.delegate = self
+        dropdownView.g_pinEdges()
 
       dropdownView.show()
       button.toggle(true)

@@ -9,6 +9,7 @@ class DropdownView: UIView {
 
     lazy var tableView: UITableView = self.makeTableView()
  
+    let bottomBackground = UIView()
     var blackOverlayColor = UIColor(white: 0, alpha: 0.6)
     var dismissOnBlackOverlayTap = true
     var selectedIndex: Int = 0
@@ -40,12 +41,20 @@ class DropdownView: UIView {
     backgroundColor = .clear
     tableView.backgroundColor = UIColor.white
     
+    let bottom = UIScreen.main.bounds.height * 0.3
+    
     addSubview(tableView)
     tableView.register(AlbumCell.self, forCellReuseIdentifier: String(describing: AlbumCell.self))
 
     tableView.g_pin(on: .left)
     tableView.g_pin(on: .width)
-    tableView.g_pin(on: .bottom, constant: -100)
+    tableView.g_pin(on: .bottom, constant: -bottom)
+    
+    addSubview(bottomBackground)
+    bottomBackground.g_pin(height: bottom)
+    bottomBackground.g_pin(on: .left)
+    bottomBackground.g_pin(on:.right)
+    bottomBackground.g_pin(on: .bottom)
     
     let tapGestureRecognizer = UITapGestureRecognizer()
     tapGestureRecognizer.delegate = self
@@ -57,14 +66,14 @@ class DropdownView: UIView {
 
     func show() {
       UIView.animate(withDuration: 0.25, animations: { [weak self] in
-          self?.backgroundColor = self?.blackOverlayColor
+        self?.bottomBackground.backgroundColor = self?.blackOverlayColor
           self?.tableView.g_pin(on: .top, constant: self?.top ?? 0)
       })
     }
 
     @objc func dismiss() {
         UIView.animate(withDuration: 0.25, animations: { [weak self] in
-            self?.backgroundColor = .clear
+            self?.bottomBackground.backgroundColor = .clear
             self?.alpha = 0
         }) { [weak self] (completion) in
             if completion {
