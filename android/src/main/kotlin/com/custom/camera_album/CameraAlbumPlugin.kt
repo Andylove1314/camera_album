@@ -166,7 +166,6 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
       }
       cameraOrAlbum
               .imageEngine(GlideEngine.createGlideEngine()) // 外部传入图片加载引擎，必传项
-              .loadCacheResourcesCallback(GlideCacheEngine.createCacheEngine())// 获取图片资源缓存，主要是解决华为10部分机型在拷贝文件过多时会出现卡的问题，这里可以判断只在会出现一直转圈问题机型上使用
               .isWeChatStyle(false) // 是否开启微信图片选择风格
               .isUseCustomCamera(customCamera == true) // 是否使用自定义相机
               .setLanguage(LanguageConfig.ENGLISH) // 设置语言，默认中文
@@ -229,7 +228,7 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
         var path = if (SdkVersionUtils.checkedAndroid_Q()) media.androidQToPath else media.path
         Log.i("所选文件路径", "原图:$path")
         paths.add(path)
-        var dur = media.duration
+        var dur = media.duration/1000
         Log.i("所选文件时长", "$dur")
         durs.add(dur)
       }
