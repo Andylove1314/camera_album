@@ -6,7 +6,7 @@ class ArrowButton: UIButton {
   lazy var arrow: UIImageView = self.makeArrow()
 
   let padding: CGFloat = 20
-  let arrowSize: CGFloat = 8
+  let arrowSize: CGFloat = 11
 
   // MARK: - Initialization
 
@@ -31,7 +31,7 @@ class ArrowButton: UIButton {
 
     label.center = CGPoint(x: bounds.size.width / 2 - 5, y: bounds.size.height / 2)
 
-    arrow.frame.size = CGSize(width: arrowSize, height: arrowSize)
+    arrow.frame.size = CGSize(width: 11, height: 6)
     arrow.center = CGPoint(x: label.frame.maxX + padding / 2, y: bounds.size.height / 2)
   }
 
@@ -64,8 +64,8 @@ class ArrowButton: UIButton {
 
   private func makeLabel() -> UILabel {
     let label = UILabel()
-    label.textColor = UIColor(red: 110/255, green: 117/255, blue: 131/255, alpha: 1)
-    label.font = UIFont.systemFont(ofSize: 16)
+    label.textColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)
+    label.font = UIFont.systemFont(ofSize: 14)
     label.textAlignment = .center
 
     return label

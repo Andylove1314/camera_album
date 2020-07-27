@@ -4,30 +4,34 @@ import Photos
 class Album {
 
     let collection: PHAssetCollection
+    let mediaType: PHAssetMediaType
     var items: [Image] = []
+    var videoItems: [Video] = []
 
     // MARK: - Initialization
 
-    init(collection: PHAssetCollection) {
+    init(collection: PHAssetCollection, mediaType: PHAssetMediaType) {
         self.collection = collection
+        self.mediaType = mediaType
     }
 
-    func fetchOptions() -> PHFetchOptions {
-        let options = PHFetchOptions()
-        options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-        
-        return options
-    }
-    
     func reload() {
         items = []
         
-        let itemsFetchResult = PHAsset.fetchAssets(in: collection, options: fetchOptions())
+        let itemsFetchResult = PHAsset.fetchAssets(in: collection, options: Utils.fetchOptions(mediaType: mediaType))
         itemsFetchResult.enumerateObjects({ (asset, count, stop) in
             if asset.mediaType == .image {
                 self.items.append(Image(asset: asset))
+            } else if asset.mediaType == .video {
+                self.videoItems.append(Video(asset: asset))
             }
         })
+        
+        if mediaType == .image {
+            self.items.reverse()
+        } else if mediaType == .video {
+            self.videoItems.reverse()
+        }
     }
 }
 

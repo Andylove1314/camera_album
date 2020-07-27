@@ -14,13 +14,14 @@ extension Array {
 
 class ImagesLibrary {
 
+  var mediaType: PHAssetMediaType
   var albums: [Album] = []
   var albumsFetchResults = [PHFetchResult<PHAssetCollection>]()
 
   // MARK: - Initialization
 
-  init() {
-
+  init(mediaType: PHAssetMediaType) {
+     self.mediaType = mediaType
   }
 
   // MARK: - Logic
@@ -36,20 +37,24 @@ class ImagesLibrary {
 
   fileprivate func reloadSync() {
     let types: [PHAssetCollectionType] = [.smartAlbum, .album]
-
     albumsFetchResults = types.map {
-      return PHAssetCollection.fetchAssetCollections(with: $0, subtype: .any, options: nil)
+        return PHAssetCollection.fetchAssetCollections(with: $0, subtype: .any, options: nil)
     }
-
     albums = []
 
     for result in albumsFetchResults {
       result.enumerateObjects({ (collection, _, _) in
-        let album = Album(collection: collection)
+        let album = Album(collection: collection, mediaType: self.mediaType)
         album.reload()
 
-        if !album.items.isEmpty {
-          self.albums.append(album)
+        if self.mediaType == .image {
+            if !album.items.isEmpty {
+              self.albums.append(album)
+            }
+        } else if self.mediaType == .video {
+            if !album.videoItems.isEmpty {
+                self.albums.append(album)
+            }
         }
       })
     }

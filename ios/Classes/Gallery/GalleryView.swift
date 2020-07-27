@@ -26,7 +26,6 @@ class GalleryView: UIView {
     
     /// 所有视频
     var videoItems: [Video] = []
-    var videoLibrary: VideosLibrary?
     
     /// 最多选择限制
     var limit: Int = 1
@@ -67,7 +66,7 @@ class GalleryView: UIView {
         collectionView.register(VideoCell.self, forCellWithReuseIdentifier: String(describing: VideoCell.self))
         
         addSubview(collectionView)
-        collectionView.g_pin(on: .top, constant: 40)
+        collectionView.g_pin(on: .top, constant: 45)
         collectionView.g_pin(on: .left)
         collectionView.g_pin(on:.right)
         collectionView.g_pin(on: .bottom)
@@ -96,33 +95,35 @@ class GalleryView: UIView {
           return
         }
         
-        if self?.mediaType == .image {
-            self?.imageLibrary = ImagesLibrary()
+        if let mediaType = self?.mediaType {
+//            if mediaType == .video {
+//                // TODO: - 暂时展示所有视频
+//                let fetchResults = PHAsset.fetchAssets(with: .video, options: Utils.fetchOptions())
+//                fetchResults.enumerateObjects({ (asset, _, _) in
+//                  self?.videoItems.append(Video(asset: asset))
+//                })
+//                return
+//            }
+            self?.imageLibrary = ImagesLibrary(mediaType: mediaType)
             self?.imageLibrary?.reload {
                 if let album = self?.imageLibrary?.albums.first {
                     self?.selectedAlbum = album
                     self?.show(album: album)
                 }
             }
-        } else if self?.mediaType == .video {
-            self?.videoLibrary = VideosLibrary()
-            self?.videoLibrary?.reload {
-                self?.videoItems = self?.videoLibrary?.items ?? []
-                self?.collectionView.reloadData()
-                self?.collectionView.g_scrollToTop()
-            }
         }
-        
       }
     }
 
     @objc func arrowButtonTouched(_ button: ArrowButton) {
         let dropdownView = DropdownView()
-        dropdownView.top = 120//arrowButton.frame.maxY
+        dropdownView.top = 45 + 100
+        
         dropdownView.albums = self.imageLibrary?.albums ?? []
         dropdownView.tableView.reloadData()
         (UIApplication.shared.delegate as! FlutterAppDelegate).window.addSubview(dropdownView)
         dropdownView.delegate = self
+        dropdownView.g_pinEdges()
 
       dropdownView.show()
       button.toggle(true)
@@ -130,7 +131,12 @@ class GalleryView: UIView {
 
     func show(album: Album) {
       arrowButton.updateText(album.collection.localizedTitle ?? "")
-      imageItems = album.items
+        if mediaType == .image {
+            imageItems = album.items
+        } else if mediaType == .video {
+            videoItems = album.videoItems
+        }
+        
       collectionView.reloadData()
       collectionView.g_scrollToTop()
     }

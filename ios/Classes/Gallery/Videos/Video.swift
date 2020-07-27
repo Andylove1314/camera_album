@@ -2,26 +2,11 @@ import UIKit
 import Photos
 
 /// Wrap a PHAsset for video
-public class Video: Equatable {
-
-  public let asset: PHAsset
+public class Video: Image {
 
   var durationRequestID: Int = 0
   var duration: Double = 0
 
-  // MARK: - Initialization
-
-  init(asset: PHAsset) {
-    self.asset = asset
-  }
-
-    static func initWith(identifier: String) -> Video? {
-        if let asset = Utils.phAssetWith(identifier: identifier) {
-            return Video(asset: asset)
-        }
-        return nil
-    }
-     
   /// Fetch video duration asynchronously
   ///
   /// - Parameter completion: Called when finish
