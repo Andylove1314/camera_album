@@ -2,7 +2,7 @@ import UIKit
 import Photos
 
 protocol DropdownViewDelegate: class {
-  func dropdownView(_ view: DropdownView, didSelect album: Album?)
+    func dropdownView(_ view: DropdownView, didSelect album: Album?, index: Int)
 }
 
 class DropdownView: UIView {
@@ -15,11 +15,7 @@ class DropdownView: UIView {
     var selectedIndex: Int = 0
     var top: CGFloat = 0
 
-  var albums: [Album] = [] {
-    didSet {
-      selectedIndex = 0
-    }
-  }
+  var albums: [Album] = []
 
   weak var delegate: DropdownViewDelegate?
 
@@ -81,7 +77,7 @@ class DropdownView: UIView {
                 guard let self = self else {
                     return
                 }
-                self.delegate?.dropdownView(self, didSelect: nil)
+                self.delegate?.dropdownView(self, didSelect: nil, index: self.selectedIndex)
             }
         }
     }
@@ -135,6 +131,7 @@ extension DropdownView: UITableViewDataSource, UITableViewDelegate {
 
     let album = albums[(indexPath as NSIndexPath).row]
     cell.configure(album)
+    cell.duiGouImageView.isHidden = selectedIndex != indexPath.row
     cell.backgroundColor = UIColor.clear
 
     return cell
@@ -147,9 +144,9 @@ extension DropdownView: UITableViewDataSource, UITableViewDelegate {
 
     let album = albums[(indexPath as NSIndexPath).row]
     dismiss()
-    delegate?.dropdownView(self, didSelect: album)
 
     selectedIndex = (indexPath as NSIndexPath).row
+    delegate?.dropdownView(self, didSelect: album, index: selectedIndex)
     tableView.reloadData()
   }
 }
