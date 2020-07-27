@@ -62,6 +62,43 @@ class _HomeState extends State<Home> {
     return Column(
       children: <Widget>[
         IconButton(
+            icon: Icon(Icons.photo),
+            onPressed: () async {
+              CameraAlbum.openAlbum({
+                'actionId': 'ssshshhshsh',
+                'title': 'Gallery',
+                'inType': 'image',
+                'firstCamera': false,
+                'showBottomCamera': true,
+                'showGridCamera': true,
+                'customCamera': true,
+                'showAlbum': true,
+                'isMulti': true,
+                'multiCount': 1,
+                'guides': [
+                  [
+                    'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/VHByy0e26624d87a5a1156eea6711d5125858.jpg',
+                    'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/VHByy0e26624d87a5a1156eea6711d5125858.jpg'
+                  ],
+                  [
+                    'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/Vt8Rtc3d879d7ce5278fb0655ab0d90503d86.jpg',
+                    'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/Vt8Rtc3d879d7ce5278fb0655ab0d90503d86.jpg'
+                  ],
+                  [
+                    'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/djwxl6cc4e8157b1bc1d90dd1a34268572d1a.jpg',
+                    'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/djwxl6cc4e8157b1bc1d90dd1a34268572d1a.jpg'
+                  ]
+                ]
+              }, context: context, callback: (backs) {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return NewPage(
+                    MediaType.image,
+                    backs['paths'],
+                  );
+                }));
+              });
+            }),
+        IconButton(
             icon: Icon(Icons.photo_library),
             onPressed: () async {
               CameraAlbum.openAlbum({

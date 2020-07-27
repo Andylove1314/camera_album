@@ -151,6 +151,7 @@ extension GalleryView: DropdownViewDelegate {
     func dropdownView(_ view: DropdownView, didSelect album: Album?, index: Int) {
     arrowButton.toggle(false)
     if let album = album {
+        selectedImages.removeAll()
         selectedAlbum = album
         selectedAlbumIndex = index
         show(album: album)
