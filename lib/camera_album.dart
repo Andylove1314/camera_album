@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:camera_album/ui_kit_album.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'album_picker.dart';
 export 'ui_kit_album.dart';
 
 class CameraAlbum {
@@ -17,7 +20,9 @@ class CameraAlbum {
 
   ///打开相册插件
   static Future<String> openAlbum(Map<String, dynamic> business,
-      {callback}) async {
+      {BuildContext context,
+      MediaType mediaType = MediaType.image,
+      callback}) async {
     ///回调监听
     _channel.setMethodCallHandler((MethodCall call) async {
       switch (call.method) {
@@ -32,6 +37,17 @@ class CameraAlbum {
     });
 
     if (Platform.isIOS) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return AlbumPicker(
+          title: business["title"],
+          mediaType: mediaType,
+          onSelected: (path) {
+            callback({
+              "paths": [path]
+            });
+          },
+        );
+      }));
       return "";
     }
 
