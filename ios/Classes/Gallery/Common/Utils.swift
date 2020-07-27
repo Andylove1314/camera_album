@@ -38,9 +38,11 @@ struct Utils {
     }
   }
 
-  static func fetchOptions() -> PHFetchOptions {
+    static func fetchOptions(mediaType: PHAssetMediaType) -> PHFetchOptions {
     let options = PHFetchOptions()
-    options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+//    options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+
+    options.predicate = NSPredicate(format: "mediaType = %d", mediaType.rawValue)
 
     return options
   }

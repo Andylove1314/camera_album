@@ -18,7 +18,7 @@ class Album {
     func reload() {
         items = []
         
-        let itemsFetchResult = PHAsset.fetchAssets(in: collection, options: Utils.fetchOptions())
+        let itemsFetchResult = PHAsset.fetchAssets(in: collection, options: Utils.fetchOptions(mediaType: mediaType))
         itemsFetchResult.enumerateObjects({ (asset, count, stop) in
             if asset.mediaType == .image {
                 self.items.append(Image(asset: asset))
@@ -26,6 +26,12 @@ class Album {
                 self.videoItems.append(Video(asset: asset))
             }
         })
+        
+        if mediaType == .image {
+            self.items.reverse()
+        } else if mediaType == .video {
+            self.videoItems.reverse()
+        }
     }
 }
 
