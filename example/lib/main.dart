@@ -80,6 +80,7 @@ class _HomeState extends State<Home> {
                   'firstCamera': false,
                   'showBottomCamera': true,
                   'showGridCamera': true,
+                  'customCamera':true,
                   'showAlbum': true,
                   'isMulti': true,
                   'multiCount': 5,
