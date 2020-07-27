@@ -17,6 +17,7 @@ class GalleryView: UIView {
     
     /// 已选相册
     var selectedAlbum: Album?
+    var selectedAlbumIndex: Int?
     
     var arrowButton: ArrowButton!
     
@@ -117,6 +118,7 @@ class GalleryView: UIView {
 
     @objc func arrowButtonTouched(_ button: ArrowButton) {
         let dropdownView = DropdownView()
+        dropdownView.selectedIndex = selectedAlbumIndex ?? 0
         dropdownView.top = 45 + 100
         
         dropdownView.albums = self.imageLibrary?.albums ?? []
@@ -144,10 +146,11 @@ class GalleryView: UIView {
 
 extension GalleryView: DropdownViewDelegate {
 
-  func dropdownView(_ view: DropdownView, didSelect album: Album?) {
+    func dropdownView(_ view: DropdownView, didSelect album: Album?, index: Int) {
     arrowButton.toggle(false)
     if let album = album {
         selectedAlbum = album
+        selectedAlbumIndex = index
         show(album: album)
     }
   }

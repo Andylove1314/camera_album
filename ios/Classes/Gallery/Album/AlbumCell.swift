@@ -5,6 +5,7 @@ class AlbumCell: UITableViewCell {
   lazy var albumImageView: UIImageView = self.makeAlbumImageView()
   lazy var albumTitleLabel: UILabel = self.makeAlbumTitleLabel()
   lazy var itemCountLabel: UILabel = self.makeItemCountLabel()
+  lazy var duiGouImageView: UIImageView = self.makeDuiGouCountImageView()
 
   // MARK: - Initialization
 
@@ -41,7 +42,7 @@ class AlbumCell: UITableViewCell {
   // MARK: - Setup
 
   func setup() {
-    [albumImageView, albumTitleLabel, itemCountLabel].forEach {
+    [albumImageView, albumTitleLabel, itemCountLabel, duiGouImageView].forEach {
         addSubview($0)
     }
 
@@ -56,6 +57,12 @@ class AlbumCell: UITableViewCell {
 
     itemCountLabel.g_pin(on: .left, view: albumImageView, on: .right, constant: 10)
     itemCountLabel.g_pin(on: .top, view: albumTitleLabel, on: .bottom, constant: 6)
+    
+    
+    duiGouImageView.g_pin(on: .right, constant: -15)
+    duiGouImageView.g_pin(on: .centerY)
+    duiGouImageView.g_pin(on: .width, view: duiGouImageView, constant: 18.5)
+
   }
 
   // MARK: - Controls
@@ -83,5 +90,12 @@ class AlbumCell: UITableViewCell {
     label.font = UIFont.systemFont(ofSize: 10)
 
     return label
+  }
+
+  private func makeDuiGouCountImageView() -> UIImageView {
+    let imageView = UIImageView()
+    imageView.image = GalleryBundle.image("gallery_green_duigou")
+
+    return imageView
   }
 }
