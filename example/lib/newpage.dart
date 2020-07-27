@@ -24,42 +24,52 @@ class _NewPagePageState extends State<NewPage> {
         body: Container(
           child: SingleChildScrollView(
             child: Column(
-              children: _getImages(),
+              children: widget.mediaType == MediaType.video
+                  ? _getVideos()
+                  : _getImages(),
             ),
           ),
         ));
   }
 
+  List<Widget> _getVideos() {
+    var images = List<Widget>();
+    widget?.paths?.forEach((path) {
+      images.add(VideoPlay(file: File(path)));
+    });
+    return images;
+  }
+
   List<Widget> _getImages() {
     var images = List<Widget>();
     widget?.paths?.forEach((path) {
-      images.add(Platform.isIOS
-          ? RequestImage(
-              mediaType: widget.mediaType,
-              identifier: path,
-            )
-          : Image.file(File(path)));
+      images.add(Image.file(File(path)));
     });
     return images;
   }
 }
 
-class RequestImage extends StatefulWidget {
-  final MediaType mediaType;
-  final String identifier;
+class VideoPlay extends StatefulWidget {
+  final File file;
 
-  const RequestImage(
-      {Key key, this.mediaType = MediaType.image, this.identifier})
-      : super(key: key);
+  const VideoPlay({Key key, this.file}) : super(key: key);
 
   @override
-  _RequestImageState createState() => _RequestImageState();
+  _VideoPlayState createState() => _VideoPlayState();
 }
 
-class _RequestImageState extends State<RequestImage> {
-  File _file;
-
+class _VideoPlayState extends State<VideoPlay> {
   VideoPlayerController _controller;
+
+  @override
+  void initState() {
+    _controller = VideoPlayerController.file(widget.file);
+    _controller.initialize().then((value) {
+      _controller.play();
+      setState(() {});
+    });
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -69,42 +79,14 @@ class _RequestImageState extends State<RequestImage> {
 
   @override
   Widget build(BuildContext context) {
-    return UIKitRequestImage(
-      mediaType: widget.mediaType,
-      identifier: widget.identifier,
-      onDone: (file) {
-        _file = file;
-        if (widget.mediaType == MediaType.video) {
-          _controller = VideoPlayerController.file(file);
-          _controller.initialize().then((value) {
-            _controller.play();
-            setState(() {});
-          });
-        } else {
-          setState(() {});
-        }
-      },
-      child: Builder(
-        builder: (BuildContext context) {
-          if (_file == null) {
-            return CupertinoActivityIndicator(radius: 200,);
-          } else {
-            if (widget.mediaType == MediaType.video) {
-              return Container(
-                color: Colors.black,
-                child: (_controller == null || !_controller.value.initialized)
-                    ? Text("initialized...")
-                    : AspectRatio(
-                        aspectRatio: _controller.value.aspectRatio,
-                        child: VideoPlayer(_controller),
-                      ),
-              );
-            } else {
-              return Image.file(_file);
-            }
-          }
-        },
-      ),
+    return Container(
+      color: Colors.black,
+      child: (_controller == null || !_controller.value.initialized)
+          ? Text("initialized...")
+          : AspectRatio(
+              aspectRatio: _controller.value.aspectRatio,
+              child: VideoPlayer(_controller),
+            ),
     );
   }
 }
