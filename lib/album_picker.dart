@@ -21,7 +21,15 @@ class _AlbumPickerState extends State<AlbumPicker> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(
+          widget.title,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.normal,
+            color: Color(0xFF333333),
+          ),
+          textAlign: TextAlign.center,
+        ),
       ),
       body: Container(
         margin: EdgeInsets.only(top: 5),
