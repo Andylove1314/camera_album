@@ -38,12 +38,21 @@ class ImageCell: UICollectionViewCell {
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
+    
+    lazy var checkImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = GalleryBundle.image("gallery_green_duigou")
+        return imageView
+    }()
 
     override init(frame: CGRect) {
       super.init(frame: frame)
       
         contentView.addSubview(imageView)
         imageView.frame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
+        contentView.addSubview(checkImageView)
+        checkImageView.g_pin(on: .top, constant: 10)
+        checkImageView.g_pin(on: .right, constant: -10)
     }
 
     required init?(coder aDecoder: NSCoder) {

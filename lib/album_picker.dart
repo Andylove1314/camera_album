@@ -5,11 +5,16 @@ import 'ui_kit_album.dart';
 
 class AlbumPicker extends StatefulWidget {
   final String title;
+  final int limit;
   final MediaType mediaType;
   final void Function(List<String> path, List<int> seconds) onSelected;
 
   const AlbumPicker(
-      {Key key, this.title = "", @required this.mediaType, this.onSelected})
+      {Key key,
+      this.title = "",
+      this.limit = 1,
+      @required this.mediaType,
+      this.onSelected})
       : super(key: key);
 
   @override
@@ -35,6 +40,7 @@ class _AlbumPickerState extends State<AlbumPicker> {
         margin: EdgeInsets.only(top: 5),
         child: UIKitAlbum(
           mediaType: widget.mediaType,
+          limit: widget.limit,
           callback: (info) async {
             var identifiers = info['identifier'];
             int seconds = 0;

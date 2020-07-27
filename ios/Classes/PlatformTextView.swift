@@ -17,6 +17,7 @@ class PlatformTextView: NSObject,FlutterPlatformView {
     let frame: CGRect
     let viewId: Int64
     var mediaType: PHAssetMediaType = .unknown
+    var limit: Int = 1
 
     init(_ frame: CGRect, viewID: Int64, args: Any?) {
         self.frame = frame
@@ -26,10 +27,13 @@ class PlatformTextView: NSObject,FlutterPlatformView {
             if let mediaType = dict.value(forKey: "mediaType") as? Int {
                 self.mediaType = PHAssetMediaType(rawValue: mediaType)!
             }
+            if let limit = dict.value(forKey: "limit") as? Int {
+                self.limit = limit
+            }
         }
     }
     
     func view() -> UIView {
-        return GalleryView(frame: UIScreen.main.bounds, mediaType: mediaType)
+        return GalleryView(frame: UIScreen.main.bounds, mediaType: mediaType, limit: limit)
     }
 }

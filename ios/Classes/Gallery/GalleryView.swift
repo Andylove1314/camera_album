@@ -36,9 +36,10 @@ class GalleryView: UIView {
     
     var mediaType = PHAssetMediaType.image
     
-    convenience init(frame: CGRect, mediaType: PHAssetMediaType) {
+    convenience init(frame: CGRect, mediaType: PHAssetMediaType, limit: Int) {
         self.init(frame: frame)
         self.mediaType = mediaType
+        self.limit = limit
         check()
     }
     
@@ -245,15 +246,15 @@ extension GalleryView: UICollectionViewDataSource, UICollectionViewDelegateFlowL
   }
 
   func configureFrameView(_ cell: ImageCell, indexPath: IndexPath) {
-//    let item = items [(indexPath as NSIndexPath).item]
-//
-//    if let index = images.firstIndex(of: item) {
-//      UIView.animate(withDuration: 0.1, animations: {
-//        cell.imageView.alpha = 1
-//      })
+    let item = imageItems [(indexPath as NSIndexPath).item]
+
+    if let _ = selectedImages.firstIndex(of: item) {
+      UIView.animate(withDuration: 0.1, animations: {
+        cell.checkImageView.alpha = 1
+      })
 //      cell.frameView.label.text = "\(index + 1)"
-//    } else {
-//      cell.imageView.alpha = 0
-//    }
+    } else {
+      cell.checkImageView.alpha = 0
+    }
   }
 }

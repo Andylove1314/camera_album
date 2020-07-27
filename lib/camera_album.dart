@@ -40,6 +40,7 @@ class CameraAlbum {
             business["inType"] == "image" ? MediaType.image : MediaType.video;
         return AlbumPicker(
           title: business["title"],
+          limit: business["multiCount"],
           mediaType: mediaType,
           onSelected: (path, seconds) {
             callback({

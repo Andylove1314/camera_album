@@ -13,9 +13,11 @@ enum MediaType {
 
 class UIKitAlbum extends StatefulWidget {
   final MediaType mediaType;
+  final int limit;
   final ValueChanged callback;
 
-  const UIKitAlbum({Key key, @required this.mediaType, this.callback})
+  const UIKitAlbum(
+      {Key key, @required this.mediaType, this.limit = 1, this.callback})
       : super(key: key);
 
   @override
@@ -37,7 +39,8 @@ class _UIKitAlbumState extends State<UIKitAlbum> {
           return UiKitView(
             viewType: "platform_gallery_view",
             creationParams: <String, dynamic>{
-              "mediaType": widget.mediaType.index
+              "mediaType": widget.mediaType.index,
+              "limit": widget.limit,
             },
             creationParamsCodec: const StandardMessageCodec(),
           );
