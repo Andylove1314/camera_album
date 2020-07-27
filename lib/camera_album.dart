@@ -20,9 +20,7 @@ class CameraAlbum {
 
   ///打开相册插件
   static Future<String> openAlbum(Map<String, dynamic> business,
-      {BuildContext context,
-      MediaType mediaType = MediaType.image,
-      callback}) async {
+      {BuildContext context, callback}) async {
     ///回调监听
     _channel.setMethodCallHandler((MethodCall call) async {
       switch (call.method) {
@@ -38,12 +36,15 @@ class CameraAlbum {
 
     if (Platform.isIOS) {
       Navigator.push(context, MaterialPageRoute(builder: (context) {
+        MediaType mediaType =
+            business["inType"] == "image" ? MediaType.image : MediaType.video;
         return AlbumPicker(
           title: business["title"],
           mediaType: mediaType,
-          onSelected: (path) {
+          onSelected: (path, seconds) {
             callback({
-              "paths": [path]
+              "paths": path,
+              "durs": seconds,
             });
           },
         );

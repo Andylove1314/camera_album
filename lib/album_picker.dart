@@ -6,7 +6,7 @@ import 'ui_kit_album.dart';
 class AlbumPicker extends StatefulWidget {
   final String title;
   final MediaType mediaType;
-  final void Function(String path) onSelected;
+  final void Function(List<String> path, List<int> seconds) onSelected;
 
   const AlbumPicker(
       {Key key, this.title = "", @required this.mediaType, this.onSelected})
@@ -41,7 +41,7 @@ class _AlbumPickerState extends State<AlbumPicker> {
                   identifier: identifiers.first);
             }
             Navigator.pop(context);
-            widget.onSelected(path);
+            widget.onSelected([path], [seconds]);
           },
         ),
       ),
