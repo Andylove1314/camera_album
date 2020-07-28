@@ -14,10 +14,12 @@ import java.util.List;
 
 public class ImageHolder extends BaseViewHolder<List<String>> {
     public ImageView imageView;
+    public ImageView playicon;
 
     public ImageHolder(@NonNull View view) {
         super(view);
         this.imageView = view.findViewById(R.id.banner_image);
+        this.playicon = view.findViewById(R.id.banner_image_video_play_icon);
     }
 
     @Override

@@ -5,11 +5,25 @@
     android:orientation="vertical"
     android:gravity="center">
 
-    <ImageView
-        android:id="@+id/banner_image"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp"/>
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/banner_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp"/>
+
+        <ImageView
+            android:id="@+id/banner_image_video_play_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/picture_icon_video_play"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
+
+    </FrameLayout>
 
 </LinearLayout>
