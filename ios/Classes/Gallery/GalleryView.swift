@@ -10,6 +10,7 @@ import Photos
  
 let columnCount: CGFloat = 4
 let cellSpacing: CGFloat = 2
+let kTop: CGFloat = 45
 
 class GalleryView: UIView {
     
@@ -33,10 +34,13 @@ class GalleryView: UIView {
     
     var mediaType = PHAssetMediaType.image
     
-    convenience init(frame: CGRect, mediaType: PHAssetMediaType, limit: Int) {
+    var appBarHeight: CGFloat = 0
+    
+    convenience init(frame: CGRect, mediaType: PHAssetMediaType, limit: Int, appBarHeight: CGFloat) {
         self.init(frame: frame)
         self.mediaType = mediaType
         self.limit = limit
+        self.appBarHeight = appBarHeight
         check()
     }
     
@@ -65,7 +69,7 @@ class GalleryView: UIView {
         collectionView.register(VideoCell.self, forCellWithReuseIdentifier: String(describing: VideoCell.self))
         
         addSubview(collectionView)
-        collectionView.g_pin(on: .top, constant: 45)
+        collectionView.g_pin(on: .top, constant: kTop)
         collectionView.g_pin(on: .left)
         collectionView.g_pin(on:.right)
         collectionView.g_pin(on: .bottom)
@@ -117,7 +121,7 @@ class GalleryView: UIView {
     @objc func arrowButtonTouched(_ button: ArrowButton) {
         let dropdownView = DropdownView()
         dropdownView.selectedIndex = selectedAlbumIndex ?? 0
-        dropdownView.top = 45 + 100
+        dropdownView.top = UIApplication.shared.statusBarFrame.height + appBarHeight + kTop
         
         dropdownView.albums = self.imageLibrary?.albums ?? []
         dropdownView.tableView.reloadData()
@@ -145,9 +149,13 @@ extension GalleryView: DropdownViewDelegate {
         selectedImages.removeAll()
         selectedAlbum = album
         selectedAlbumIndex = index
+        onSelectedInvoke()
         show(album: album)
     }
   }
+    func onSelectedInvoke() {
+        SwiftCameraAlbumPlugin.channel.invokeMethod("onSelected", arguments: ["identifier": selectedImages.map { $0.asset.localIdentifier }, "duration": selectedImages.map { $0.asset.duration } /*"paths": [file]]*/])
+    }
 }
 
 extension GalleryView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -200,9 +208,12 @@ extension GalleryView: UICollectionViewDataSource, UICollectionViewDelegateFlowL
          } else {
            if limit == 0 || limit > selectedImages.count{
              selectedImages.append(item)
-           }
+           } else {
+            // 选超了
+            SwiftCameraAlbumPlugin.channel.invokeMethod("onLimitCallback", arguments: nil)
+            }
          }
-         SwiftCameraAlbumPlugin.channel.invokeMethod("onSelected", arguments: ["identifier": selectedImages.map { $0.asset.localIdentifier }, "duration": selectedImages.map { $0.asset.duration } /*"paths": [file]]*/])
+         onSelectedInvoke()
      }
 
     configureFrameViews()

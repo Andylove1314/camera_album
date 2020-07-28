@@ -18,6 +18,7 @@ class PlatformTextView: NSObject,FlutterPlatformView {
     let viewId: Int64
     var mediaType: PHAssetMediaType = .unknown
     var limit: Int = 1
+    var appBarHeight: CGFloat = 0
 
     init(_ frame: CGRect, viewID: Int64, args: Any?) {
         self.frame = frame
@@ -30,10 +31,13 @@ class PlatformTextView: NSObject,FlutterPlatformView {
             if let limit = dict.value(forKey: "limit") as? Int {
                 self.limit = limit
             }
+            if let limit = dict.value(forKey: "appBarHeight") as? Double {
+                self.appBarHeight = CGFloat(limit)
+            }
         }
     }
     
     func view() -> UIView {
-        return GalleryView(frame: UIScreen.main.bounds, mediaType: mediaType, limit: limit)
+        return GalleryView(frame: UIScreen.main.bounds, mediaType: mediaType, limit: limit, appBarHeight: appBarHeight)
     }
 }

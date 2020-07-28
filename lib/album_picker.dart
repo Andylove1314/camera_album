@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'camera_album.dart';
@@ -8,13 +9,15 @@ class AlbumPicker extends StatefulWidget {
   final int limit;
   final MediaType mediaType;
   final void Function(List<String> path, List<int> seconds) onSelected;
+  final VoidCallback onLimitCallback;
 
   const AlbumPicker(
       {Key key,
       this.title = "",
       this.limit = 1,
       @required this.mediaType,
-      this.onSelected})
+      this.onSelected,
+      this.onLimitCallback})
       : super(key: key);
 
   @override
@@ -88,6 +91,23 @@ class _AlbumPickerState extends State<AlbumPicker> {
             this.identifier = identifier;
             this.duration = duration;
             setState(() {});
+          },
+          onLimitCallback: () {
+            print("超出限制最多：${widget.limit}");
+            showDialog(
+                context: context,
+                builder: (c) {
+                  return AlertDialog(
+                    title: Text('超出限制最多：${widget.limit}'),
+                    actions: <Widget>[
+                      RaisedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text('ok')),
+                    ],
+                  );
+                });
           },
         ),
       ),
