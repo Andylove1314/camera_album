@@ -226,14 +226,20 @@ extension GalleryView: UICollectionViewDataSource, UICollectionViewDelegateFlowL
 
   func configureFrameView(_ cell: ImageCell, indexPath: IndexPath) {
     let item = imageItems [(indexPath as NSIndexPath).item]
+    
+    if limit > 1 {
+        cell.checkImageView.isHidden = false
+    } else {
+        cell.checkImageView.isHidden = true
+    }
 
     if let _ = selectedImages.firstIndex(of: item) {
       UIView.animate(withDuration: 0.1, animations: {
-        cell.checkImageView.alpha = 1
+        cell.checkImageView.image = GalleryBundle.image("gallery_muilt_selected_icon")
       })
 //      cell.frameView.label.text = "\(index + 1)"
     } else {
-      cell.checkImageView.alpha = 0
+      cell.checkImageView.image = GalleryBundle.image("gallery_muilt_nomal_icon")
     }
   }
 }
