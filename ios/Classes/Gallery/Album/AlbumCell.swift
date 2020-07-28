@@ -23,20 +23,12 @@ class AlbumCell: UITableViewCell {
 
   func configure(_ album: Album) {
     albumTitleLabel.text = album.collection.localizedTitle
-    itemCountLabel.text = "\(album.mediaType == .video ? album.videoItems.count : album.items.count)"
+    itemCountLabel.text = "\(album.items.count)"
 
-    if album.mediaType == .video {
-        if let item = album.videoItems.first {
-          albumImageView.layoutIfNeeded()
-          albumImageView.g_loadImage(item.asset)
-        }
-    } else {
-        if let item = album.items.first {
-          albumImageView.layoutIfNeeded()
-          albumImageView.g_loadImage(item.asset)
-        }
+    if let item = album.items.first {
+      albumImageView.layoutIfNeeded()
+      albumImageView.g_loadImage(item.asset)
     }
-    
   }
 
   // MARK: - Setup

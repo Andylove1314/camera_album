@@ -6,7 +6,6 @@ class Album {
     let collection: PHAssetCollection
     let mediaType: PHAssetMediaType
     var items: [Image] = []
-    var videoItems: [Video] = []
 
     // MARK: - Initialization
 
@@ -23,15 +22,10 @@ class Album {
             if asset.mediaType == .image {
                 self.items.append(Image(asset: asset))
             } else if asset.mediaType == .video {
-                self.videoItems.append(Video(asset: asset))
+                self.items.append(Video(asset: asset))
             }
         })
-        
-        if mediaType == .image {
-            self.items.reverse()
-        } else if mediaType == .video {
-            self.videoItems.reverse()
-        }
+        self.items.reverse()
     }
 }
 

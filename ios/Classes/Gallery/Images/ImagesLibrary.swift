@@ -46,15 +46,8 @@ class ImagesLibrary {
       result.enumerateObjects({ (collection, _, _) in
         let album = Album(collection: collection, mediaType: self.mediaType)
         album.reload()
-
-        if self.mediaType == .image {
-            if !album.items.isEmpty {
-              self.albums.append(album)
-            }
-        } else if self.mediaType == .video {
-            if !album.videoItems.isEmpty {
-                self.albums.append(album)
-            }
+        if !album.items.isEmpty {
+          self.albums.append(album)
         }
       })
     }

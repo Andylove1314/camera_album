@@ -25,9 +25,6 @@ class GalleryView: UIView {
     var imageItems: [Image] = []
     var imageLibrary: ImagesLibrary?
     
-    /// 所有视频
-    var videoItems: [Video] = []
-    
     /// 最多选择限制
     var limit: Int = 1
     
@@ -65,7 +62,6 @@ class GalleryView: UIView {
         collectionView.delegate = self
         
         collectionView.register(ImageCell.self, forCellWithReuseIdentifier: String(describing: ImageCell.self))
-        
         collectionView.register(VideoCell.self, forCellWithReuseIdentifier: String(describing: VideoCell.self))
         
         addSubview(collectionView)
@@ -135,12 +131,7 @@ class GalleryView: UIView {
 
     func show(album: Album) {
       arrowButton.updateText(album.collection.localizedTitle ?? "")
-        if mediaType == .image {
-            imageItems = album.items
-        } else if mediaType == .video {
-            videoItems = album.videoItems
-        }
-        
+      imageItems = album.items
       collectionView.reloadData()
       collectionView.g_scrollToTop()
     }
@@ -164,34 +155,23 @@ extension GalleryView: UICollectionViewDataSource, UICollectionViewDelegateFlowL
   // MARK: - UICollectionViewDataSource
 
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    switch mediaType {
-    case .image:
         return imageItems.count
-    case .video:
-        return videoItems.count
-    default:
-        return 0
-    }
   }
 
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    if mediaType == .video {
+      let item = imageItems[(indexPath as NSIndexPath).item]
+    if let item = item as? Video {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: VideoCell.self), for: indexPath)
-          as! VideoCell
-          let item = videoItems[(indexPath as NSIndexPath).item]
-
-          cell.configure(item)
-          configureFrameView(cell, indexPath: indexPath)
+        as! VideoCell
+        cell.configure(item)
+        configureFrameView(cell, indexPath: indexPath)
         return cell
     }
-
+    
     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: ImageCell.self), for: indexPath)
-      as! ImageCell
-    let item = imageItems[(indexPath as NSIndexPath).item]
-
+    as! ImageCell
     cell.configure(item)
     configureFrameView(cell, indexPath: indexPath)
-
     return cell
   }
 
@@ -206,7 +186,7 @@ extension GalleryView: UICollectionViewDataSource, UICollectionViewDelegateFlowL
 
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     if mediaType == .video {
-        let item = videoItems[(indexPath as NSIndexPath).item]
+        let item = imageItems[(indexPath as NSIndexPath).item]
         SwiftCameraAlbumPlugin.channel.invokeMethod("onMessage", arguments: ["identifier": [item.asset.localIdentifier], "duration": [item.asset.duration], /*"paths": [file]]*/])
     } else {
         let item = imageItems[(indexPath as NSIndexPath).item]
@@ -217,7 +197,8 @@ extension GalleryView: UICollectionViewDataSource, UICollectionViewDelegateFlowL
         //            let file = (info["PHImageFileSandboxExtensionTokenKey"] as? NSString)?.components(separatedBy: ";").last ?? ""
                     SwiftCameraAlbumPlugin.channel.invokeMethod("onMessage", arguments: ["identifier": [item.asset.localIdentifier], /*"paths": [file]]*/])
         //        }
-            } else if selectedImages.contains(item) {
+        } else {
+            if selectedImages.contains(item) {
               guard let index = selectedImages.firstIndex(of: item) else { return }
               selectedImages.remove(at: index)
             } else {
@@ -225,6 +206,7 @@ extension GalleryView: UICollectionViewDataSource, UICollectionViewDelegateFlowL
                 selectedImages.append(item)
               }
             }
+        }
     }
 
     configureFrameViews()
