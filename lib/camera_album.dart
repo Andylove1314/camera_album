@@ -20,7 +20,10 @@ class CameraAlbum {
 
   ///打开相册插件
   static Future<String> openAlbum(Map<String, dynamic> business,
-      {BuildContext context, callback}) async {
+      {BuildContext context,
+      callback,
+      void Function(List identifier, List duration)
+          onChanged}) async {
     ///回调监听
     _channel.setMethodCallHandler((MethodCall call) async {
       switch (call.method) {
@@ -28,6 +31,12 @@ class CameraAlbum {
           var backs = call.arguments;
           print('native回传数据：$backs');
           callback(backs);
+          return null;
+        case "onSelected":
+          var identifier = call.arguments["identifier"];
+          var duration = call.arguments["duration"];
+          onChanged(identifier, duration);
+          print('native回传数据：${call.arguments}');
           return null;
         default:
           throw UnsupportedError("Unrecognized JSON message");

@@ -22,6 +22,9 @@ class AlbumPicker extends StatefulWidget {
 }
 
 class _AlbumPickerState extends State<AlbumPicker> {
+  List identifier = [];
+  List duration = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,6 +38,30 @@ class _AlbumPickerState extends State<AlbumPicker> {
           ),
           textAlign: TextAlign.center,
         ),
+        actions: <Widget>[
+          FlatButton(
+              onPressed: () async {
+//                widget.onSelected(identifier.map((e) => "$e").toList(),
+//                    duration.map((e) => int.tryParse("$e")).toList());
+
+                List<String> pathList = [];
+                List<int> durationList = [];
+
+                for (int index = 0; index < identifier.length; index++) {
+                  String path = (widget.mediaType == MediaType.video
+                      ? await CameraAlbum.requestVideoFile(
+                          identifier: identifier[index])
+                      : await CameraAlbum.requestImageFile(
+                          identifier: identifier[index]));
+                  pathList.add(path);
+                  int seconds = duration[index].toInt();
+                  durationList.add(seconds);
+                }
+                Navigator.pop(context);
+                widget.onSelected(pathList, durationList);
+              },
+              child: Text("Done(${identifier.length})"))
+        ],
       ),
       body: Container(
         margin: EdgeInsets.only(top: 5),
@@ -56,6 +83,11 @@ class _AlbumPickerState extends State<AlbumPicker> {
             }
             Navigator.pop(context);
             widget.onSelected([path], [seconds]);
+          },
+          onChanged: (List identifier, List duration) {
+            this.identifier = identifier;
+            this.duration = duration;
+            setState(() {});
           },
         ),
       ),

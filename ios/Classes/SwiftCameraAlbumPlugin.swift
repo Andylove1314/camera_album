@@ -42,7 +42,7 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
             // https://blog.csdn.net/qq_22157341/article/details/80758683
             if let assetResource = PHAssetResource.assetResources(for: video.asset).first {
             let fileName = assetResource.originalFilename
-                let path = NSTemporaryDirectory() + "temp." + (fileName.components(separatedBy: ".").last ?? "")
+                let path = NSTemporaryDirectory() + fileName
                 try? FileManager.default.removeItem(atPath: path)
             
             let options = PHAssetResourceRequestOptions()
