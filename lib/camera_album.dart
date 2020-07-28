@@ -22,8 +22,7 @@ class CameraAlbum {
   static Future<String> openAlbum(Map<String, dynamic> business,
       {BuildContext context,
       callback,
-      void Function(List identifier, List duration)
-          onChanged}) async {
+      void Function(List identifier, List duration) onChanged}) async {
     ///回调监听
     _channel.setMethodCallHandler((MethodCall call) async {
       switch (call.method) {
@@ -47,9 +46,10 @@ class CameraAlbum {
       Navigator.push(context, MaterialPageRoute(builder: (context) {
         MediaType mediaType =
             business["inType"] == "image" ? MediaType.image : MediaType.video;
+        bool isMulti = business["isMulti"];
         return AlbumPicker(
           title: business["title"],
-          limit: business["multiCount"],
+          limit: isMulti ? business["multiCount"] : 1,
           mediaType: mediaType,
           onSelected: (path, seconds) {
             callback({
