@@ -12,8 +12,11 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
     channel = FlutterMethodChannel(name: "flutter/camera_album", binaryMessenger: registrar.messenger())
     
-    let factory = PlatformTextViewFactory()
-    registrar.register(factory, withId: "platform_gallery_view")
+    let galleryFactory = PlatformGalleryViewFactory()
+    registrar.register(galleryFactory, withId: "platform_gallery_view")
+    
+    let cameraFactory = PlatformCameraViewFactory()
+    registrar.register(cameraFactory, withId: "platform_camera_view")
     
     let instance = SwiftCameraAlbumPlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)

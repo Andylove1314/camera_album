@@ -197,6 +197,17 @@ class _HomeState extends State<Home> {
                 }));
               });
             }),
+        IconButton(
+            icon: Icon(Icons.photo_camera),
+            onPressed: () async {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return Scaffold(
+                    appBar: AppBar(
+                      title: Text("Camera"),
+                    ),
+                    body: UIKitCamera());
+              }));
+            }),
       ],
     );
   }

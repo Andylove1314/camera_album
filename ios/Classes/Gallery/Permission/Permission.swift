@@ -35,10 +35,6 @@ struct Permission {
   }
 
   struct Camera {
-    static var needsPermission: Bool {
-      return false
-    }
-
     static var status: Status {
       switch AVCaptureDevice.authorizationStatus(for: .video) {
       case .notDetermined:

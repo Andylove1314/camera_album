@@ -2,10 +2,10 @@ import Foundation
 import Flutter
 import Photos
 
-class PlatformTextViewFactory: NSObject, FlutterPlatformViewFactory {
+class PlatformGalleryViewFactory: NSObject, FlutterPlatformViewFactory {
     
     func create(withFrame frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?) -> FlutterPlatformView {
-        return PlatformTextView(frame,viewID: viewId,args: args)
+        return PlatformGalleryView(frame,viewID: viewId,args: args)
     }
     
     func createArgsCodec() -> FlutterMessageCodec & NSObjectProtocol {
@@ -13,7 +13,7 @@ class PlatformTextViewFactory: NSObject, FlutterPlatformViewFactory {
     }
 }
 
-class PlatformTextView: NSObject,FlutterPlatformView {
+class PlatformGalleryView: NSObject,FlutterPlatformView {
     let frame: CGRect
     let viewId: Int64
     var mediaType: PHAssetMediaType = .unknown

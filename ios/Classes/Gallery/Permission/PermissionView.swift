@@ -7,6 +7,16 @@ class PermissionView: UIView {
   lazy var settingButton: UIButton = self.makeSettingButton()
 
   // MARK: - Initialization
+    
+    
+  convenience init(needsPermission: Bool) {
+    self.init()
+    
+    if needsPermission {
+      label.text = "Please grant access to camera."
+    }
+    
+  }
 
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -14,6 +24,7 @@ class PermissionView: UIView {
     backgroundColor = UIColor.white
     setup()
 
+    label.text = "Please grant access to photos."
   }
 
   required init?(coder aDecoder: NSCoder) {
@@ -43,11 +54,6 @@ class PermissionView: UIView {
     let label = UILabel()
     label.textColor = UIColor(red: 102/255, green: 118/255, blue: 138/255, alpha: 1)
     label.font = UIFont.systemFont(ofSize: 14)
-    if Permission.Camera.needsPermission {
-      label.text = "Please grant access to photos and the camera."
-    } else {
-      label.text = "Please grant access to photos."
-    }
     label.textAlignment = .center
     label.numberOfLines = 0
     label.lineBreakMode = .byWordWrapping

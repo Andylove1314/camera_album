@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 
 import 'album_picker.dart';
 export 'ui_kit_album.dart';
+export 'ui_kit_camera.dart';
 
 class CameraAlbum {
   static const MethodChannel _channel =
