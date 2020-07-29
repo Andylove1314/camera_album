@@ -40,7 +40,7 @@ import static android.os.Build.VERSION_CODES.KITKAT;
  */
 
 public class PictureSelectionModel {
-    private PictureSelectionConfig selectionConfig;
+    public PictureSelectionConfig selectionConfig;
     private PictureSelector selector;
 
     public PictureSelectionModel(PictureSelector selector, int chooseMode) {
