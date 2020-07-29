@@ -34,7 +34,6 @@ class CameraAlbum {
       }
     });
 
-    if (Platform.isIOS) {
       Navigator.push(context, MaterialPageRoute(builder: (context) {
         MediaType mediaType =
             business["inType"] == "image" ? MediaType.image : MediaType.video;
@@ -51,9 +50,6 @@ class CameraAlbum {
         );
       }));
       return "";
-    }
-
-    return _channel.invokeMethod('openAlbum', business);
   }
 
   static Future requestImageFile({@required identifier}) {

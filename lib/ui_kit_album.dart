@@ -36,14 +36,21 @@ class _UIKitAlbumState extends State<UIKitAlbum> {
     return Container(
       child: LayoutBuilder(
         builder: (c, cc) {
-          return UiKitView(
+          return Platform.isIOS?
+          UiKitView(
             viewType: "platform_gallery_view",
             creationParams: <String, dynamic>{
               "mediaType": widget.mediaType.index,
               "limit": widget.limit,
             },
             creationParamsCodec: const StandardMessageCodec(),
-          );
+          ): AndroidView(
+              viewType: "platform_gallery_view",
+              creationParams:<String, dynamic>{
+                "mediaType": widget.mediaType.index,
+                "limit": widget.limit,
+              },
+              creationParamsCodec: const StandardMessageCodec());
         },
       ),
     );

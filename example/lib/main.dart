@@ -90,6 +90,8 @@ class _HomeState extends State<Home> {
                   ]
                 ]
               }, context: context, callback: (backs) {
+                
+                
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return NewPage(
                     MediaType.image,
