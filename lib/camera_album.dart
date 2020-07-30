@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 
 import 'album_picker.dart';
 export 'ui_kit_album.dart';
+export 'ui_kit_camera.dart';
 
 class CameraAlbum {
   static const MethodChannel _channel =
@@ -20,7 +21,10 @@ class CameraAlbum {
 
   ///打开相册插件
   static Future<String> openAlbum(Map<String, dynamic> business,
-      {BuildContext context, callback}) async {
+      {BuildContext context,
+      callback,
+      void Function(List identifier, List duration) onChanged,
+      VoidCallback onLimitCallback}) async {
     ///回调监听
     _channel.setMethodCallHandler((MethodCall call) async {
       switch (call.method) {
@@ -28,6 +32,15 @@ class CameraAlbum {
           var backs = call.arguments;
           print('native回传数据：$backs');
           callback(backs);
+          return null;
+        case "onSelected":
+          var identifier = call.arguments["identifier"];
+          var duration = call.arguments["duration"];
+          onChanged(identifier, duration);
+          print('native回传数据：${call.arguments}');
+          return null;
+        case "onLimitCallback":
+          onLimitCallback();
           return null;
         default:
           throw UnsupportedError("Unrecognized JSON message");
@@ -37,9 +50,10 @@ class CameraAlbum {
       Navigator.push(context, MaterialPageRoute(builder: (context) {
         MediaType mediaType =
             business["inType"] == "image" ? MediaType.image : MediaType.video;
+        bool isMulti = business["isMulti"];
         return AlbumPicker(
           title: business["title"],
-          limit: business["multiCount"],
+          limit: isMulti ? business["multiCount"] : 1,
           mediaType: mediaType,
           onSelected: (path, seconds) {
             callback({

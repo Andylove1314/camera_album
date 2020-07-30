@@ -41,7 +41,6 @@ class ImageCell: UICollectionViewCell {
     
     lazy var checkImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = GalleryBundle.image("gallery_green_duigou")
         return imageView
     }()
 
@@ -51,8 +50,10 @@ class ImageCell: UICollectionViewCell {
         contentView.addSubview(imageView)
         imageView.frame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
         contentView.addSubview(checkImageView)
-        checkImageView.g_pin(on: .top, constant: 10)
-        checkImageView.g_pin(on: .right, constant: -10)
+        checkImageView.g_pin(on: .top, constant: 8)
+        checkImageView.g_pin(on: .right, constant: -8)
+        checkImageView.g_pin(width: 22)
+        checkImageView.g_pin(on: .width, view: checkImageView, on: .height)
     }
 
     required init?(coder aDecoder: NSCoder) {

@@ -53,7 +53,8 @@ class AlbumCell: UITableViewCell {
     
     duiGouImageView.g_pin(on: .right, constant: -15)
     duiGouImageView.g_pin(on: .centerY)
-    duiGouImageView.g_pin(on: .width, view: duiGouImageView, constant: 18.5)
+    duiGouImageView.g_pin(width: 25)
+    duiGouImageView.g_pin(height: 19)
 
   }
 

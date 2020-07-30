@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'camera_album.dart';
@@ -10,13 +10,14 @@ class AlbumPicker extends StatefulWidget {
   final int limit;
   final MediaType mediaType;
   final void Function(List<dynamic> path, List<dynamic> seconds) onSelected;
-
+  final VoidCallback onLimitCallback;
   const AlbumPicker(
       {Key key,
       this.title = "",
       this.limit = 1,
       @required this.mediaType,
-      this.onSelected})
+      this.onSelected,
+      this.onLimitCallback})
       : super(key: key);
 
   @override
@@ -24,6 +25,9 @@ class AlbumPicker extends StatefulWidget {
 }
 
 class _AlbumPickerState extends State<AlbumPicker> {
+  List identifier = [];
+  List duration = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,6 +41,30 @@ class _AlbumPickerState extends State<AlbumPicker> {
           ),
           textAlign: TextAlign.center,
         ),
+        actions: <Widget>[
+          FlatButton(
+              onPressed: () async {
+//                widget.onSelected(identifier.map((e) => "$e").toList(),
+//                    duration.map((e) => int.tryParse("$e")).toList());
+
+                List<String> pathList = [];
+                List<int> durationList = [];
+
+                for (int index = 0; index < identifier.length; index++) {
+                  String path = (widget.mediaType == MediaType.video
+                      ? await CameraAlbum.requestVideoFile(
+                          identifier: identifier[index])
+                      : await CameraAlbum.requestImageFile(
+                          identifier: identifier[index]));
+                  pathList.add(path);
+                  int seconds = duration[index].toInt();
+                  durationList.add(seconds);
+                }
+                Navigator.pop(context);
+                widget.onSelected(pathList, durationList);
+              },
+              child: Text("Done(${identifier.length})"))
+        ],
       ),
       body: Container(
         margin: EdgeInsets.only(top: 5),
@@ -67,6 +95,28 @@ class _AlbumPickerState extends State<AlbumPicker> {
             }
 
 
+          },
+          onChanged: (List identifier, List duration) {
+            this.identifier = identifier;
+            this.duration = duration;
+            setState(() {});
+          },
+          onLimitCallback: () {
+            print("超出限制最多：${widget.limit}");
+            showDialog(
+                context: context,
+                builder: (c) {
+                  return AlertDialog(
+                    title: Text('超出限制最多：${widget.limit}'),
+                    actions: <Widget>[
+                      RaisedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text('ok')),
+                    ],
+                  );
+                });
           },
         ),
       ),

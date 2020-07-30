@@ -2,6 +2,9 @@ import Flutter
 import UIKit
 import Photos
 
+private let kNwdnAsset = "nwdn_asset/"
+private let tmpNwdn = NSTemporaryDirectory() + kNwdnAsset
+
 public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
     
   static var channel: FlutterMethodChannel!
@@ -9,11 +12,17 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
     channel = FlutterMethodChannel(name: "flutter/camera_album", binaryMessenger: registrar.messenger())
     
-    let factory = PlatformTextViewFactory()
-    registrar.register(factory, withId: "platform_gallery_view")
+    let galleryFactory = PlatformGalleryViewFactory()
+    registrar.register(galleryFactory, withId: "platform_gallery_view")
+    
+    let cameraFactory = PlatformCameraViewFactory()
+    registrar.register(cameraFactory, withId: "platform_camera_view")
     
     let instance = SwiftCameraAlbumPlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
+    
+    let _ = delete(atPath: tmpNwdn)
+    let _ = creatDir(atPath: tmpNwdn)
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -24,7 +33,7 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
         if let image = Image.initWith(identifier: identifier) {
         image.resolveImageData { (imageData, info) in
             if let imageData = imageData, let info = info, let fileName = info["PHImageFileUTIKey"] as? String {
-                var path = NSTemporaryDirectory() + UUID().uuidString + "." + (fileName.components(separatedBy: ".").last ?? "")
+                var path = tmpNwdn + identifier.replacingOccurrences(of: "/", with: "") + "." + (fileName.components(separatedBy: ".").last ?? "")
                 if path.components(separatedBy: ".").last == "heic" {
                     path = (path.components(separatedBy: ".").first ?? "") + ".jpeg"
                 }
@@ -42,7 +51,7 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
             // https://blog.csdn.net/qq_22157341/article/details/80758683
             if let assetResource = PHAssetResource.assetResources(for: video.asset).first {
             let fileName = assetResource.originalFilename
-                let path = NSTemporaryDirectory() + "temp." + (fileName.components(separatedBy: ".").last ?? "")
+                let path = tmpNwdn + fileName
                 try? FileManager.default.removeItem(atPath: path)
             
             let options = PHAssetResourceRequestOptions()
@@ -59,4 +68,39 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
     default: break
     }
   }
+
+     /// 判断文件是否存在
+    private static func isExist(atPath filePath : String) -> Bool {
+         return FileManager.default.fileExists(atPath: filePath)
+     }
+     
+    /// 创建文件目录
+    private static func creatDir(atPath dirPath : String) -> Bool {
+     
+         if isExist(atPath: dirPath) {
+             return false
+         }
+     
+         do {
+             try FileManager.default.createDirectory(atPath: dirPath, withIntermediateDirectories: true, attributes: nil)
+             return true
+         } catch {
+             print(error)
+             return false
+         }
+     }
+    
+    /// 删除文件 或者目录
+    private static func delete(atPath filePath : String) -> Bool {
+         guard isExist(atPath: filePath) else {
+             return false
+         }
+         do {
+             try FileManager.default.removeItem(atPath: filePath)
+             return true
+         } catch  {
+             print(error)
+             return false
+         }
+     }
 }

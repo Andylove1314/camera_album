@@ -37,7 +37,7 @@ class DropdownView: UIView {
     backgroundColor = .clear
     tableView.backgroundColor = UIColor.white
     
-    let bottom = UIScreen.main.bounds.height * 0.3
+    let bottom = UIScreen.main.bounds.height * 0.25
     
     addSubview(tableView)
     tableView.register(AlbumCell.self, forCellReuseIdentifier: String(describing: AlbumCell.self))

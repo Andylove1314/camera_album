@@ -15,9 +15,16 @@ class UIKitAlbum extends StatefulWidget {
   final MediaType mediaType;
   final int limit;
   final ValueChanged callback;
+  final void Function(List identifier, List duration) onChanged;
+  final VoidCallback onLimitCallback;
 
   const UIKitAlbum(
-      {Key key, @required this.mediaType, this.limit = 1, this.callback})
+      {Key key,
+      @required this.mediaType,
+      this.limit = 1,
+      this.callback,
+      this.onChanged,
+      this.onLimitCallback})
       : super(key: key);
 
   @override
@@ -27,7 +34,10 @@ class UIKitAlbum extends StatefulWidget {
 class _UIKitAlbumState extends State<UIKitAlbum> {
   @override
   void initState() {
-    CameraAlbum.openAlbum(null, callback: widget.callback);
+    CameraAlbum.openAlbum(null,
+        callback: widget.callback,
+        onChanged: widget.onChanged,
+        onLimitCallback: widget.onLimitCallback);
     super.initState();
   }
 
@@ -42,6 +52,7 @@ class _UIKitAlbumState extends State<UIKitAlbum> {
             creationParams: <String, dynamic>{
               "mediaType": widget.mediaType.index,
               "limit": widget.limit,
+              "appBarHeight": kToolbarHeight,
             },
             creationParamsCodec: const StandardMessageCodec(),
           ): AndroidView(

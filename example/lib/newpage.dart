@@ -66,6 +66,7 @@ class _VideoPlayState extends State<VideoPlay> {
     _controller = VideoPlayerController.file(widget.file);
     _controller.initialize().then((value) {
       _controller.play();
+      _controller.setLooping(true);
       setState(() {});
     });
     super.initState();
