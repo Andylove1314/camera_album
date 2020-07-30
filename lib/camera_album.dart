@@ -89,6 +89,7 @@ class CameraAlbum {
           onSelected: (paths, seconds) {
             callback(CameraAlbumBack(paths: paths, durs: seconds));
           },
+          onLimitCallback: onLimitCallback,
         );
       }));
       return "";

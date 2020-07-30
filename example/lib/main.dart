@@ -142,6 +142,23 @@ class _HomeState extends State<Home> {
                         backs.paths,
                       );
                     }));
+                  },
+                  onLimitCallback: () {
+                    print("超出限制");
+                    showDialog(
+                        context: context,
+                        builder: (c) {
+                          return AlertDialog(
+                            title: Text('超出限制'),
+                            actions: <Widget>[
+                              RaisedButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text('ok')),
+                            ],
+                          );
+                        });
                   });
             }),
         IconButton(

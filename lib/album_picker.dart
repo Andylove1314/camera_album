@@ -101,23 +101,7 @@ class _AlbumPickerState extends State<AlbumPicker> {
             this.duration = duration;
             setState(() {});
           },
-          onLimitCallback: () {
-            print("超出限制最多：${widget.limit}");
-            showDialog(
-                context: context,
-                builder: (c) {
-                  return AlertDialog(
-                    title: Text('超出限制最多：${widget.limit}'),
-                    actions: <Widget>[
-                      RaisedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text('ok')),
-                    ],
-                  );
-                });
-          },
+          onLimitCallback: widget.onLimitCallback,
         ),
       ),
     );
