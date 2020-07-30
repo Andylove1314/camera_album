@@ -14,7 +14,7 @@ enum MediaType {
 class UIKitAlbum extends StatefulWidget {
   final MediaType mediaType;
   final int limit;
-  final ValueChanged callback;
+  final Function(CameraAlbumBack back) callback;
   final void Function(List identifier, List duration) onChanged;
   final VoidCallback onLimitCallback;
 
@@ -34,7 +34,7 @@ class UIKitAlbum extends StatefulWidget {
 class _UIKitAlbumState extends State<UIKitAlbum> {
   @override
   void initState() {
-    CameraAlbum.openAlbum(null,
+    CameraAlbum.openAlbum(config: null,
         callback: widget.callback,
         onChanged: widget.onChanged,
         onLimitCallback: widget.onLimitCallback);

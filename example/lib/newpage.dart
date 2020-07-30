@@ -8,9 +8,10 @@ import 'package:video_player/video_player.dart';
 
 class NewPage extends StatefulWidget {
   List paths;
+  List durs;
   MediaType mediaType;
 
-  NewPage(this.mediaType, this.paths);
+  NewPage(this.mediaType, this.paths,{this.durs});
 
   @override
   _NewPagePageState createState() => _NewPagePageState();

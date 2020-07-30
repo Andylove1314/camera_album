@@ -75,13 +75,13 @@ class _AlbumPickerState extends State<AlbumPicker> {
             print(info);
 
             if(Platform.isIOS){
-              var identifiers = info['identifier'];
+              var identifiers = info.paths;
               int seconds = 0;
               String path = "";
               if (widget.mediaType == MediaType.video) {
                 path = await CameraAlbum.requestVideoFile(
                     identifier: identifiers.first);
-                double duration = info['duration'].first ?? 0;
+                double duration = info.durs.first ?? 0;
                 seconds = duration.toInt();
               } else if (widget.mediaType == MediaType.image) {
                 path = await CameraAlbum.requestImageFile(
@@ -90,8 +90,7 @@ class _AlbumPickerState extends State<AlbumPicker> {
               Navigator.pop(context);
               widget.onSelected([path], [seconds]);
             }else{
-//              Navigator.pop(context);
-              widget.onSelected(info['paths'], info['durs']);
+              widget.onSelected(info.paths, info.durs);
             }
 
 
