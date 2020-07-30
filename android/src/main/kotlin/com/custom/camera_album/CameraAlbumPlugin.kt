@@ -207,6 +207,7 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
               .setGuidea(guides)
               .showBottomCamera(showBottomCamera == true)
               .showAlbum(showAlbum == true)
+              .setFlutterChannel(channel)
               .forResult(MyResultCallback(channel,result))
     }else {
       result.notImplemented()

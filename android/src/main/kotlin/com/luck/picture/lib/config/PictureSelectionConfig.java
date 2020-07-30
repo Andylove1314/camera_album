@@ -23,6 +23,8 @@ import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.flutter.plugin.common.MethodChannel;
+
 /**
  * @author：luck
  * @date：2017-05-24 17:02
@@ -167,6 +169,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public List<List<String>> guides;
     public boolean showBottomCamera = true;
     public boolean showAlbum = true;
+    public MethodChannel channel;
 
     protected void initDefaultValue() {
         chooseMode = PictureMimeType.ofImage();

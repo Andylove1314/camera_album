@@ -31,6 +31,8 @@ import com.luck.picture.lib.tools.SdkVersionUtils;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import io.flutter.plugin.common.MethodChannel;
+
 import static android.os.Build.VERSION_CODES.KITKAT;
 
 /**
@@ -1441,6 +1443,15 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel showAlbum(boolean album) {
         selectionConfig.showAlbum = album;
+        return this;
+    }
+
+    /**
+     * @param chan//业务相关
+     * @return
+     */
+    public PictureSelectionModel setFlutterChannel(MethodChannel chan) {
+        selectionConfig.channel = chan;
         return this;
     }
 
