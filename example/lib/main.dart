@@ -99,7 +99,10 @@ class _HomeState extends State<Home> {
                         backs.paths,
                       );
                     }));
-                  },androidView: false);
+                  },androidView: false,
+              callCamera: (){
+                    print('open custom camera');
+              });
             }),
         IconButton(
             icon: Icon(Icons.photo_library),

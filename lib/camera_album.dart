@@ -21,6 +21,7 @@ class CameraAlbum {
   static const String method_onMessage = 'onMessage';
   static const String method_onSelected = 'onSelected';
   static const String method_onLimitCallback = 'onLimitCallback';
+  static const String method_callCamera = 'callCamera';
 
   /// call
   static const String method_openAlbum = 'openAlbum';
@@ -39,7 +40,8 @@ class CameraAlbum {
       Function(CameraAlbumBack back) callback,
       void Function(List identifier, List duration) onChanged,
       VoidCallback onLimitCallback,
-      bool androidView = true}) async {
+      bool androidView = true,
+        Function() callCamera,}) async {
 
     ///回调监听
     _channel.setMethodCallHandler((MethodCall call) async {
@@ -59,6 +61,11 @@ class CameraAlbum {
           return null;
         case method_onLimitCallback:
           onLimitCallback();
+          return null;
+        case method_callCamera:
+          if(callCamera != null){
+            callCamera();
+          }
           return null;
         default:
           throw UnsupportedError("Unrecognized JSON message");

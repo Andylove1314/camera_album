@@ -260,23 +260,28 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             bottomCamera.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
+                    ///todo 使用现有相机
+                    config.channel.invokeMethod("callCamera", "");
+                    closeActivity();
+
                     // Check the permissions
-                    if (PermissionChecker.checkSelfPermission(PictureSelectorActivity.this, Manifest.permission.CAMERA)) {
-                        if (PermissionChecker
-                                .checkSelfPermission(PictureSelectorActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) &&
-                                PermissionChecker
-                                        .checkSelfPermission(PictureSelectorActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                            startCamera();
-                        } else {
-                            PermissionChecker.requestPermissions(PictureSelectorActivity.this, new String[]{
-                                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE}, PictureConfig.APPLY_CAMERA_STORAGE_PERMISSIONS_CODE);
-                        }
-                    } else {
-                        PermissionChecker
-                                .requestPermissions(PictureSelectorActivity.this,
-                                        new String[]{Manifest.permission.CAMERA}, PictureConfig.APPLY_CAMERA_PERMISSIONS_CODE);
-                    }
+//                    if (PermissionChecker.checkSelfPermission(PictureSelectorActivity.this, Manifest.permission.CAMERA)) {
+//                        if (PermissionChecker
+//                                .checkSelfPermission(PictureSelectorActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) &&
+//                                PermissionChecker
+//                                        .checkSelfPermission(PictureSelectorActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//                            startCamera();
+//                        } else {
+//                            PermissionChecker.requestPermissions(PictureSelectorActivity.this, new String[]{
+//                                    Manifest.permission.READ_EXTERNAL_STORAGE,
+//                                    Manifest.permission.WRITE_EXTERNAL_STORAGE}, PictureConfig.APPLY_CAMERA_STORAGE_PERMISSIONS_CODE);
+//                        }
+//                    } else {
+//                        PermissionChecker
+//                                .requestPermissions(PictureSelectorActivity.this,
+//                                        new String[]{Manifest.permission.CAMERA}, PictureConfig.APPLY_CAMERA_PERMISSIONS_CODE);
+//                    }
                 }
             });
         }
