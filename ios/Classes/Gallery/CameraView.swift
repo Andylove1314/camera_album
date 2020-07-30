@@ -13,9 +13,15 @@ class CameraView: UIView {
     var appBarHeight: CGFloat = 0
     
     lazy var cameraMan: CameraMan = self.makeCameraMan()
+    lazy var rotateOverlayView: UIView = self.makeRotateOverlayView()
+    lazy var blurView: UIVisualEffectView = self.makeBlurView()
 
     var previewLayer: AVCaptureVideoPreviewLayer?
     var position: AVCaptureDevice.Position!
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
     
     convenience init(frame: CGRect, appBarHeight: CGFloat, position: AVCaptureDevice.Position) {
         self.init(frame: frame)
@@ -24,6 +30,25 @@ class CameraView: UIView {
         self.position = position
         
         check()
+        
+        addSubview(rotateOverlayView)
+        rotateOverlayView.g_pinEdges()
+        rotateOverlayView.addSubview(blurView)
+        blurView.g_pinEdges()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(switchCamera), name: NSNotification.Name(rawValue:"switchCamera"), object: nil)
+    }
+    
+    @objc func switchCamera(notification : Notification){
+        UIView.animate(withDuration: 0.3, animations: {
+            self.rotateOverlayView.alpha = 1
+        }, completion: { _ in
+          self.cameraMan.switchCamera {
+            UIView.animate(withDuration: 0.7, animations: {
+              self.rotateOverlayView.alpha = 0
+            })
+          }
+        })
     }
     
     func setupPreviewLayer(_ session: AVCaptureSession) {
@@ -78,6 +103,20 @@ class CameraView: UIView {
       man.delegate = self
 
       return man
+    }
+    
+    func makeRotateOverlayView() -> UIView {
+      let view = UIView()
+      view.alpha = 0
+
+      return view
+    }
+    
+    func makeBlurView() -> UIVisualEffectView {
+      let effect = UIBlurEffect(style: .dark)
+      let blurView = UIVisualEffectView(effect: effect)
+
+      return blurView
     }
 
 }

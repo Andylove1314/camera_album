@@ -66,6 +66,8 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
             }
             }
         }
+    case "switchCamera":
+        NotificationCenter.default.post(name: NSNotification.Name("switchCamera"), object: self, userInfo:nil)
     default: break
     }
   }

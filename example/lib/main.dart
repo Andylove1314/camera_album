@@ -225,7 +225,14 @@ class _HomeState extends State<Home> {
                     appBar: AppBar(
                       title: Text("Camera"),
                     ),
-                    body: UIKitCamera());
+                    body: Column(
+                      children: <Widget>[
+                        Expanded(child: UIKitCamera()),
+                        IconButton(icon: Icon(Icons.switch_camera),onPressed: () {
+                          CameraAlbum.switchCamera();
+                        },)
+                      ],
+                    ));
               }));
             }),
       ],

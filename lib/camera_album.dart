@@ -26,6 +26,7 @@ class CameraAlbum {
   static const String method_openAlbum = 'openAlbum';
   static const String method_requestImageFile = 'requestImageFile';
   static const String method_requestVideoFile = 'requestVideoFile';
+  static const String method_switchCamera = 'switchCamera';
 
   static Future<String> get platformVersion async {
     final String version = await _channel.invokeMethod('getPlatformVersion');
@@ -97,5 +98,10 @@ class CameraAlbum {
   static Future requestVideoFile({@required identifier}) {
     return _channel
         .invokeMethod(method_requestVideoFile, {"identifier": identifier});
+  }
+
+  static Future switchCamera() {
+    return _channel
+        .invokeMethod(method_switchCamera);
   }
 }
