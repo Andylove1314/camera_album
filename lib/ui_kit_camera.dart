@@ -21,6 +21,11 @@ class _UIKitCameraState extends State<UIKitCamera> {
             viewType: "platform_camera_view",
             creationParams: <String, dynamic>{
               "appBarHeight": kToolbarHeight,
+              /*
+              case back = 1
+              case front = 2
+              */
+              "position": 2,
             },
             creationParamsCodec: const StandardMessageCodec(),
           );

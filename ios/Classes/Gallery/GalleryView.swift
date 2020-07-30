@@ -154,7 +154,7 @@ extension GalleryView: DropdownViewDelegate {
     }
   }
     func onSelectedInvoke() {
-        SwiftCameraAlbumPlugin.channel.invokeMethod("onSelected", arguments: ["identifier": selectedImages.map { $0.asset.localIdentifier }, "duration": selectedImages.map { $0.asset.duration } /*"paths": [file]]*/])
+        SwiftCameraAlbumPlugin.channel.invokeMethod("onSelected", arguments: ["paths": selectedImages.map { $0.asset.localIdentifier }, "durs": selectedImages.map { $0.asset.duration } /*"paths": [file]]*/])
     }
 }
 
@@ -199,7 +199,7 @@ extension GalleryView: UICollectionViewDataSource, UICollectionViewDelegateFlowL
  //            guard let info = info else { return }
  //            print(info)
  //            let file = (info["PHImageFileSandboxExtensionTokenKey"] as? NSString)?.components(separatedBy: ";").last ?? ""
-             SwiftCameraAlbumPlugin.channel.invokeMethod("onMessage", arguments: ["identifier": [item.asset.localIdentifier], "duration": [item.asset.duration], /*"paths": [file]]*/])
+             SwiftCameraAlbumPlugin.channel.invokeMethod("onMessage", arguments: ["paths": [item.asset.localIdentifier], "durs": [item.asset.duration], /*"paths": [file]]*/])
  //        }
      } else {
          if selectedImages.contains(item) {

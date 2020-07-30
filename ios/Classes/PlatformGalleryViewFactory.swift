@@ -13,7 +13,7 @@ class PlatformGalleryViewFactory: NSObject, FlutterPlatformViewFactory {
     }
 }
 
-class PlatformGalleryView: NSObject,FlutterPlatformView {
+class PlatformGalleryView: NSObject, FlutterPlatformView {
     let frame: CGRect
     let viewId: Int64
     var mediaType: PHAssetMediaType = .unknown

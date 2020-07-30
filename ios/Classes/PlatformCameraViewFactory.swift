@@ -5,7 +5,7 @@ import Photos
 class PlatformCameraViewFactory: NSObject, FlutterPlatformViewFactory {
     
     func create(withFrame frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?) -> FlutterPlatformView {
-        return PlatformCameraView(frame,viewID: viewId,args: args)
+        return PlatformCameraView(frame, viewID: viewId, args: args)
     }
     
     func createArgsCodec() -> FlutterMessageCodec & NSObjectProtocol {
@@ -13,11 +13,12 @@ class PlatformCameraViewFactory: NSObject, FlutterPlatformViewFactory {
     }
 }
 
-class PlatformCameraView: NSObject,FlutterPlatformView {
+class PlatformCameraView: NSObject, FlutterPlatformView {
     let frame: CGRect
     let viewId: Int64
 
     var appBarHeight: CGFloat = 0
+    var position: AVCaptureDevice.Position = .front
 
     init(_ frame: CGRect, viewID: Int64, args: Any?) {
         self.frame = frame
@@ -28,10 +29,16 @@ class PlatformCameraView: NSObject,FlutterPlatformView {
             if let limit = dict.value(forKey: "appBarHeight") as? Double {
                 self.appBarHeight = CGFloat(limit)
             }
+
+            if let position = dict.value(forKey: "position") as? Int {
+                if let _postion = AVCaptureDevice.Position(rawValue: position) {
+                    self.position = _postion
+                }
+            }
         }
     }
     
     func view() -> UIView {
-        return CameraView(frame: UIScreen.main.bounds, appBarHeight: appBarHeight)
+        return CameraView(frame: UIScreen.main.bounds, appBarHeight: appBarHeight, position: position)
     }
 }
