@@ -99,10 +99,11 @@ class _HomeState extends State<Home> {
                         backs.paths,
                       );
                     }));
-                  },androidView: false,
-              callCamera: (){
+                  },
+                  androidView: false,
+                  callCamera: () {
                     print('open custom camera');
-              });
+                  });
             }),
         IconButton(
             icon: Icon(Icons.photo_library),
@@ -230,10 +231,37 @@ class _HomeState extends State<Home> {
                     ),
                     body: Column(
                       children: <Widget>[
-                        Expanded(child: UIKitCamera()),
-                        IconButton(icon: Icon(Icons.switch_camera),onPressed: () {
-                          CameraAlbum.switchCamera();
-                        },)
+                        Expanded(
+                          child: Stack(
+                            children: <Widget>[
+                              UIKitCamera(),
+                              Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Container(
+                                  margin:
+                                      EdgeInsets.only(bottom: 50, right: 40),
+                                  child: IconButton(
+                                    icon: Icon(
+                                      Icons.group_work,
+                                      size: 80,
+                                    ),
+                                    onPressed: () {
+                                      CameraAlbum.takePhoto((identifier) {
+                                        debugPrint(identifier);
+                                      });
+                                    },
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.switch_camera),
+                          onPressed: () {
+                            CameraAlbum.switchCamera();
+                          },
+                        ),
                       ],
                     ));
               }));

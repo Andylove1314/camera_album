@@ -37,9 +37,10 @@ class CameraView: UIView {
         blurView.g_pinEdges()
         
         NotificationCenter.default.addObserver(self, selector: #selector(switchCamera), name: NSNotification.Name(rawValue:"switchCamera"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(takePhoto), name: NSNotification.Name(rawValue:"takePhoto"), object: nil)
     }
     
-    @objc func switchCamera(notification : Notification){
+    @objc func switchCamera(notification : Notification) {
         UIView.animate(withDuration: 0.3, animations: {
             self.rotateOverlayView.alpha = 1
         }, completion: { _ in
@@ -49,6 +50,17 @@ class CameraView: UIView {
             })
           }
         })
+    }
+    
+    @objc func takePhoto(notification : Notification) {
+        guard let previewLayer = previewLayer else { return }
+        cameraMan.takePhoto(previewLayer, location: nil) { [weak self] asset in
+          guard let asset = asset else {
+            return
+          }
+          SwiftCameraAlbumPlugin.channel.invokeMethod("onTakeDone", arguments: ["identifier": [asset.localIdentifier]])
+            self?.cameraMan.stop()
+        }
     }
     
     func setupPreviewLayer(_ session: AVCaptureSession) {
