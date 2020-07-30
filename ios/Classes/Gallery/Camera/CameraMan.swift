@@ -78,7 +78,7 @@ class CameraMan {
     // Devices
     setupDevices()
 
-    guard let input = backCamera, let output = stillImageOutput else { return }
+    guard let input = frontCamera, let output = stillImageOutput else { return }
 
     addInput(input)
 

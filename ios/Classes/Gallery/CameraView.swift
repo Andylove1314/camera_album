@@ -15,11 +15,13 @@ class CameraView: UIView {
     lazy var cameraMan: CameraMan = self.makeCameraMan()
 
     var previewLayer: AVCaptureVideoPreviewLayer?
+    var position: AVCaptureDevice.Position!
     
-    convenience init(frame: CGRect, appBarHeight: CGFloat) {
+    convenience init(frame: CGRect, appBarHeight: CGFloat, position: AVCaptureDevice.Position) {
         self.init(frame: frame)
 
         self.appBarHeight = appBarHeight
+        self.position = position
         
         check()
     }
@@ -43,7 +45,6 @@ class CameraView: UIView {
 
       previewLayer?.frame = self.layer.bounds
     }
-
     
     // MARK: - Logic
 
@@ -64,6 +65,9 @@ class CameraView: UIView {
                 return
             }
             self?.cameraMan.setup()
+            if self?.position == .back {
+                self?.cameraMan.switchCamera()
+            }
         }
     }
 

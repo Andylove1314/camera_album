@@ -16,6 +16,7 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
     registrar.register(galleryFactory, withId: "platform_gallery_view")
     
     let cameraFactory = PlatformCameraViewFactory()
+    
     registrar.register(cameraFactory, withId: "platform_camera_view")
     
     let instance = SwiftCameraAlbumPlugin()
