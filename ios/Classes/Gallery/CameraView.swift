@@ -36,8 +36,13 @@ class CameraView: UIView {
         rotateOverlayView.addSubview(blurView)
         blurView.g_pinEdges()
         
+        NotificationCenter.default.addObserver(self, selector: #selector(startCamera), name: NSNotification.Name(rawValue:"startCamera"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(switchCamera), name: NSNotification.Name(rawValue:"switchCamera"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(takePhoto), name: NSNotification.Name(rawValue:"takePhoto"), object: nil)
+    }
+    
+    @objc func startCamera(notification : Notification) {
+        cameraMan.session.startRunning()
     }
     
     @objc func switchCamera(notification : Notification) {
@@ -58,7 +63,7 @@ class CameraView: UIView {
           guard let asset = asset else {
             return
           }
-          SwiftCameraAlbumPlugin.channel.invokeMethod("onTakeDone", arguments: ["identifier": [asset.localIdentifier]])
+          SwiftCameraAlbumPlugin.channel.invokeMethod("onTakeDone", arguments: ["identifier": asset.localIdentifier])
             self?.cameraMan.stop()
         }
     }

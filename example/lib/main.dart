@@ -263,8 +263,16 @@ class _HomeState extends State<Home> {
                                       size: 80,
                                     ),
                                     onPressed: () {
-                                      CameraAlbum.takePhoto((identifier) {
-                                        debugPrint(identifier);
+                                      CameraAlbum.takePhoto((path) async {
+                                        debugPrint(path);
+
+                                        await Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          return NewPage(
+                                              MediaType.image, [path]);
+                                        }));
+                                        CameraAlbum.startCamera();
                                       });
                                     },
                                   ),

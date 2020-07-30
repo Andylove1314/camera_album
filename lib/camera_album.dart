@@ -28,6 +28,7 @@ class CameraAlbum {
   static const String method_requestImageFile = 'requestImageFile';
   static const String method_requestVideoFile = 'requestVideoFile';
   static const String method_switchCamera = 'switchCamera';
+  static const String method_startCamera = 'startCamera';
 
   static Future<String> get platformVersion async {
     final String version = await _channel.invokeMethod('getPlatformVersion');
@@ -108,13 +109,20 @@ class CameraAlbum {
         .invokeMethod(method_requestVideoFile, {"identifier": identifier});
   }
 
+  /// 开始预览
+  static Future startCamera() {
+    return _channel.invokeMethod(method_startCamera);
+  }
+
+  /// 切换摄像头
   static Future switchCamera() {
     return _channel.invokeMethod(method_switchCamera);
   }
 
   /// 拍照片
-  static void takePhoto(void Function(String identifier) completion) async {
+  static void takePhoto(void Function(String path) completion) async {
     _channel.invokeMethod("takePhoto");
+
     ///回调监听
     _channel.setMethodCallHandler((MethodCall call) async {
       var method = call.method;
@@ -123,7 +131,9 @@ class CameraAlbum {
       switch (method) {
         case "onTakeDone":
           var identifier = backs["identifier"];
-          completion(identifier);
+          String path =
+              await CameraAlbum.requestImageFile(identifier: identifier);
+          completion(path);
           break;
         default:
           throw UnsupportedError("Unrecognized JSON message");
