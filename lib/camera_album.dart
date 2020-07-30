@@ -24,7 +24,8 @@ class CameraAlbum {
       {BuildContext context,
       callback,
       void Function(List identifier, List duration) onChanged,
-      VoidCallback onLimitCallback}) async {
+      VoidCallback onLimitCallback,
+      bool androidView = true}) async {
     ///回调监听
     _channel.setMethodCallHandler((MethodCall call) async {
       switch (call.method) {
@@ -47,9 +48,10 @@ class CameraAlbum {
       }
     });
 
+    if(Platform.isIOS || androidView){
       Navigator.push(context, MaterialPageRoute(builder: (context) {
         MediaType mediaType =
-            business["inType"] == "image" ? MediaType.image : MediaType.video;
+        business["inType"] == "image" ? MediaType.image : MediaType.video;
         bool isMulti = business["isMulti"];
         return AlbumPicker(
           title: business["title"],
@@ -64,6 +66,9 @@ class CameraAlbum {
         );
       }));
       return "";
+    }else{
+      _channel.invokeMethod('openAlbum', business);
+    }
   }
 
   static Future requestImageFile({@required identifier}) {

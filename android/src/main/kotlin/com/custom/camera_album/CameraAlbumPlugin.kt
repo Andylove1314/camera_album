@@ -40,14 +40,12 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
   private val methodOpenAlbum = "openAlbum"
 
   private lateinit var con:Activity
-  fun setActivity(context: Activity) {
-    con = context
-  }
-
+  private lateinit var pluginBind:FlutterPlugin.FlutterPluginBinding
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    channel = MethodChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), "flutter/camera_album")
+    channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter/camera_album")
     channel.setMethodCallHandler(this)
+    this.pluginBind = flutterPluginBinding
   }
 
   override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
@@ -71,6 +69,9 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
       plugin.con = registrar.activity()
       //method chanel
       plugin.channel.setMethodCallHandler(plugin)
+      
+      ///注册原生view
+      registrar.platformViewRegistry().registerViewFactory("platform_gallery_view", AndroidTextViewFactory(plugin.con,plugin.channel))
 
     }
   }
@@ -251,6 +252,10 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
   override fun onAttachedToActivity(binding: ActivityPluginBinding) {
     con = binding.activity
 
+    ///注册原生view
+    val registry = pluginBind.platformViewRegistry
+    registry.registerViewFactory("platform_gallery_view", AndroidTextViewFactory(con,channel))
+    
   }
 
   override fun onDetachedFromActivityForConfigChanges() {
