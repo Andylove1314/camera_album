@@ -11,6 +11,7 @@ class AlbumPicker extends StatefulWidget {
   final MediaType mediaType;
   final void Function(List<dynamic> path, List<dynamic> seconds) onSelected;
   final VoidCallback onLimitCallback;
+
   const AlbumPicker(
       {Key key,
       this.title = "",
@@ -41,30 +42,32 @@ class _AlbumPickerState extends State<AlbumPicker> {
           ),
           textAlign: TextAlign.center,
         ),
-        actions: <Widget>[
-          FlatButton(
-              onPressed: () async {
+        actions: widget.limit == 1
+            ? null
+            : <Widget>[
+                FlatButton(
+                    onPressed: () async {
 //                widget.onSelected(identifier.map((e) => "$e").toList(),
 //                    duration.map((e) => int.tryParse("$e")).toList());
 
-                List<String> pathList = [];
-                List<int> durationList = [];
+                      List<String> pathList = [];
+                      List<int> durationList = [];
 
-                for (int index = 0; index < identifier.length; index++) {
-                  String path = (widget.mediaType == MediaType.video
-                      ? await CameraAlbum.requestVideoFile(
-                          identifier: identifier[index])
-                      : await CameraAlbum.requestImageFile(
-                          identifier: identifier[index]));
-                  pathList.add(path);
-                  int seconds = duration[index].toInt();
-                  durationList.add(seconds);
-                }
-                Navigator.pop(context);
-                widget.onSelected(pathList, durationList);
-              },
-              child: Text("Done(${identifier.length})"))
-        ],
+                      for (int index = 0; index < identifier.length; index++) {
+                        String path = (widget.mediaType == MediaType.video
+                            ? await CameraAlbum.requestVideoFile(
+                                identifier: identifier[index])
+                            : await CameraAlbum.requestImageFile(
+                                identifier: identifier[index]));
+                        pathList.add(path);
+                        int seconds = duration[index].toInt();
+                        durationList.add(seconds);
+                      }
+                      Navigator.pop(context);
+                      widget.onSelected(pathList, durationList);
+                    },
+                    child: Text("Done(${identifier.length})"))
+              ],
       ),
       body: Container(
         margin: EdgeInsets.only(top: 5),
@@ -74,7 +77,7 @@ class _AlbumPickerState extends State<AlbumPicker> {
           callback: (info) async {
             print(info);
 
-            if(Platform.isIOS){
+            if (Platform.isIOS) {
               var identifiers = info.paths;
               int seconds = 0;
               String path = "";
@@ -89,11 +92,9 @@ class _AlbumPickerState extends State<AlbumPicker> {
               }
               Navigator.pop(context);
               widget.onSelected([path], [seconds]);
-            }else{
+            } else {
               widget.onSelected(info.paths, info.durs);
             }
-
-
           },
           onChanged: (List identifier, List duration) {
             this.identifier = identifier;
