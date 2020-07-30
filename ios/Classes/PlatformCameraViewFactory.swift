@@ -13,7 +13,7 @@ class PlatformCameraViewFactory: NSObject, FlutterPlatformViewFactory {
     }
 }
 
-class PlatformCameraView: NSObject,FlutterPlatformView {
+class PlatformCameraView: NSObject, FlutterPlatformView {
     let frame: CGRect
     let viewId: Int64
 
