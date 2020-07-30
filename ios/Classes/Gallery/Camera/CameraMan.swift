@@ -28,7 +28,19 @@ class CameraMan {
 
   func setup() {
     if Permission.Camera.status == .authorized {
-      self.start()
+        self.start()
+        // 解决前置摄像头镜像问题
+        for output in session.outputs {
+            for av in output.connections {
+                // 判断是否是前置摄像头状态
+                if (frontCamera != nil) {
+                    if (av.isVideoMirroringSupported) {
+                        // 镜像设置
+                        av.isVideoMirrored = true
+                    }
+                }
+            }
+        }
     } else {
       self.delegate?.cameraManNotAvailable(self)
     }
