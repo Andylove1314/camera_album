@@ -19,6 +19,7 @@ class PlatformCameraView: NSObject, FlutterPlatformView {
 
     var appBarHeight: CGFloat = 0
     var position: AVCaptureDevice.Position = .front
+    var isRecordVideo: Bool = false
 
     init(_ frame: CGRect, viewID: Int64, args: Any?) {
         self.frame = frame
@@ -35,10 +36,14 @@ class PlatformCameraView: NSObject, FlutterPlatformView {
                     self.position = _postion
                 }
             }
+
+            if let _isRecordVideo = dict.value(forKey: "isRecordVideo") as? Bool {
+                self.isRecordVideo = _isRecordVideo
+            }
         }
     }
     
     func view() -> UIView {
-        return CameraView(frame: UIScreen.main.bounds, appBarHeight: appBarHeight, position: position)
+        return CameraView(frame: UIScreen.main.bounds, appBarHeight: appBarHeight, position: position, isRecordVideo: isRecordVideo)
     }
 }

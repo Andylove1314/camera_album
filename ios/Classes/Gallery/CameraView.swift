@@ -22,16 +22,18 @@ class CameraView: UIView {
 
     var previewLayer: AVCaptureVideoPreviewLayer?
     var position: AVCaptureDevice.Position!
+    var isRecordVideo: Bool!
     
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
     
-    convenience init(frame: CGRect, appBarHeight: CGFloat, position: AVCaptureDevice.Position) {
+    convenience init(frame: CGRect, appBarHeight: CGFloat, position: AVCaptureDevice.Position, isRecordVideo: Bool) {
         self.init(frame: frame)
 
         self.appBarHeight = appBarHeight
         self.position = position
+        self.isRecordVideo = isRecordVideo
         
         check()
         
@@ -73,6 +75,10 @@ class CameraView: UIView {
     @objc func takePhoto(notification : Notification) {
         guard let previewLayer = previewLayer else { return }
         SwiftCameraAlbumPlugin.channel.invokeMethod("onTakeStart", arguments: nil)
+        if isRecordVideo {
+            startRecord()
+            return
+        }
         UIView.animate(withDuration: 0.1, animations: {
           self.shutterOverlayView.alpha = 1
         }, completion: { _ in
@@ -87,6 +93,11 @@ class CameraView: UIView {
           SwiftCameraAlbumPlugin.channel.invokeMethod("onTakeDone", arguments: ["identifier": asset.localIdentifier])
             self?.cameraMan.stop()
         }
+    }
+    
+    @objc func startRecord() {
+        let path = tmpNwdn + "\(Date())"
+        cameraMan.movieFileOut?.startRecording(to: URL(fileURLWithPath: path), recordingDelegate: self)
     }
     
     func setupPreviewLayer(_ session: AVCaptureSession) {
@@ -139,6 +150,7 @@ class CameraView: UIView {
     func makeCameraMan() -> CameraMan {
       let man = CameraMan()
       man.delegate = self
+      man.isRecordVideo = isRecordVideo
 
       return man
     }
@@ -182,3 +194,16 @@ extension CameraView: CameraManDelegate {
   }
 
 }
+
+extension CameraView: AVCaptureFileOutputRecordingDelegate {
+    /// 开始录制
+    func fileOutput(_ output: AVCaptureFileOutput, didStartRecordingTo fileURL: URL, from connections: [AVCaptureConnection]) {
+        
+    }
+    
+    /// 结束录制
+    func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
+        
+    }
+}
+

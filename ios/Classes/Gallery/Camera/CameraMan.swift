@@ -11,6 +11,8 @@ protocol CameraManDelegate: class {
 
 class CameraMan {
   weak var delegate: CameraManDelegate?
+  
+  var isRecordVideo: Bool = false
 
   let session = AVCaptureSession()
   let queue = DispatchQueue(label: "no.hyper.Gallery.Camera.SessionQueue", qos: .background)
@@ -19,6 +21,7 @@ class CameraMan {
   var backCamera: AVCaptureDeviceInput?
   var frontCamera: AVCaptureDeviceInput?
   var stillImageOutput: AVCaptureStillImageOutput?
+  var movieFileOut: AVCaptureMovieFileOutput?
 
   deinit {
     stop()
@@ -51,13 +54,28 @@ class CameraMan {
         }
     }
 
-    // Output
-    stillImageOutput = AVCaptureStillImageOutput()
-    stillImageOutput?.outputSettings = [AVVideoCodecKey: AVVideoCodecJPEG]
+    if isRecordVideo {
+        movieFileOut = AVCaptureMovieFileOutput()
+    } else {
+        // Output
+        stillImageOutput = AVCaptureStillImageOutput()
+        stillImageOutput?.outputSettings = [AVVideoCodecKey: AVVideoCodecJPEG]
+    }
   }
 
   func addInput(_ input: AVCaptureDeviceInput) {
-    configurePreset(input)
+    if isRecordVideo {
+        session.sessionPreset = AVCaptureSession.Preset.vga640x480
+        if let audioDevice = AVCaptureDevice.default(for: AVMediaType.audio) {
+            if let audioInput = try? AVCaptureDeviceInput(device: audioDevice) {
+                if session.canAddInput(audioInput) {
+                    session.addInput(audioInput)
+                }
+            }
+        }
+    } else {
+        configurePreset(input)
+    }
 
     if session.canAddInput(input) {
       session.addInput(input)
@@ -78,7 +96,7 @@ class CameraMan {
     // Devices
     setupDevices()
 
-    guard let input = frontCamera, let output = stillImageOutput else { return }
+    guard let input = frontCamera, let output = (isRecordVideo ? movieFileOut : stillImageOutput) else { return }
 
     addInput(input)
 
@@ -187,10 +205,14 @@ class CameraMan {
   }
 
   func flash(_ mode: AVCaptureDevice.FlashMode) {
-    guard let device = currentInput?.device , device.isFlashModeSupported(mode) else { return }
+    guard let device = currentInput?.device, device.isFlashModeSupported(mode) else { return }
 
     queue.async {
       self.lock {
+        let torchMode: AVCaptureDevice.TorchMode = mode == .on ? .on : .off
+        if self.isRecordVideo && device.isTorchModeSupported(torchMode) {
+            device.torchMode = torchMode
+        }
         device.flashMode = mode
       }
     }

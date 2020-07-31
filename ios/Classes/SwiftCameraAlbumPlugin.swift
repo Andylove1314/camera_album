@@ -3,7 +3,7 @@ import UIKit
 import Photos
 
 private let kNwdnAsset = "nwdn_asset/"
-private let tmpNwdn = NSTemporaryDirectory() + kNwdnAsset
+let tmpNwdn = NSTemporaryDirectory() + kNwdnAsset
 
 public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
     
@@ -74,7 +74,7 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
         NotificationCenter.default.post(name: NSNotification.Name("takePhoto"), object: self, userInfo: nil)
     case "setFlashMode":
         if let value = call.arguments as? Int {
-            NotificationCenter.default.post(name: NSNotification.Name("setFlashMode"), object: self, userInfo: ["mode": AVCaptureDevice.FlashMode(rawValue: value) ?? .off])
+            NotificationCenter.default.post(name: NSNotification.Name("setFlashMode"), object: self, userInfo: ["mode": (AVCaptureDevice.FlashMode(rawValue: value) ?? .off)])
         }
     default: break
     }
