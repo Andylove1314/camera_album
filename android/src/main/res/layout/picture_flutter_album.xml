@@ -51,16 +51,27 @@
         </LinearLayout>
 
         <!--照片列表-->
-        <com.luck.picture.lib.widget.RecyclerPreloadView
-            android:id="@+id/picture_recycler"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_above="@id/rl_bottom"
-            android:layout_below="@id/titleViewBg"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            android:overScrollMode="never" />
+            android:layout_weight="1">
+
+
+            <com.luck.picture.lib.widget.RecyclerPreloadView
+                android:id="@+id/picture_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:overScrollMode="never" />
+
+            <com.custom.camera_album.task.AlbumView
+                android:id="@+id/album_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+
+        </RelativeLayout>
 
         <!--底部相机-->
         <LinearLayout

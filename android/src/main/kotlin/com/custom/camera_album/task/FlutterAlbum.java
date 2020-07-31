@@ -75,7 +75,6 @@ import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.StringUtils;
 import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.tools.ValueOf;
-import com.luck.picture.lib.widget.FolderPopWindow;
 import com.luck.picture.lib.widget.RecyclerPreloadView;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.model.CutInfo;
@@ -105,7 +104,6 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
     protected RecyclerPreloadView mRecyclerView;
     protected RelativeLayout mBottomLayout;
     protected PictureImageGridAdapter mAdapter;
-    protected FolderPopWindow folderWindow;
     protected Animation animation = null;
     protected boolean isStartAnimation = false;
     protected MediaPlayer mediaPlayer;
@@ -129,6 +127,9 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
     protected boolean isHasMore = true;
 
     MethodChannel channel;
+
+    /**相册控件*/
+    private AlbumView albumView;
 
     public void setChannel(MethodChannel channel) {
         this.channel = channel;
@@ -215,7 +216,7 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
     }
     private void initConfig() {
 
-        PictureSelectionModel cameraOrAlbum =  new PictureSelectionModel(PictureSelector.create((Activity) context), PictureMimeType.ofAll());
+        PictureSelectionModel cameraOrAlbum =  new PictureSelectionModel(PictureSelector.create((Activity) context), PictureMimeType.ofVideo());
 
         cameraOrAlbum
                 .imageEngine(GlideEngine.createGlideEngine()) // 外部传入图片加载引擎，必传项
@@ -310,10 +311,6 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
                 context.getString(R.string.picture_all_audio) : context.getString(R.string.picture_camera_roll);
         mTvPictureTitle.setText(title);
         mTvPictureTitle.setTag(R.id.view_tag, -1);
-        folderWindow = new FolderPopWindow(getContext(), config);
-        folderWindow.setArrowImageView(mIvArrow);
-        Log.i("folderWindow",folderWindow.toString());
-        folderWindow.setOnAlbumItemClickListener(this);
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(config.imageSpanCount,
                 ScreenUtils.dip2px(context, 2), false));
         mRecyclerView.setLayoutManager(new GridLayoutManager(context, config.imageSpanCount));
@@ -358,6 +355,10 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
         }
         albumTitleLin = findViewById(R.id.album_title_button_lin);
         albumTitleLin.setOnClickListener(this);
+
+        albumView = findViewById(R.id.album_view);
+        albumView.setConfig(config,this, mIvArrow);
+
     }
 
 
@@ -499,9 +500,9 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
 
                 @Override
                 public Boolean doInBackground() {
-                    int size = folderWindow.getFolderData().size();
+                    int size = albumView.getFolderData().size();
                     for (int i = 0; i < size; i++) {
-                        LocalMediaFolder mediaFolder = folderWindow.getFolder(i);
+                        LocalMediaFolder mediaFolder = albumView.getFolder(i);
                         if (mediaFolder == null) {
                             continue;
                         }
@@ -527,9 +528,9 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
      */
     private void initPageModel(List<LocalMediaFolder> folders) {
         if (folders != null) {
-            folderWindow.bindFolder(folders);
+            albumView.bindFolder(folders);
             mPage = 1;
-            LocalMediaFolder folder = folderWindow.getFolder(0);
+            LocalMediaFolder folder = albumView.getFolder(0);
             mTvPictureTitle.setTag(R.id.view_count_tag, folder != null ? folder.getImageNum() : 0);
             mTvPictureTitle.setTag(R.id.view_index_tag, 0);
             long bucketId = folder != null ? folder.getBucketId() : -1;
@@ -613,7 +614,7 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
     private void initStandardModel(List<LocalMediaFolder> folders) {
         if (folders != null) {
             if (folders.size() > 0) {
-                folderWindow.bindFolder(folders);
+                albumView.bindFolder(folders);
                 LocalMediaFolder folder = folders.get(0);
                 folder.setChecked(true);
                 mTvPictureTitle.setTag(R.id.view_count_tag, folder.getImageNum());
@@ -631,7 +632,7 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
                             folder.getData().add(0, media);
                             folder.setCheckedNum(1);
                             folder.setImageNum(folder.getImageNum() + 1);
-                            updateMediaFolder(folderWindow.getFolderData(), media);
+                            updateMediaFolder(albumView.getFolderData(), media);
                         } else {
                             mAdapter.bindData(result);
                         }
@@ -758,8 +759,8 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.pictureLeftBack) {
-            if (folderWindow != null && folderWindow.isShowing()) {
-                folderWindow.dismiss();
+            if (albumView != null) {
+                albumView.dismiss();
             } else {
                 if (config != null && PictureSelectionConfig.listener != null) {
                     PictureSelectionConfig.listener.onCancel();
@@ -768,14 +769,14 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
             return;
         }
         if (id == R.id.album_title_button_lin) {
-            if (folderWindow.isShowing()) {
-                folderWindow.dismiss();
+            if (albumView.isShowing()) {
+                albumView.dismiss();
             } else {
-                if (!folderWindow.isEmpty()) {
-                    folderWindow.showAsDropDown(albumTitleLin);
+                if (!albumView.isEmpty()) {
+                    albumView.showAsDropDown();
                     if (!config.isSingleDirectReturn) {
                         List<LocalMedia> selectedImages = mAdapter.getSelectedData();
-                        folderWindow.updateFolderCheckStatus(selectedImages);
+                        albumView.updateFolderCheckStatus(selectedImages);
                     }
                 }
             }
@@ -1395,7 +1396,7 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
      */
     private void setLastCacheFolderData() {
         int oldPosition = ValueOf.toInt(mTvPictureTitle.getTag(R.id.view_index_tag));
-        LocalMediaFolder lastFolder = folderWindow.getFolder(oldPosition);
+        LocalMediaFolder lastFolder = albumView.getFolder(oldPosition);
         lastFolder.setData(mAdapter.getData());
         lastFolder.setCurrentDataPage(mPage);
         lastFolder.setHasMore(isHasMore);
@@ -1408,7 +1409,7 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
      */
     private boolean isCurrentCacheFolderData(int position) {
         mTvPictureTitle.setTag(R.id.view_index_tag, position);
-        LocalMediaFolder currentFolder = folderWindow.getFolder(position);
+        LocalMediaFolder currentFolder = albumView.getFolder(position);
         if (currentFolder != null
                 && currentFolder.getData() != null
                 && currentFolder.getData().size() > 0) {
@@ -1428,8 +1429,8 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
         mAdapter.setShowCamera(camera);
         mTvPictureTitle.setText(folderName);
         long currentBucketId = ValueOf.toLong(mTvPictureTitle.getTag(R.id.view_tag));
-        mTvPictureTitle.setTag(R.id.view_count_tag, folderWindow.getFolder(position) != null
-                ? folderWindow.getFolder(position).getImageNum() : 0);
+        mTvPictureTitle.setTag(R.id.view_count_tag, albumView.getFolder(position) != null
+                ? albumView.getFolder(position).getImageNum() : 0);
         if (config.isPageStrategy) {
             if (currentBucketId != bucketId) {
                 setLastCacheFolderData();
@@ -1455,7 +1456,7 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
             mRecyclerView.smoothScrollToPosition(0);
         }
         mTvPictureTitle.setTag(R.id.view_tag, bucketId);
-        folderWindow.dismiss();
+        albumView.dismiss();
 
 
     }
