@@ -98,6 +98,7 @@ class CameraAlbum {
             config.inType == "image" ? MediaType.image : MediaType.video;
         bool isMulti = config.isMulti;
         return AlbumPicker(
+          
           title: config.title,
           limit: isMulti ? config.multiCount : 1,
           mediaType: mediaType,
@@ -105,6 +106,7 @@ class CameraAlbum {
             callback(CameraAlbumBack(paths: paths, durs: seconds));
           },
           onLimitCallback: onLimitCallback,
+          config: config,
         );
       }));
       return "";

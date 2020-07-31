@@ -1,7 +1,6 @@
-package com.custom.camera_album.task;
+package com.custom.camera_album;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -96,7 +95,6 @@ public class AlbumView extends RelativeLayout {
         ivArrowView.setImageDrawable(drawableDown);
         AnimUtils.rotateArrow(ivArrowView, false);
         isDismiss = true;
-        isDismiss = false;
     }
 
     /**是否正在展示*/

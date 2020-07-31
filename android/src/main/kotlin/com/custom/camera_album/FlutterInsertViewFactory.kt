@@ -7,15 +7,16 @@ import io.flutter.plugin.platform.PlatformView
 import io.flutter.plugin.platform.PlatformViewFactory
 
 ///穿透专用
-class AndroidTextViewFactory(con: Context, channel: MethodChannel) : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
+class AndroidTextViewFactory(context: Context, channel: MethodChannel) : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
 
-    var con = con
+    var con = context
     var channel = channel
 
     override fun create(context: Context, viewId: Int, args: Any?): PlatformView {
-        val androidTextView = FlutterInsertView(con,channel)
-        androidTextView.contentView?.id = viewId
-        return androidTextView
+        val platform = FlutterInsertView(con, channel, args)
+        platform.albun?.id = viewId
+
+        return platform
         
     }
 }

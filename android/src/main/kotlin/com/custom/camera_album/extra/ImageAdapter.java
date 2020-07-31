@@ -1,4 +1,4 @@
-package com.custom.camera_album.task;
+package com.custom.camera_album.extra;
 
 import android.content.Context;
 import android.content.Intent;

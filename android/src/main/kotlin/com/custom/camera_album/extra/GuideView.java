@@ -1,4 +1,4 @@
-package com.custom.camera_album.task;
+package com.custom.camera_album.extra;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -11,7 +11,6 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.luck.picture.lib.R;
 import com.zhpan.bannerview.BannerViewPager;
-import com.zhpan.indicator.enums.IndicatorSlideMode;
 import com.zhpan.indicator.enums.IndicatorStyle;
 
 import java.util.List;

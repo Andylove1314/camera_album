@@ -1,4 +1,4 @@
-package com.custom.camera_album.task;
+package com.custom.camera_album;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -23,7 +22,6 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -32,7 +30,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
-import com.custom.camera_album.GlideEngine;
 import com.luck.picture.lib.PictureSelectionModel;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.R;
@@ -92,73 +89,50 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
         OnRecyclerViewPreloadMoreListener {
 
     ///activity视图
-    protected PictureSelectionConfig config;
-    protected PictureLoadingDialog mLoadingDialog;
-    protected boolean openWhiteStatusBar, numComplete;
-    protected View container;
-    protected ImageView mIvArrow;
-    protected LinearLayout albumTitleLin;
-    protected TextView mTvPictureTitle, mTvPictureOk, mTvEmpty,
-            mTvPictureImgNum, mTvPicturePreview, mTvPlayPause, mTvStop, mTvQuit,
-            mTvMusicStatus, mTvMusicTotal, mTvMusicTime;
-    protected RecyclerPreloadView mRecyclerView;
-    protected RelativeLayout mBottomLayout;
-    protected PictureImageGridAdapter mAdapter;
-    protected Animation animation = null;
-    protected boolean isStartAnimation = false;
-    protected MediaPlayer mediaPlayer;
-    protected SeekBar musicSeekBar;
-    protected boolean isPlayAudio = false;
-    protected PictureCustomDialog audioDialog;
-    protected CheckBox mCbOriginal;
-    protected int oldCurrentListSize;
-    protected boolean isEnterSetting;
+    private boolean numComplete;
+    private PictureLoadingDialog mLoadingDialog;
+    private View container;
+    private ImageView mIvArrow;
+    private LinearLayout albumTitleLin;
+    private TextView mTvPictureTitle, mTvPictureOk, mTvEmpty,
+            mTvPictureImgNum, mTvPicturePreview;
+    private RecyclerPreloadView mRecyclerView;
+    private RelativeLayout mBottomLayout;
+    private PictureImageGridAdapter mAdapter;
+    private Animation animation = null;
+    private boolean isStartAnimation = false;
+    private CheckBox mCbOriginal;
+    private int oldCurrentListSize;
     private long intervalClickTime = 0;
     private int mOpenCameraCount;
+    //page
+    private int mPage = 1;
+    //if there more
+    private boolean isHasMore = true;
 
     private  Context context;
-    /**
-     * page
-     */
-    protected int mPage = 1;
-    /**
-     * if there more
-     */
-    protected boolean isHasMore = true;
-
-    MethodChannel channel;
-
     /**相册控件*/
     private AlbumView albumView;
+    /**通讯专用*/
+    private MethodChannel channel;
+    private Map<String, Object> data;
 
-    public void setChannel(MethodChannel channel) {
-        this.channel = channel;
-    }
+    /**相册配置*/
+    static public PictureSelectionConfig config;
 
     private final static String TAG = "FlutterAlbum";
 
-    public FlutterAlbum(Context context) {
-        this(context, null);
-    }
-
-    public FlutterAlbum(Context con, @Nullable AttributeSet attrs) {
-        super(con, null);
+    public FlutterAlbum(Context con,MethodChannel chann, Object param) {
+        super(con);
+        channel = chann;
+        data = (Map<String, Object>) param;
         context = con;
         LayoutInflater.from(context).inflate(R.layout.picture_flutter_album, this);
+        ///初始化数据
         initConfig();
         initWidgets();
         initPictureSelectorStyle();
     }
-
-
-    public FlutterAlbum(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-    }
-
-    public FlutterAlbum(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
-
 
     /**主题*/
     private PictureParameterStyle getWhiteStyle(){
@@ -214,34 +188,35 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
         mPictureParameterStyle.pictureExternalPreviewGonePreviewDelete = true;
         return mPictureParameterStyle;
     }
+    /**设置*/
     private void initConfig() {
 
-        PictureSelectionModel cameraOrAlbum =  new PictureSelectionModel(PictureSelector.create((Activity) context), PictureMimeType.ofVideo());
+        PictureSelectionModel cameraOrAlbum =  new PictureSelectionModel(PictureSelector.create((Activity) context), ("video".equals(data.get("inType")))?PictureMimeType.ofVideo():PictureMimeType.ofImage());
 
         cameraOrAlbum
                 .imageEngine(GlideEngine.createGlideEngine()) // 外部传入图片加载引擎，必传项
                 .isWeChatStyle(false) // 是否开启微信图片选择风格
                 .isUseCustomCamera(false) // 是否使用自定义相机
                 .setLanguage(LanguageConfig.ENGLISH) // 设置语言，默认中文
-                .isPageStrategy(true) // 是否开启分页策略 & 每页多少条；默认开启
+                .isPageStrategy(false) // 是否开启分页策略 & 每页多少条；默认开启
                 .setPictureStyle(getWhiteStyle()) // 动态自定义相册主题
-                .isMaxSelectEnabledMask(false) // 选择数到了最大阀值列表是否启用蒙层效果
-                .maxSelectNum(5) // 最大图片选择数量
+                .isMaxSelectEnabledMask(true) // 选择数到了最大阀值列表是否启用蒙层效果
+                .maxSelectNum((Integer) data.get("multiCount")) // 最大图片选择数量
                 .minSelectNum(1) // 最小选择数量
-                .maxVideoSelectNum(5) // 视频最大选择数量
+                .maxVideoSelectNum((Integer) data.get("multiCount")) // 视频最大选择数量
                 .imageSpanCount(4) // 每行显示个数
                 .isReturnEmpty(false) // 未选择数据时点击按钮是否可以返回
                 .closeAndroidQChangeWH(true) //如果图片有旋转角度则对换宽高,默认为true
                 .closeAndroidQChangeVideoWH(!SdkVersionUtils.checkedAndroid_Q()) // 如果视频有旋转角度则对换宽高,默认为false
                 .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) // 设置相册Activity方向，不设置默认使用系统
                 .isOriginalImageControl(true) // 是否显示原图控制按钮，如果设置为true则用户可以自由选择是否使用原图，压缩、裁剪功能将会失效
-                .selectionMode(PictureConfig.SINGLE) // 多选 or 单选
+                .selectionMode((boolean)data.get("isMulti")?PictureConfig.MULTIPLE:PictureConfig.SINGLE) // 多选 or 单选
               .isSingleDirectReturn(true) // 单选模式下是否直接返回，PictureConfig.SINGLE模式下有效
                 .isPreviewImage(true) // 是否可预览图片
                 .isPreviewVideo(true) // 是否可预览视频
                 .isEnablePreviewAudio(false) // 是否可播放音频
-                .isCamera(false) // 是否显示拍照按钮
-                .isEnableCrop(false) // 是否裁剪
+                .isCamera((Boolean) data.get("showGridCamera")) // 是否显示拍照按钮
+                .isEnableCrop((Boolean) data.get("cute")) // 是否裁剪
                 .isCompress(false) // 是否压缩
                 .synOrAsy(true) //同步true或异步false 压缩 默认同步
                 .hideBottomControls(true) // 是否显示uCrop工具栏，默认不显示
@@ -261,21 +236,7 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
 
             @Override
             public void onResult(List<LocalMedia> result) {
-                Log.d(TAG, "onResult: "+result.get(0).toString());
-                List paths = new ArrayList<String>();
-                List durs = new ArrayList<Long>();
-                for (LocalMedia media: result) {
-                    String path = (SdkVersionUtils.checkedAndroid_Q())? media.getAndroidQToPath() :media.getPath();
-                    Log.i("所选文件路径", "原图:"+path);
-                    paths.add(path);
-                    long dur = media.getDuration()/1000;
-                    Log.i("所选文件时长", ""+dur);
-                    durs.add(dur);
-                }
-                Map back = new HashMap<String, List<Object>>();
-                back.put("paths",paths);
-                back.put("durs",durs);
-                channel.invokeMethod("onMessage", back);
+                _backSrcToFlutter(result);
             }
 
             @Override
@@ -285,6 +246,32 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
         }).get();
         config.isCallbackMode = true;
     }
+
+    /**
+     * 吐数据给flutter
+     * * @param result
+     */
+    private void _backSrcToFlutter(List<LocalMedia> result){
+        Log.d(TAG, "onResult: "+result.get(0).toString());
+        List paths = new ArrayList<String>();
+        List durs = new ArrayList<Long>();
+        for (LocalMedia media: result) {
+            String path = (SdkVersionUtils.checkedAndroid_Q())? media.getAndroidQToPath() :media.getPath();
+            Log.i("所选文件路径", "原图:"+path);
+            paths.add(path);
+            long dur = media.getDuration()/1000;
+            Log.i("所选文件时长", ""+dur);
+            durs.add(dur);
+        }
+        Map back = new HashMap<String, List<Object>>();
+        back.put("paths",paths);
+        back.put("durs",durs);
+        channel.invokeMethod("onMessage", back);
+    }
+
+    /**
+     * 初始化view
+     */
     protected void initWidgets() {
         context.setTheme(config.themeStyleId == 0 ? R.style.picture_default_style : config.themeStyleId);
         container = findViewById(R.id.container);
@@ -538,7 +525,6 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
             LocalMediaPageLoader.getInstance(getContext(), config).loadPageMediaData(bucketId, mPage,
                     (OnQueryDataResultListener<LocalMedia>) (data, currentPage, isHasMore) -> {
 
-                        Log.i(TAG,"'start dismiss");
                         dismissDialog();
                         if (mAdapter != null) {
                             this.isHasMore = true;
@@ -1466,13 +1452,11 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
      */
     protected void dismissDialog() {
         try {
-            Log.i(TAG,"'dismiss'");
             if (mLoadingDialog != null
                     && mLoadingDialog.isShowing()) {
                 mLoadingDialog.dismiss();
             }
         } catch (Exception e) {
-            Log.i(TAG,"'dismiss exception'");
             mLoadingDialog = null;
             e.printStackTrace();
         }
@@ -1480,7 +1464,8 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
 
     @Override
     public void onTakePhoto() {
-
+        ///todo 使用现有相机
+        channel.invokeMethod("callCamera", "");
     }
 
     @Override

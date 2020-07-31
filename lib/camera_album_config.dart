@@ -17,15 +17,15 @@ class CameraAlbumConfig {
   CameraAlbumConfig(
       {this.actionId,
       this.title,
-      this.inType,
-      this.firstCamera,
-      this.showBottomCamera,
-      this.showGridCamera,
-      this.showAlbum,
-      this.isMulti,
+      this.inType = 'image',
+      this.firstCamera = false,
+      this.showBottomCamera = true,
+      this.showGridCamera = false,
+      this.showAlbum = true,
+      this.isMulti = false,
       this.guides,
-      this.multiCount,
-      this.cute});
+      this.multiCount = 5,
+      this.cute = false});
 
   CameraAlbumConfig.from(Map<String, dynamic> data) {
     if (data != null) {

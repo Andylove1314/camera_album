@@ -17,6 +17,7 @@ class UIKitAlbum extends StatefulWidget {
   final Function(CameraAlbumBack back) callback;
   final void Function(List identifier, List duration) onChanged;
   final VoidCallback onLimitCallback;
+  final CameraAlbumConfig config;
 
   const UIKitAlbum(
       {Key key,
@@ -24,7 +25,8 @@ class UIKitAlbum extends StatefulWidget {
       this.limit = 1,
       this.callback,
       this.onChanged,
-      this.onLimitCallback})
+      this.onLimitCallback,
+      this.config})
       : super(key: key);
 
   @override
@@ -57,10 +59,7 @@ class _UIKitAlbumState extends State<UIKitAlbum> {
             creationParamsCodec: const StandardMessageCodec(),
           ): AndroidView(
               viewType: "platform_gallery_view",
-              creationParams:<String, dynamic>{
-                "mediaType": widget.mediaType.index,
-                "limit": widget.limit,
-              },
+              creationParams:widget.config.toMap(),
               creationParamsCodec: const StandardMessageCodec());
         },
       ),

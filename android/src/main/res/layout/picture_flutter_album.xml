@@ -65,7 +65,7 @@
                 android:layout_marginRight="2dp"
                 android:overScrollMode="never" />
 
-            <com.custom.camera_album.task.AlbumView
+            <com.custom.camera_album.AlbumView
                 android:id="@+id/album_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>

@@ -11,6 +11,7 @@ class AlbumPicker extends StatefulWidget {
   final MediaType mediaType;
   final void Function(List<dynamic> path, List<dynamic> seconds) onSelected;
   final VoidCallback onLimitCallback;
+  final CameraAlbumConfig config;
 
   const AlbumPicker(
       {Key key,
@@ -18,7 +19,8 @@ class AlbumPicker extends StatefulWidget {
       this.limit = 1,
       @required this.mediaType,
       this.onSelected,
-      this.onLimitCallback})
+      this.onLimitCallback,
+      this.config})
       : super(key: key);
 
   @override
@@ -102,6 +104,7 @@ class _AlbumPickerState extends State<AlbumPicker> {
             setState(() {});
           },
           onLimitCallback: widget.onLimitCallback,
+          config: widget.config,
         ),
       ),
     );
