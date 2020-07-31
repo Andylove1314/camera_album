@@ -134,7 +134,7 @@ class CameraMan {
     }
     
     // 解决前置摄像头镜像问题
-    if (connection.isVideoMirroringSupported) {
+    if (currentInput == self.frontCamera && connection.isVideoMirroringSupported) {
         // 镜像设置
         connection.isVideoMirrored = true
     }

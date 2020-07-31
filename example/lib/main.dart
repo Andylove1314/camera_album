@@ -257,13 +257,49 @@ class CameraDemo extends StatefulWidget {
 }
 
 class _CameraDemoState extends State<CameraDemo> {
+  /// 是否可以点击拍照
   bool enableTakePhoto = true;
+
+  /*
+  off = 0
+  on = 1
+  auto = 2
+   */
+  CaptureDeviceFlashMode flashMode = CaptureDeviceFlashMode.off;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Camera"),
+          title: Text(
+            "Camera",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.normal,
+              color: Color(0xFF333333),
+            ),
+          ),
+          actions: <Widget>[
+            CupertinoButton(
+                child: Text(
+                  flashMode.index == 0
+                      ? "OFF"
+                      : flashMode.index == 1 ? "ON" : "AUTO",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.normal,
+                    color: Color(0xFF333333),
+                  ),
+                ),
+                onPressed: () {
+                  setState(() {
+                    int index = 0;
+                    index = flashMode.index < 2 ? flashMode.index + 1 : 0;
+                    flashMode = CaptureDeviceFlashMode.values[index];
+                    CameraAlbum.setFlashMode(flashMode);
+                  });
+                })
+          ],
         ),
         body: Column(
           children: <Widget>[

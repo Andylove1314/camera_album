@@ -12,6 +12,19 @@ export 'ui_kit_album.dart';
 export 'ui_kit_camera.dart';
 export 'camera_album_config.dart';
 
+/*
+    off = 0
+    on = 1
+    auto = 2
+     */
+
+/// 闪光灯模式
+enum CaptureDeviceFlashMode {
+  off,
+  on,
+  auto,
+}
+
 class CameraAlbum {
   ///channel
   static const MethodChannel _channel =
@@ -28,6 +41,7 @@ class CameraAlbum {
   static const String method_requestImageFile = 'requestImageFile';
   static const String method_requestVideoFile = 'requestVideoFile';
   static const String method_switchCamera = 'switchCamera';
+  static const String method_setFlashMode = 'setFlashMode';
   static const String method_startCamera = 'startCamera';
 
   static Future<String> get platformVersion async {
@@ -117,6 +131,11 @@ class CameraAlbum {
   /// 切换摄像头
   static Future switchCamera() {
     return _channel.invokeMethod(method_switchCamera);
+  }
+
+  /// 切换闪光灯
+  static Future setFlashMode(CaptureDeviceFlashMode mode) {
+    return _channel.invokeMethod(method_setFlashMode, mode.index);
   }
 
   /// 拍照片

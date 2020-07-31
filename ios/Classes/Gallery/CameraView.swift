@@ -44,6 +44,7 @@ class CameraView: UIView {
         
         NotificationCenter.default.addObserver(self, selector: #selector(startCamera), name: NSNotification.Name(rawValue:"startCamera"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(switchCamera), name: NSNotification.Name(rawValue:"switchCamera"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(setFlashMode), name: NSNotification.Name(rawValue:"setFlashMode"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(takePhoto), name: NSNotification.Name(rawValue:"takePhoto"), object: nil)
     }
     
@@ -61,6 +62,12 @@ class CameraView: UIView {
             })
           }
         })
+    }
+    
+    @objc func setFlashMode(notification : Notification) {
+        if let mode = notification.userInfo?["mode"] as? AVCaptureDevice.FlashMode {
+            cameraMan.flash(mode)
+        }
     }
     
     @objc func takePhoto(notification : Notification) {

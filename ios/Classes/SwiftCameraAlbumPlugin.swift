@@ -66,12 +66,16 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
             }
             }
         }
-    case "startCamera":
-            NotificationCenter.default.post(name: NSNotification.Name("startCamera"), object: self, userInfo:nil)
+    case "startCamera":    
+        NotificationCenter.default.post(name: NSNotification.Name("startCamera"), object: self, userInfo: nil)
     case "switchCamera":
-        NotificationCenter.default.post(name: NSNotification.Name("switchCamera"), object: self, userInfo:nil)
+        NotificationCenter.default.post(name: NSNotification.Name("switchCamera"), object: self, userInfo: nil)
     case "takePhoto":
-        NotificationCenter.default.post(name: NSNotification.Name("takePhoto"), object: self, userInfo:nil)
+        NotificationCenter.default.post(name: NSNotification.Name("takePhoto"), object: self, userInfo: nil)
+    case "setFlashMode":
+        if let value = call.arguments as? Int {
+            NotificationCenter.default.post(name: NSNotification.Name("setFlashMode"), object: self, userInfo: ["mode": AVCaptureDevice.FlashMode(rawValue: value) ?? .off])
+        }
     default: break
     }
   }
