@@ -3,7 +3,7 @@ import UIKit
 import Photos
 
 private let kNwdnAsset = "nwdn_asset/"
-private let tmpNwdn = NSTemporaryDirectory() + kNwdnAsset
+let tmpNwdn = NSTemporaryDirectory() + kNwdnAsset
 
 public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
     
