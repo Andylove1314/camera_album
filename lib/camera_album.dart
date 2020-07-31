@@ -12,6 +12,19 @@ export 'ui_kit_album.dart';
 export 'ui_kit_camera.dart';
 export 'camera_album_config.dart';
 
+/*
+    off = 0
+    on = 1
+    auto = 2
+     */
+
+/// 闪光灯模式
+enum CaptureDeviceFlashMode {
+  off,
+  on,
+  auto,
+}
+
 class CameraAlbum {
   ///channel
   static const MethodChannel _channel =
@@ -28,6 +41,7 @@ class CameraAlbum {
   static const String method_requestImageFile = 'requestImageFile';
   static const String method_requestVideoFile = 'requestVideoFile';
   static const String method_switchCamera = 'switchCamera';
+  static const String method_setFlashMode = 'setFlashMode';
   static const String method_startCamera = 'startCamera';
 
   static Future<String> get platformVersion async {
@@ -119,8 +133,14 @@ class CameraAlbum {
     return _channel.invokeMethod(method_switchCamera);
   }
 
+  /// 切换闪光灯
+  static Future setFlashMode(CaptureDeviceFlashMode mode) {
+    return _channel.invokeMethod(method_setFlashMode, mode.index);
+  }
+
   /// 拍照片
-  static void takePhoto(void Function(String path) completion) async {
+  static void takePhoto(
+      {VoidCallback takeStart, void Function(String path) completion}) async {
     _channel.invokeMethod("takePhoto");
 
     ///回调监听
@@ -129,6 +149,9 @@ class CameraAlbum {
       var backs = call.arguments;
       print('native回传：$method -> $backs');
       switch (method) {
+        case "onTakeStart":
+          takeStart();
+          break;
         case "onTakeDone":
           var identifier = backs["identifier"];
           String path =
