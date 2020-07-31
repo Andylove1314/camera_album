@@ -243,7 +243,18 @@ class _HomeState extends State<Home> {
             icon: Icon(Icons.photo_camera),
             onPressed: () async {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return CameraDemo();
+                return CameraDemo(
+                  isRecordVideo: false,
+                );
+              }));
+            }),
+        IconButton(
+            icon: Icon(Icons.video_call),
+            onPressed: () async {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return CameraDemo(
+                  isRecordVideo: true,
+                );
               }));
             }),
       ],
@@ -252,6 +263,10 @@ class _HomeState extends State<Home> {
 }
 
 class CameraDemo extends StatefulWidget {
+  final bool isRecordVideo;
+
+  const CameraDemo({Key key, @required this.isRecordVideo}) : super(key: key);
+
   @override
   _CameraDemoState createState() => _CameraDemoState();
 }
@@ -272,7 +287,7 @@ class _CameraDemoState extends State<CameraDemo> {
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            "Camera",
+            widget.isRecordVideo ? "Record" : "Camera",
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.normal,
@@ -294,7 +309,9 @@ class _CameraDemoState extends State<CameraDemo> {
                 onPressed: () {
                   setState(() {
                     int index = 0;
-                    index = flashMode.index < 2 ? flashMode.index + 1 : 0;
+                    index = flashMode.index < (widget.isRecordVideo ? 1 : 2)
+                        ? flashMode.index + 1
+                        : 0;
                     flashMode = CaptureDeviceFlashMode.values[index];
                     CameraAlbum.setFlashMode(flashMode);
                   });
@@ -306,7 +323,9 @@ class _CameraDemoState extends State<CameraDemo> {
             Expanded(
               child: Stack(
                 children: <Widget>[
-                  UIKitCamera(),
+                  UIKitCamera(
+                    isRecordVideo: widget.isRecordVideo,
+                  ),
                   Center(
                       child: Text(
                     "Camera Demo",

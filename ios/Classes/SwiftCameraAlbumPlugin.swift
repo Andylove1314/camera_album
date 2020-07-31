@@ -74,7 +74,7 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
         NotificationCenter.default.post(name: NSNotification.Name("takePhoto"), object: self, userInfo: nil)
     case "setFlashMode":
         if let value = call.arguments as? Int {
-            NotificationCenter.default.post(name: NSNotification.Name("setFlashMode"), object: self, userInfo: ["mode": AVCaptureDevice.FlashMode(rawValue: value) ?? .off])
+            NotificationCenter.default.post(name: NSNotification.Name("setFlashMode"), object: self, userInfo: ["mode": (AVCaptureDevice.FlashMode(rawValue: value) ?? .off)])
         }
     default: break
     }

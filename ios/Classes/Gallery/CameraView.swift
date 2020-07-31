@@ -22,16 +22,18 @@ class CameraView: UIView {
 
     var previewLayer: AVCaptureVideoPreviewLayer?
     var position: AVCaptureDevice.Position!
+    var isRecordVideo: Bool!
     
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
     
-    convenience init(frame: CGRect, appBarHeight: CGFloat, position: AVCaptureDevice.Position) {
+    convenience init(frame: CGRect, appBarHeight: CGFloat, position: AVCaptureDevice.Position, isRecordVideo: Bool) {
         self.init(frame: frame)
 
         self.appBarHeight = appBarHeight
         self.position = position
+        self.isRecordVideo = isRecordVideo
         
         check()
         
@@ -139,6 +141,7 @@ class CameraView: UIView {
     func makeCameraMan() -> CameraMan {
       let man = CameraMan()
       man.delegate = self
+      man.isRecordVideo = isRecordVideo
 
       return man
     }

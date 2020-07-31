@@ -11,6 +11,8 @@ protocol CameraManDelegate: class {
 
 class CameraMan {
   weak var delegate: CameraManDelegate?
+  
+  var isRecordVideo: Bool = false
 
   let session = AVCaptureSession()
   let queue = DispatchQueue(label: "no.hyper.Gallery.Camera.SessionQueue", qos: .background)
@@ -187,10 +189,14 @@ class CameraMan {
   }
 
   func flash(_ mode: AVCaptureDevice.FlashMode) {
-    guard let device = currentInput?.device , device.isFlashModeSupported(mode) else { return }
+    guard let device = currentInput?.device, device.isFlashModeSupported(mode) else { return }
 
     queue.async {
       self.lock {
+        let torchMode: AVCaptureDevice.TorchMode = mode == .on ? .on : .off
+        if self.isRecordVideo && device.isTorchModeSupported(torchMode) {
+            device.torchMode = torchMode
+        }
         device.flashMode = mode
       }
     }

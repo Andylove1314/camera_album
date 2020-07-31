@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class UIKitCamera extends StatefulWidget {
+  final bool isRecordVideo;
+
+  const UIKitCamera({Key key, this.isRecordVideo}) : super(key: key);
+
   @override
   _UIKitCameraState createState() => _UIKitCameraState();
 }
@@ -26,6 +30,7 @@ class _UIKitCameraState extends State<UIKitCamera> {
               case front = 2
               */
               "position": 2,
+              "isRecordVideo": widget.isRecordVideo
             },
             creationParamsCodec: const StandardMessageCodec(),
           );
