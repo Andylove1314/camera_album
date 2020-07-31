@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -12,7 +13,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.SystemClock;
 import android.text.TextUtils;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +24,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -1175,6 +1174,75 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
             });
         } else {
             startSingleCropActivity(originalPath, null, mimeType, options);
+        }
+    }
+
+    /**
+     * Single picture clipping callback
+     *
+     * @param data
+     */
+    public void singleCropHandleResult(Intent data) {
+        if (data == null) {
+            return;
+        }
+        Uri resultUri = UCrop.getOutput(data);
+        if (resultUri == null) {
+            return;
+        }
+        List<LocalMedia> result = new ArrayList<>();
+        String cutPath = resultUri.getPath();
+        if (mAdapter != null) {
+            List<LocalMedia> list = data.getParcelableArrayListExtra(PictureConfig.EXTRA_SELECT_LIST);
+            if (list != null) {
+                mAdapter.bindSelectData(list);
+                mAdapter.notifyDataSetChanged();
+            }
+            List<LocalMedia> mediaList = mAdapter.getSelectedData();
+            LocalMedia media = mediaList != null && mediaList.size() > 0 ? mediaList.get(0) : null;
+            if (media != null) {
+                config.originalPath = media.getPath();
+                media.setCutPath(cutPath);
+                media.setChooseModel(config.chooseMode);
+                boolean isCutPathEmpty = !TextUtils.isEmpty(cutPath);
+                if (SdkVersionUtils.checkedAndroid_Q()
+                        && PictureMimeType.isContent(media.getPath())) {
+                    if (isCutPathEmpty) {
+                        media.setSize(new File(cutPath).length());
+                    } else {
+                        media.setSize(!TextUtils.isEmpty(media.getRealPath()) ? new File(media.getRealPath()).length() : 0);
+                    }
+                    media.setAndroidQToPath(cutPath);
+                } else {
+                    media.setSize(isCutPathEmpty ? new File(cutPath).length() : 0);
+                }
+                media.setCut(isCutPathEmpty);
+                result.add(media);
+                _backSrcToFlutter(result);
+            } else {
+                // Preview screen selects the image and crop the callback
+                media = list != null && list.size() > 0 ? list.get(0) : null;
+                if (media != null) {
+                    config.originalPath = media.getPath();
+                    media.setCutPath(cutPath);
+                    media.setChooseModel(config.chooseMode);
+                    boolean isCutPathEmpty = !TextUtils.isEmpty(cutPath);
+                    if (SdkVersionUtils.checkedAndroid_Q()
+                            && PictureMimeType.isContent(media.getPath())) {
+                        if (isCutPathEmpty) {
+                            media.setSize(new File(cutPath).length());
+                        } else {
+                            media.setSize(!TextUtils.isEmpty(media.getRealPath()) ? new File(media.getRealPath()).length() : 0);
+                        }
+                        media.setAndroidQToPath(cutPath);
+                    } else {
+                        media.setSize(isCutPathEmpty ? new File(cutPath).length() : 0);
+                    }
+                    media.setCut(isCutPathEmpty);
+                    result.add(media);
+                    _backSrcToFlutter(result);
+                }
+            }
         }
     }
 

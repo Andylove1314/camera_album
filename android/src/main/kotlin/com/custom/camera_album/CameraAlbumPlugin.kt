@@ -3,6 +3,7 @@ package com.custom.camera_album
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Build
@@ -18,6 +19,7 @@ import com.luck.picture.lib.language.LanguageConfig
 import com.luck.picture.lib.listener.OnResultCallbackListener
 import com.luck.picture.lib.style.PictureParameterStyle
 import com.luck.picture.lib.tools.SdkVersionUtils
+import com.yalantis.ucrop.UCrop
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -30,7 +32,7 @@ import java.util.*
 
 
 /** CameraAlbumPlugin */
-public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
+public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware,io.flutter.plugin.common.PluginRegistry.ActivityResultListener{
   /// The MethodChannel that will the communication between Flutter and native Android
   ///
   /// This local reference serves to register the plugin with the Flutter Engine and unregister it
@@ -41,6 +43,8 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
 
   private lateinit var con:Activity
   private lateinit var pluginBind:FlutterPlugin.FlutterPluginBinding
+
+  private lateinit var factory:FlutterInsertViewFactory
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter/camera_album")
@@ -69,9 +73,12 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
       plugin.con = registrar.activity()
       //method chanel
       plugin.channel.setMethodCallHandler(plugin)
-      
+
+      plugin.factory = FlutterInsertViewFactory(plugin.con,plugin.channel)
       ///注册原生view
-      registrar.platformViewRegistry().registerViewFactory("platform_gallery_view", AndroidTextViewFactory(plugin.con,plugin.channel))
+      registrar.platformViewRegistry().registerViewFactory("platform_gallery_view", plugin.factory)
+
+      registrar.addActivityResultListener(plugin)
 
     }
   }
@@ -248,6 +255,7 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
   }
 
   override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
+
   }
 
   override fun onAttachedToActivity(binding: ActivityPluginBinding) {
@@ -255,11 +263,28 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware{
 
     ///注册原生view
     val registry = pluginBind.platformViewRegistry
-    registry.registerViewFactory("platform_gallery_view", AndroidTextViewFactory(con,channel))
-    
+    factory = FlutterInsertViewFactory(con,channel)
+    registry.registerViewFactory("platform_gallery_view", factory)
+    binding.addActivityResultListener(this)
+
   }
 
   override fun onDetachedFromActivityForConfigChanges() {
+  }
+
+
+  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
+
+    if (resultCode == Activity.RESULT_OK) {
+      when (requestCode) {
+        //单选剪切
+        UCrop.REQUEST_CROP -> factory.post(data)
+        else -> {
+        }
+      }
+    }
+
+    return  true
   }
 
 

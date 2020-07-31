@@ -76,7 +76,7 @@ class _HomeState extends State<Home> {
                       showAlbum: true,
                       isMulti: false,
                       multiCount: 5,
-                      cute: true,
+                      cute: false,
                       guides: [
                         [
                           'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/VHByy0e26624d87a5a1156eea6711d5125858.jpg',
@@ -92,6 +92,7 @@ class _HomeState extends State<Home> {
                         ]
                       ]),
                   context: context,
+                  androidView: true,
                   callback: (backs) {
                     print('callback2： -> $backs');
                     Navigator.push(context,
@@ -102,7 +103,6 @@ class _HomeState extends State<Home> {
                       );
                     }));
                   },
-                  androidView: true,
                   callCamera: () {
                     print('open custom camera');
                   },
