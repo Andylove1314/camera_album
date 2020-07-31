@@ -56,7 +56,7 @@ class CameraAlbum {
     Function(CameraAlbumBack back) callback,
     void Function(List identifier, List duration) onChanged,
     VoidCallback onLimitCallback,
-    bool androidView = true,
+    bool androidView = false,
     Function() callCamera,
   }) async {
     ///回调监听
@@ -98,7 +98,8 @@ class CameraAlbum {
             config.inType == "image" ? MediaType.image : MediaType.video;
         bool isMulti = config.isMulti;
         return AlbumPicker(
-          
+          config: config,
+          androidView: androidView,
           title: config.title,
           limit: isMulti ? config.multiCount : 1,
           mediaType: mediaType,
@@ -106,7 +107,6 @@ class CameraAlbum {
             callback(CameraAlbumBack(paths: paths, durs: seconds));
           },
           onLimitCallback: onLimitCallback,
-          config: config,
         );
       }));
       return "";

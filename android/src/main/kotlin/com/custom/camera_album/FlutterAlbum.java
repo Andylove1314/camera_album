@@ -211,9 +211,9 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
                 .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) // 设置相册Activity方向，不设置默认使用系统
                 .isOriginalImageControl(true) // 是否显示原图控制按钮，如果设置为true则用户可以自由选择是否使用原图，压缩、裁剪功能将会失效
                 .selectionMode((boolean)data.get("isMulti")?PictureConfig.MULTIPLE:PictureConfig.SINGLE) // 多选 or 单选
-              .isSingleDirectReturn(true) // 单选模式下是否直接返回，PictureConfig.SINGLE模式下有效
-                .isPreviewImage(true) // 是否可预览图片
-                .isPreviewVideo(true) // 是否可预览视频
+              .isSingleDirectReturn(!(boolean)data.get("isMulti")) // 单选模式下是否直接返回，PictureConfig.SINGLE模式下有效
+                .isPreviewImage(!(boolean)data.get("isMulti")) // 是否可预览图片
+                .isPreviewVideo(!(boolean)data.get("isMulti")) // 是否可预览视频
                 .isEnablePreviewAudio(false) // 是否可播放音频
                 .isCamera((Boolean) data.get("showGridCamera")) // 是否显示拍照按钮
                 .isEnableCrop((Boolean) data.get("cute")) // 是否裁剪
@@ -319,6 +319,7 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
         StringUtils.tempTextFont(mTvEmpty, config.chooseMode);
         mAdapter = new PictureImageGridAdapter(context, config);
         mAdapter.setOnPhotoSelectChangedListener(this);
+        mAdapter.setChannel(channel);
 
         switch (config.animationMode) {
             case AnimationType

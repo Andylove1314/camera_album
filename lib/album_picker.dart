@@ -12,6 +12,7 @@ class AlbumPicker extends StatefulWidget {
   final void Function(List<dynamic> path, List<dynamic> seconds) onSelected;
   final VoidCallback onLimitCallback;
   final CameraAlbumConfig config;
+  final bool androidView;
 
   const AlbumPicker(
       {Key key,
@@ -20,7 +21,8 @@ class AlbumPicker extends StatefulWidget {
       @required this.mediaType,
       this.onSelected,
       this.onLimitCallback,
-      this.config})
+      this.config,
+      this.androidView = false})
       : super(key: key);
 
   @override
@@ -44,13 +46,12 @@ class _AlbumPickerState extends State<AlbumPicker> {
           ),
           textAlign: TextAlign.center,
         ),
+        centerTitle: true,
         actions: widget.limit == 1
             ? null
             : <Widget>[
                 FlatButton(
                     onPressed: () async {
-//                widget.onSelected(identifier.map((e) => "$e").toList(),
-//                    duration.map((e) => int.tryParse("$e")).toList());
 
                       List<String> pathList = [];
                       List<int> durationList = [];
@@ -68,7 +69,7 @@ class _AlbumPickerState extends State<AlbumPicker> {
                       Navigator.pop(context);
                       widget.onSelected(pathList, durationList);
                     },
-                    child: Text("Done(${identifier.length})"))
+                    child: Platform.isIOS?Text("Done(${identifier.length})"):SizedBox())
               ],
       ),
       body: Container(
@@ -95,6 +96,9 @@ class _AlbumPickerState extends State<AlbumPicker> {
               Navigator.pop(context);
               widget.onSelected([path], [seconds]);
             } else {
+              if(widget.androidView){
+                Navigator.pop(context);
+              }
               widget.onSelected(info.paths, info.durs);
             }
           },

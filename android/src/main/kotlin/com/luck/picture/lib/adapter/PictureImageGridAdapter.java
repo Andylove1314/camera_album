@@ -37,6 +37,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.flutter.plugin.common.MethodChannel;
+
 
 /**
  * @author：luck
@@ -52,10 +54,16 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     private List<LocalMedia> selectData = new ArrayList<>();
     private PictureSelectionConfig config;
 
+    private MethodChannel channel;
+
     public PictureImageGridAdapter(Context context, PictureSelectionConfig config) {
         this.context = context;
         this.config = config;
         this.showCamera = config.isCamera;
+    }
+
+    public void setChannel(MethodChannel channel) {
+        this.channel = channel;
     }
 
     public void setShowCamera(boolean showCamera) {
@@ -207,8 +215,13 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 contentHolder.btnCheck.setOnClickListener(v -> {
                     if (config.isMaxSelectEnabledMask) {
                         if (!contentHolder.tvCheck.isSelected() && getSelectedSize() >= config.maxSelectNum) {
-                            String msg = StringUtils.getMsg(context, config.chooseMode == PictureMimeType.ofAll() ? null : image.getMimeType(), config.maxSelectNum);
-                            showPromptDialog(msg);
+                            if (channel != null){
+                                backSelectLimite();
+                            }else {
+                                String msg = StringUtils.getMsg(context, config.chooseMode == PictureMimeType.ofAll() ? null : image.getMimeType(), config.maxSelectNum);
+                                showPromptDialog(msg);
+                            }
+
                             return;
                         }
                     }
@@ -226,6 +239,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             contentHolder.contentView.setOnClickListener(v -> {
                 if (config.isMaxSelectEnabledMask) {
                     if (image.isMaxSelectEnabledMask()) {
+                        if (channel != null){
+                            backSelectLimite();
+                        }
                         return;
                     }
                 }
@@ -430,12 +446,22 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 }
 
                 if (getSelectedSize() >= config.maxSelectNum && !isChecked) {
-                    showPromptDialog(context.getString(R.string.picture_message_max_num, config.maxSelectNum));
+
+                    if(channel != null){
+                        backSelectLimite();
+                    }else {
+                        showPromptDialog(context.getString(R.string.picture_message_max_num, config.maxSelectNum));
+                    }
+
                     return;
                 }
 
                 if (videoSize >= config.maxVideoSelectNum && !isChecked) {
-                    showPromptDialog(StringUtils.getMsg(context, image.getMimeType(), config.maxVideoSelectNum));
+                    if(channel != null){
+                        backSelectLimite();
+                    }else {
+                        showPromptDialog(StringUtils.getMsg(context, image.getMimeType(), config.maxVideoSelectNum));
+                    }
                     return;
                 }
 
@@ -452,7 +478,11 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
 
             if (PictureMimeType.isHasImage(image.getMimeType())) {
                 if (getSelectedSize() >= config.maxSelectNum && !isChecked) {
-                    showPromptDialog(context.getString(R.string.picture_message_max_num, config.maxSelectNum));
+                    if(channel != null){
+                        backSelectLimite();
+                    }else {
+                        showPromptDialog(context.getString(R.string.picture_message_max_num, config.maxSelectNum));
+                    }
                     return;
                 }
             }
@@ -467,7 +497,12 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             }
             if (PictureMimeType.isHasVideo(mimeType) && config.maxVideoSelectNum > 0) {
                 if (count >= config.maxVideoSelectNum && !isChecked) {
-                    showPromptDialog(StringUtils.getMsg(context, mimeType, config.maxVideoSelectNum));
+                    if (channel != null){
+                        backSelectLimite();
+                    }else {
+                        showPromptDialog(StringUtils.getMsg(context, mimeType, config.maxVideoSelectNum));
+                    }
+
                     return;
                 }
                 if (!isChecked && config.videoMinSecond > 0 && image.getDuration() < config.videoMinSecond) {
@@ -481,7 +516,12 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 }
             } else {
                 if (count >= config.maxSelectNum && !isChecked) {
-                    showPromptDialog(StringUtils.getMsg(context, mimeType, config.maxSelectNum));
+                    if (channel != null){
+                        backSelectLimite();
+                    }else {
+                        showPromptDialog(StringUtils.getMsg(context, mimeType, config.maxSelectNum));
+                    }
+
                     return;
                 }
                 if (PictureMimeType.isHasVideo(image.getMimeType())) {
@@ -679,4 +719,16 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                                                         imageSelectChangedListener) {
         this.imageSelectChangedListener = imageSelectChangedListener;
     }
+
+    /**
+     * 反馈flutter
+     */
+    private void backSelectLimite(){
+
+        if (channel != null){
+            channel.invokeMethod("onLimitCallback", "");
+        }
+
+    }
+
 }

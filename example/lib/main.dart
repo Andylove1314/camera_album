@@ -72,10 +72,11 @@ class _HomeState extends State<Home> {
                       inType: 'image',
                       firstCamera: false,
                       showBottomCamera: true,
-                      showGridCamera: true,
+                      showGridCamera: false,
                       showAlbum: true,
                       isMulti: false,
-                      multiCount: 1,
+                      multiCount: 5,
+                      cute: true,
                       guides: [
                         [
                           'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/VHByy0e26624d87a5a1156eea6711d5125858.jpg',
@@ -101,9 +102,26 @@ class _HomeState extends State<Home> {
                       );
                     }));
                   },
-                  androidView: false,
+                  androidView: true,
                   callCamera: () {
                     print('open custom camera');
+                  },
+                  onLimitCallback: () {
+                    print("超出限制");
+                    showDialog(
+                        context: context,
+                        builder: (c) {
+                          return AlertDialog(
+                            title: Text('超出限制'),
+                            actions: <Widget>[
+                              RaisedButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text('ok')),
+                            ],
+                          );
+                        });
                   });
             }),
         IconButton(
