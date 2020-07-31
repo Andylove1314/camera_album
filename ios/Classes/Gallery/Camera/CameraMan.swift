@@ -29,18 +29,6 @@ class CameraMan {
   func setup() {
     if Permission.Camera.status == .authorized {
         self.start()
-        // 解决前置摄像头镜像问题
-        for output in session.outputs {
-            for av in output.connections {
-                // 判断是否是前置摄像头状态
-                if (frontCamera != nil) {
-                    if (av.isVideoMirroringSupported) {
-                        // 镜像设置
-                        av.isVideoMirrored = true
-                    }
-                }
-            }
-        }
     } else {
       self.delegate?.cameraManNotAvailable(self)
     }
@@ -141,7 +129,15 @@ class CameraMan {
   func takePhoto(_ previewLayer: AVCaptureVideoPreviewLayer, location: CLLocation?, completion: @escaping ((PHAsset?) -> Void)) {
     guard let connection = stillImageOutput?.connection(with: .video) else { return }
 
-    connection.videoOrientation = Utils.videoOrientation()
+    if connection.isVideoOrientationSupported {
+        connection.videoOrientation = Utils.videoOrientation()
+    }
+    
+    // 解决前置摄像头镜像问题
+    if (connection.isVideoMirroringSupported) {
+        // 镜像设置
+        connection.isVideoMirrored = true
+    }
 
     queue.async {
       self.stillImageOutput?.captureStillImageAsynchronously(from: connection) {
