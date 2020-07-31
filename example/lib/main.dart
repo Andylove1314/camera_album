@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -242,56 +243,96 @@ class _HomeState extends State<Home> {
             icon: Icon(Icons.photo_camera),
             onPressed: () async {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return Scaffold(
-                    appBar: AppBar(
-                      title: Text("Camera"),
-                    ),
-                    body: Column(
-                      children: <Widget>[
-                        Expanded(
-                          child: Stack(
-                            children: <Widget>[
-                              UIKitCamera(),
-                              Align(
-                                alignment: Alignment.bottomCenter,
-                                child: Container(
-                                  margin:
-                                      EdgeInsets.only(bottom: 50, right: 40),
-                                  child: IconButton(
-                                    icon: Icon(
-                                      Icons.group_work,
-                                      size: 80,
-                                    ),
-                                    onPressed: () {
-                                      CameraAlbum.takePhoto((path) async {
-                                        debugPrint(path);
-
-                                        await Navigator.push(context,
-                                            MaterialPageRoute(
-                                                builder: (context) {
-                                          return NewPage(
-                                              MediaType.image, [path]);
-                                        }));
-                                        CameraAlbum.startCamera();
-                                      });
-                                    },
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.switch_camera),
-                          onPressed: () {
-                            CameraAlbum.switchCamera();
-                          },
-                        ),
-                      ],
-                    ));
+                return CameraDemo();
               }));
             }),
       ],
     );
+  }
+}
+
+class CameraDemo extends StatefulWidget {
+  @override
+  _CameraDemoState createState() => _CameraDemoState();
+}
+
+class _CameraDemoState extends State<CameraDemo> {
+  bool enableTakePhoto = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text("Camera"),
+        ),
+        body: Column(
+          children: <Widget>[
+            Expanded(
+              child: Stack(
+                children: <Widget>[
+                  UIKitCamera(),
+                  Center(
+                      child: Text(
+                    "Camera Demo",
+                  )),
+                ],
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Expanded(child: Container()),
+                FlatButton(
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: <Widget>[
+                      Icon(
+                        Icons.brightness_1,
+                        size: 80,
+                        color: Colors.redAccent,
+                      ),
+                      enableTakePhoto
+                          ? Container()
+                          : CupertinoActivityIndicator(
+                              radius: 15,
+                            ),
+                    ],
+                  ),
+                  onPressed: enableTakePhoto
+                      ? () {
+                          CameraAlbum.takePhoto(takeStart: () {
+                            debugPrint("takeStart");
+                            setState(() {
+                              enableTakePhoto = false;
+                            });
+                          }, completion: (path) async {
+                            debugPrint(path);
+                            await Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return NewPage(MediaType.image, [path]);
+                            }));
+                            setState(() {
+                              enableTakePhoto = true;
+                            });
+                            CameraAlbum.startCamera();
+                          });
+                        }
+                      : null,
+                ),
+                Expanded(
+                  child: FlatButton(
+                    child: Icon(
+                      Icons.switch_camera,
+                      size: 30,
+                    ),
+                    onPressed: () {
+                      CameraAlbum.switchCamera();
+                    },
+                  ),
+                )
+              ],
+            ),
+          ],
+        ));
   }
 }

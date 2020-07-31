@@ -120,7 +120,8 @@ class CameraAlbum {
   }
 
   /// 拍照片
-  static void takePhoto(void Function(String path) completion) async {
+  static void takePhoto(
+      {VoidCallback takeStart, void Function(String path) completion}) async {
     _channel.invokeMethod("takePhoto");
 
     ///回调监听
@@ -129,6 +130,9 @@ class CameraAlbum {
       var backs = call.arguments;
       print('native回传：$method -> $backs');
       switch (method) {
+        case "onTakeStart":
+          takeStart();
+          break;
         case "onTakeDone":
           var identifier = backs["identifier"];
           String path =

@@ -13,7 +13,11 @@ class CameraView: UIView {
     var appBarHeight: CGFloat = 0
     
     lazy var cameraMan: CameraMan = self.makeCameraMan()
+    /// 拍照后闪一下动画
+    lazy var shutterOverlayView: UIView = self.makeShutterOverlayView()
+    /// 切换前、后置摄像头动画
     lazy var rotateOverlayView: UIView = self.makeRotateOverlayView()
+    /// 切换前、后置摄像头毛玻璃
     lazy var blurView: UIVisualEffectView = self.makeBlurView()
 
     var previewLayer: AVCaptureVideoPreviewLayer?
@@ -31,6 +35,8 @@ class CameraView: UIView {
         
         check()
         
+        addSubview(shutterOverlayView)
+        shutterOverlayView.g_pinEdges()
         addSubview(rotateOverlayView)
         rotateOverlayView.g_pinEdges()
         rotateOverlayView.addSubview(blurView)
@@ -59,6 +65,14 @@ class CameraView: UIView {
     
     @objc func takePhoto(notification : Notification) {
         guard let previewLayer = previewLayer else { return }
+        SwiftCameraAlbumPlugin.channel.invokeMethod("onTakeStart", arguments: nil)
+        UIView.animate(withDuration: 0.1, animations: {
+          self.shutterOverlayView.alpha = 1
+        }, completion: { _ in
+          UIView.animate(withDuration: 0.1, animations: {
+            self.shutterOverlayView.alpha = 0
+          })
+        })
         cameraMan.takePhoto(previewLayer, location: nil) { [weak self] asset in
           guard let asset = asset else {
             return
@@ -121,7 +135,15 @@ class CameraView: UIView {
 
       return man
     }
-    
+
+    func makeShutterOverlayView() -> UIView {
+      let view = UIView()
+      view.alpha = 0
+      view.backgroundColor = UIColor.black
+
+      return view
+    }
+
     func makeRotateOverlayView() -> UIView {
       let view = UIView()
       view.alpha = 0
