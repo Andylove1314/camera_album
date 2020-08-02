@@ -13,13 +13,13 @@ class CameraMan {
   weak var delegate: CameraManDelegate?
   
   var isRecordVideo: Bool = false
+  var isFrontCamera: Bool = true
 
   let session = AVCaptureSession()
   let queue = DispatchQueue(label: "no.hyper.Gallery.Camera.SessionQueue", qos: .background)
   let savingQueue = DispatchQueue(label: "no.hyper.Gallery.Camera.SavingQueue", qos: .background)
 
-  var backCamera: AVCaptureDeviceInput?
-  var frontCamera: AVCaptureDeviceInput?
+  var camera: AVCaptureDevice?
   var stillImageOutput: AVCaptureStillImageOutput?
   var movieFileOut: AVCaptureMovieFileOutput?
 
@@ -36,23 +36,20 @@ class CameraMan {
       self.delegate?.cameraManNotAvailable(self)
     }
   }
-
+    /// 选择摄像头
+    private func cameraWithPosition(position: AVCaptureDevice.Position) -> AVCaptureDevice? {
+        let devices = AVCaptureDevice.devices(for: AVMediaType.video)
+        for item in devices {
+            if item.position == position {
+                return item
+            }
+        }
+        return nil
+    }
   func setupDevices() {
     // Input
-    AVCaptureDevice
-      .devices()
-      .filter {
-        return $0.hasMediaType(.video)
-      }.forEach {
-        switch $0.position {
-        case .front:
-          self.frontCamera = try? AVCaptureDeviceInput(device: $0)
-        case .back:
-          self.backCamera = try? AVCaptureDeviceInput(device: $0)
-        default:
-          break
-        }
-    }
+    isFrontCamera = true
+    camera = cameraWithPosition(position: AVCaptureDevice.Position.front)
 
     if isRecordVideo {
         movieFileOut = AVCaptureMovieFileOutput()
@@ -64,18 +61,7 @@ class CameraMan {
   }
 
   func addInput(_ input: AVCaptureDeviceInput) {
-    if isRecordVideo {
-        session.sessionPreset = AVCaptureSession.Preset.vga640x480
-        if let audioDevice = AVCaptureDevice.default(for: AVMediaType.audio) {
-            if let audioInput = try? AVCaptureDeviceInput(device: audioDevice) {
-                if session.canAddInput(audioInput) {
-                    session.addInput(audioInput)
-                }
-            }
-        }
-    } else {
-        configurePreset(input)
-    }
+    configurePreset(input)
 
     if session.canAddInput(input) {
       session.addInput(input)
@@ -88,15 +74,11 @@ class CameraMan {
 
   // MARK: - Session
 
-  var currentInput: AVCaptureDeviceInput? {
-    return session.inputs.first as? AVCaptureDeviceInput
-  }
-
   fileprivate func start() {
     // Devices
     setupDevices()
 
-    guard let input = frontCamera, let output = (isRecordVideo ? movieFileOut : stillImageOutput) else { return }
+    guard let camera = camera, let input = try? AVCaptureDeviceInput(device: camera), let output = (isRecordVideo ? movieFileOut : stillImageOutput) else { return }
 
     addInput(input)
 
@@ -118,24 +100,32 @@ class CameraMan {
   }
 
   func switchCamera(_ completion: (() -> Void)? = nil) {
-    guard let currentInput = currentInput
-      else {
-        completion?()
-        return
-    }
-
     queue.async {
-      guard let input = (currentInput == self.backCamera) ? self.frontCamera : self.backCamera
-        else {
-          DispatchQueue.main.async {
-            completion?()
-          }
-          return
-      }
-
       self.configure {
-        self.session.removeInput(currentInput)
-        self.addInput(input)
+        //  首先移除所有的 input
+        if let allInputs = self.session.inputs as? [AVCaptureDeviceInput] {
+            for input in allInputs {
+                self.session.removeInput(input)
+
+            }
+        }
+        if self.isRecordVideo {
+            self.session.sessionPreset = AVCaptureSession.Preset.vga640x480
+            if let audioDevice = AVCaptureDevice.default(for: AVMediaType.audio) {
+                if let audioInput = try? AVCaptureDeviceInput(device: audioDevice) {
+                    if self.session.canAddInput(audioInput) {
+                        self.session.addInput(audioInput)
+                    }
+                }
+            }
+        }
+        self.camera = self.cameraWithPosition(position: self.isFrontCamera ? .back : .front)
+        if let camera = self.camera  {
+            if let input = try? AVCaptureDeviceInput(device: camera) {
+                self.addInput(input)
+                self.isFrontCamera.toggle()
+            }
+        }
       }
 
       DispatchQueue.main.async {
@@ -152,7 +142,7 @@ class CameraMan {
     }
     
     // 解决前置摄像头镜像问题
-    if (currentInput == self.frontCamera && connection.isVideoMirroringSupported) {
+    if (isFrontCamera && connection.isVideoMirroringSupported) {
         // 镜像设置
         connection.isVideoMirrored = true
     }
@@ -205,7 +195,7 @@ class CameraMan {
   }
 
   func flash(_ mode: AVCaptureDevice.FlashMode) {
-    guard let device = currentInput?.device, device.isFlashModeSupported(mode) else { return }
+    guard let device = camera, device.isFlashModeSupported(mode) else { return }
 
     queue.async {
       self.lock {
@@ -219,7 +209,7 @@ class CameraMan {
   }
 
   func focus(_ point: CGPoint) {
-    guard let device = currentInput?.device , device.isFocusModeSupported(AVCaptureDevice.FocusMode.locked) else { return }
+    guard let device = camera, device.isFocusModeSupported(AVCaptureDevice.FocusMode.locked) else { return }
 
     queue.async {
       self.lock {
@@ -231,7 +221,7 @@ class CameraMan {
   // MARK: - Lock
 
   func lock(_ block: () -> Void) {
-    if let device = currentInput?.device , (try? device.lockForConfiguration()) != nil {
+    if let device = camera, (try? device.lockForConfiguration()) != nil {
       block()
       device.unlockForConfiguration()
     }
