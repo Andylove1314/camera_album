@@ -165,4 +165,34 @@ class CameraAlbum {
       }
     });
   }
+
+  /// 开始录制视频
+  static void startRecord() async {
+    _channel.invokeMethod("startRecord");
+  }
+
+  /// 结束录制视频
+  static void stopRecord(
+      {VoidCallback onRecordStart,
+      void Function(String path) onRecodeDone}) async {
+    _channel.invokeMethod("stopRecord");
+
+    ///回调监听
+    _channel.setMethodCallHandler((MethodCall call) async {
+      var method = call.method;
+      var back = call.arguments;
+      print('native回传：$method -> $back');
+      switch (method) {
+        case "onRecordStart":
+          onRecordStart();
+          break;
+        case "onRecodeDone":
+          String path = back["path"];
+          onRecodeDone(path);
+          break;
+        default:
+          throw UnsupportedError("Unrecognized JSON message");
+      }
+    });
+  }
 }

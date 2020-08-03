@@ -166,6 +166,7 @@ class CameraMan {
     }
   }
 
+    /// 图片保存到相册
   func savePhoto(_ image: UIImage, location: CLLocation?, completion: @escaping ((PHAsset?) -> Void)) {
     var localIdentifier: String?
 
@@ -193,6 +194,39 @@ class CameraMan {
       }
     }
   }
+    
+    /**
+     将视频保存到相册
+     
+     - parameter videoUrl: 保存链接
+     */
+    func saveVideoToAlbum(videoUrl: URL, completion: @escaping ((PHAsset?) -> Void)) {
+        var localIdentifier: String?
+        
+        savingQueue.async {
+          do {
+            try PHPhotoLibrary.shared().performChangesAndWait {
+              let request = PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: videoUrl)
+              localIdentifier = request?.placeholderForCreatedAsset?.localIdentifier
+
+              request?.creationDate = Date()
+            }
+
+            DispatchQueue.main.async {
+              if let localIdentifier = localIdentifier {
+                completion(Utils.phAssetWith(identifier: localIdentifier))
+              } else {
+                completion(nil)
+              }
+            }
+          } catch {
+            DispatchQueue.main.async {
+              completion(nil)
+            }
+          }
+        }
+    }
+    
 
   func flash(_ mode: AVCaptureDevice.FlashMode) {
     guard let device = camera, device.isFlashModeSupported(mode) else { return }
