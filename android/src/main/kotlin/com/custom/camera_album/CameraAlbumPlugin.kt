@@ -288,7 +288,7 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware,
       }
     }
 
-    return  true
+    return  false
   }
 
   override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>?, grantResults: IntArray): Boolean {
@@ -315,7 +315,7 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware,
         }
     }
     
-    return true
+    return false
   }
 
 
