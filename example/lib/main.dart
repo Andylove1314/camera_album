@@ -373,6 +373,13 @@ class _CameraDemoState extends State<CameraDemo> {
                   ),
                   onPressed: enableTakePhoto
                       ? () {
+                          if (widget.isRecordVideo) {
+                            CameraAlbum.startRecord();
+                            Future.delayed(Duration(seconds: 5), () {
+                              CameraAlbum.stopRecord();
+                            });
+                            return;
+                          }
                           CameraAlbum.takePhoto(takeStart: () {
                             debugPrint("takeStart");
                             setState(() {

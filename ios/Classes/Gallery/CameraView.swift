@@ -10,7 +10,10 @@ import AVFoundation
 
 class CameraView: UIView {
     
+    /// 穿透顶部导航+状态栏高度
     var appBarHeight: CGFloat = 0
+    /// 录制视频？(默认拍照)
+    var isRecordVideo: Bool!
     
     lazy var cameraMan: CameraMan = self.makeCameraMan()
     /// 拍照后闪一下动画
@@ -22,7 +25,6 @@ class CameraView: UIView {
 
     var previewLayer: AVCaptureVideoPreviewLayer?
     var position: AVCaptureDevice.Position!
-    var isRecordVideo: Bool!
     
     deinit {
         NotificationCenter.default.removeObserver(self)
@@ -48,6 +50,8 @@ class CameraView: UIView {
         NotificationCenter.default.addObserver(self, selector: #selector(switchCamera), name: NSNotification.Name(rawValue:"switchCamera"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(setFlashMode), name: NSNotification.Name(rawValue:"setFlashMode"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(takePhoto), name: NSNotification.Name(rawValue:"takePhoto"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(startRecord), name: NSNotification.Name(rawValue:"startRecord"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(stopRecord), name: NSNotification.Name(rawValue:"stopRecord"), object: nil)
     }
     
     @objc func startCamera(notification : Notification) {
@@ -75,10 +79,6 @@ class CameraView: UIView {
     @objc func takePhoto(notification : Notification) {
         guard let previewLayer = previewLayer else { return }
         SwiftCameraAlbumPlugin.channel.invokeMethod("onTakeStart", arguments: nil)
-        if isRecordVideo {
-            startRecord()
-            return
-        }
         UIView.animate(withDuration: 0.1, animations: {
           self.shutterOverlayView.alpha = 1
         }, completion: { _ in
@@ -96,8 +96,12 @@ class CameraView: UIView {
     }
     
     @objc func startRecord() {
-        let path = tmpNwdn + "\(Date())"
+        let path = tmpNwdn + "\(Date().timeIntervalSince1970).mp4"
         cameraMan.movieFileOut?.startRecording(to: URL(fileURLWithPath: path), recordingDelegate: self)
+    }
+    
+    @objc func stopRecord() {
+        cameraMan.stop()
     }
     
     func setupPreviewLayer(_ session: AVCaptureSession) {
@@ -198,12 +202,18 @@ extension CameraView: CameraManDelegate {
 extension CameraView: AVCaptureFileOutputRecordingDelegate {
     /// 开始录制
     func fileOutput(_ output: AVCaptureFileOutput, didStartRecordingTo fileURL: URL, from connections: [AVCaptureConnection]) {
-        
+        SwiftCameraAlbumPlugin.channel.invokeMethod("onRecordStart", arguments: nil)
     }
     
     /// 结束录制
     func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
-        
+        cameraMan.stop()
+        cameraMan.saveVideoToAlbum(videoUrl: outputFileURL) { asset in
+          guard let asset = asset else {
+            return
+          }
+            SwiftCameraAlbumPlugin.channel.invokeMethod("onRecodeDone", arguments: ["identifier":  asset.localIdentifier, "path": outputFileURL.path])
+        }
     }
 }
 
