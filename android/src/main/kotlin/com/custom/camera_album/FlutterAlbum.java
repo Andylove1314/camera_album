@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -108,6 +109,8 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
     private int mPage = 1;
     //if there more
     private boolean isHasMore = true;
+
+    protected boolean isEnterSetting;
 
     private  Context context;
     /**相册控件*/
@@ -449,6 +452,51 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
             e.printStackTrace();
         }
     }
+
+    protected void showPermissionsDialog(boolean isCamera, String errorMsg) {
+
+        final PictureCustomDialog dialog =
+                new PictureCustomDialog(getContext(), R.layout.picture_wind_base_dialog);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
+        Button btn_commit = dialog.findViewById(R.id.btn_commit);
+        btn_commit.setText(context.getString(R.string.picture_go_setting));
+        TextView tvTitle = dialog.findViewById(R.id.tvTitle);
+        TextView tv_content = dialog.findViewById(R.id.tv_content);
+        tvTitle.setText(context.getString(R.string.picture_prompt));
+        tv_content.setText(errorMsg);
+        btn_cancel.setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+        btn_commit.setOnClickListener(v -> {
+            dialog.dismiss();
+            PermissionChecker.launchAppDetailsSettings(getContext());
+            isEnterSetting = true;
+        });
+        dialog.show();
+    }
+
+    /**
+     * onResume 回调
+     */
+    protected void onPermissionResume(){
+        if (isEnterSetting) {
+            if (PermissionChecker
+                    .checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) &&
+                    PermissionChecker
+                            .checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                if (mAdapter.isDataEmpty()) {
+                    readLocalMedia();
+                }
+            } else {
+                showPermissionsDialog(false, context.getString(R.string.picture_jurisdiction));
+            }
+            isEnterSetting = false;
+        }
+    }
+
+
     /**
      * get LocalMedia s
      */

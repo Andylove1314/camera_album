@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.util.Log
@@ -32,7 +33,7 @@ import java.util.*
 
 
 /** CameraAlbumPlugin */
-public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware,io.flutter.plugin.common.PluginRegistry.ActivityResultListener{
+public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware,io.flutter.plugin.common.PluginRegistry.ActivityResultListener,io.flutter.plugin.common.PluginRegistry.RequestPermissionsResultListener{
   /// The MethodChannel that will the communication between Flutter and native Android
   ///
   /// This local reference serves to register the plugin with the Flutter Engine and unregister it
@@ -79,6 +80,7 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware,
       registrar.platformViewRegistry().registerViewFactory("platform_gallery_view", plugin.factory)
 
       registrar.addActivityResultListener(plugin)
+      registrar.addRequestPermissionsResultListener(plugin)
 
     }
   }
@@ -266,6 +268,7 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware,
     factory = FlutterInsertViewFactory(con,channel)
     registry.registerViewFactory("platform_gallery_view", factory)
     binding.addActivityResultListener(this)
+    binding.addRequestPermissionsResultListener(this)
 
   }
 
@@ -278,13 +281,26 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware,
     if (resultCode == Activity.RESULT_OK) {
       when (requestCode) {
         //单选剪切
-        UCrop.REQUEST_CROP -> factory.post(data)
+        UCrop.REQUEST_CROP -> factory.singleCropResult(data)
         else -> {
         }
       }
     }
 
     return  true
+  }
+
+  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>?, grantResults: IntArray): Boolean {
+    when (requestCode) {
+      PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE ->                 // Store Permissions
+        if (grantResults?.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+          factory.readLocalAlbum()
+        } else {
+          factory.showPermissionsDialog(false, con.getString(R.string.picture_jurisdiction))
+        }
+    }
+    
+    return true
   }
 
 
