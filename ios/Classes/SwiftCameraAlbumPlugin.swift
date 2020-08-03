@@ -31,8 +31,14 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
     case "requestImageFile":
         let params = call.arguments as! NSDictionary
         let identifier = params["identifier"] as! String
-        let isOrigin = params["origin"] as? Bool ?? false
+//        let isOrigin = params["origin"] as? Bool ?? false
         if let image = Image.initWith(identifier: identifier) {
+            let limit = 4096
+//            print("宽度:")
+//            print(image.asset.pixelWidth)
+//            print("高度:")
+//            print(image.asset.pixelHeight)
+            let isOrigin = image.asset.pixelWidth < limit && image.asset.pixelHeight < limit
             if isOrigin {
                 // 取原图
                 image.resolveImageData { (imageData, info) in
