@@ -282,6 +282,7 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware,
       when (requestCode) {
         //单选剪切
         UCrop.REQUEST_CROP -> factory.singleCropResult(data)
+        PictureConfig.REQUEST_CAMERA -> factory.dispatchHandleCamera(data)
         else -> {
         }
       }
@@ -295,6 +296,20 @@ public class CameraAlbumPlugin: FlutterPlugin, MethodCallHandler, ActivityAware,
       PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE ->                 // Store Permissions
         if (grantResults?.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
           factory.readLocalAlbum()
+        } else {
+          factory.showPermissionsDialog(false, con.getString(R.string.picture_jurisdiction))
+        }
+      PictureConfig.APPLY_CAMERA_PERMISSIONS_CODE ->
+        // Camera Permissions
+        if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+          factory.onTakePhoto()
+        } else {
+          factory.showPermissionsDialog(true, con.getString(R.string.picture_camera))
+        }
+      PictureConfig.APPLY_CAMERA_STORAGE_PERMISSIONS_CODE ->
+        // Using the camera, retrieve the storage permission
+        if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+          factory.startCamera()
         } else {
           factory.showPermissionsDialog(false, con.getString(R.string.picture_jurisdiction))
         }

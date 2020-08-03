@@ -72,9 +72,9 @@ class _HomeState extends State<Home> {
                       inType: 'image',
                       firstCamera: false,
                       showBottomCamera: true,
-                      showGridCamera: false,
+                      showGridCamera: true,
                       showAlbum: true,
-                      isMulti: false,
+                      isMulti: true,
                       multiCount: 5,
                       cute: false,
                       guides: [

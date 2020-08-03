@@ -24,12 +24,23 @@ class FlutterInsertViewFactory(context: Context, channel: MethodChannel) : Platf
     fun singleCropResult(data: Intent?) {
         platform?.albun?.singleCropHandleResult(data)
     }
+    
+    fun dispatchHandleCamera(data: Intent?) {
+        platform?.albun?.dispatchHandleCamera(data)
+    }
 
     fun readLocalAlbum() {
         platform?.albun?.readLocalMedia()
     }
 
-
+    fun onTakePhoto() {
+        platform?.albun?.onTakePhoto()
+    }
+    
+    fun startCamera(){
+        platform?.albun?.startCamera()
+    }
+    
     fun showPermissionsDialog(isCamera: Boolean, errorMsg:String) {
         platform?.albun?.showPermissionsDialog(isCamera, errorMsg)
     }

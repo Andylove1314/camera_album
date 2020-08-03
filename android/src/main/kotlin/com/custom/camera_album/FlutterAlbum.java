@@ -10,8 +10,10 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Parcelable;
 import android.os.SystemClock;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,6 +32,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
+import com.luck.picture.lib.PictureMediaScannerConnection;
 import com.luck.picture.lib.PictureSelectionModel;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.R;
@@ -63,9 +66,11 @@ import com.luck.picture.lib.style.PictureParameterStyle;
 import com.luck.picture.lib.thread.PictureThreadUtils;
 import com.luck.picture.lib.tools.AndroidQTransformUtils;
 import com.luck.picture.lib.tools.AttrsUtils;
+import com.luck.picture.lib.tools.BitmapUtils;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.DoubleUtils;
 import com.luck.picture.lib.tools.JumpUtils;
+import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
@@ -79,6 +84,7 @@ import com.yalantis.ucrop.model.CutInfo;
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,6 +117,8 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
     private boolean isHasMore = true;
 
     protected boolean isEnterSetting;
+
+    private int allFolderSize;
 
     private  Context context;
     /**相册控件*/
@@ -348,6 +356,11 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
 
         albumView = findViewById(R.id.album_view);
         albumView.setConfig(config,this, mIvArrow);
+
+        int size = albumView.getFolderData().size();
+        if (size > 0) {
+            allFolderSize = albumView.getFolder(0).getImageNum();
+        }
 
     }
 
@@ -1581,8 +1594,133 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
 
     @Override
     public void onTakePhoto() {
-        ///todo 使用现有相机
-        channel.invokeMethod("callCamera", "");
+        // Check the permissions
+        if (PermissionChecker.checkSelfPermission(context, Manifest.permission.CAMERA)) {
+            if (PermissionChecker
+                    .checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) &&
+                    PermissionChecker
+                            .checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                startCamera();
+            } else {
+                PermissionChecker.requestPermissions((Activity) context, new String[]{
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE}, PictureConfig.APPLY_CAMERA_STORAGE_PERMISSIONS_CODE);
+            }
+        } else {
+            PermissionChecker
+                    .requestPermissions((Activity) context,
+                            new String[]{Manifest.permission.CAMERA}, PictureConfig.APPLY_CAMERA_PERMISSIONS_CODE);
+        }
+    }
+
+
+
+    /**
+     * Open Camera
+     */
+    public void startCamera() {
+        if (!DoubleUtils.isFastDoubleClick()) {
+
+            switch (config.chooseMode) {
+                case PictureConfig.TYPE_IMAGE:
+                    startOpenCamera();
+                    break;
+                case PictureConfig.TYPE_VIDEO:
+                    startOpenCameraVideo();
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+
+    /**
+     * start to camera、preview、crop
+     */
+    protected void startOpenCamera() {
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (cameraIntent.resolveActivity(context.getPackageManager()) != null) {
+            Uri imageUri = null;
+            if (SdkVersionUtils.checkedAndroid_Q()) {
+                imageUri = MediaUtils.createImageUri(context.getApplicationContext(), config.suffixType);
+                if (imageUri != null) {
+                    config.cameraPath = imageUri.toString();
+                }
+
+            } else {
+                int chooseMode = config.chooseMode == PictureConfig.TYPE_ALL ? PictureConfig.TYPE_IMAGE
+                        : config.chooseMode;
+                String cameraFileName = "";
+                if (!TextUtils.isEmpty(config.cameraFileName)) {
+                    boolean isSuffixOfImage = PictureMimeType.isSuffixOfImage(config.cameraFileName);
+                    config.cameraFileName = !isSuffixOfImage ? StringUtils.renameSuffix(config.cameraFileName, PictureMimeType.JPEG) : config.cameraFileName;
+                    cameraFileName = config.camera ? config.cameraFileName : StringUtils.rename(config.cameraFileName);
+                }
+
+                File cameraFile = PictureFileUtils.createCameraFile(context.getApplicationContext(),
+                        chooseMode, cameraFileName, config.suffixType, config.outPutCameraPath);
+                if (cameraFile != null) {
+                    config.cameraPath = cameraFile.getAbsolutePath();
+                    imageUri = PictureFileUtils.parUri(context, cameraFile);
+                }
+            }
+            config.cameraMimeType = PictureMimeType.ofImage();
+            if (config.isCameraAroundState) {
+                cameraIntent.putExtra(PictureConfig.CAMERA_FACING, PictureConfig.CAMERA_BEFORE);
+            }
+            if (imageUri == null){
+                return;
+            }
+            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+            ((Activity)context).startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
+        }
+    }
+
+
+    /**
+     * start to camera、video
+     */
+    protected void startOpenCameraVideo() {
+        Intent cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        if (cameraIntent.resolveActivity(context.getPackageManager()) != null) {
+            Uri videoUri = null;
+            if (SdkVersionUtils.checkedAndroid_Q()) {
+                videoUri = MediaUtils.createVideoUri(context.getApplicationContext(), config.suffixType);
+                if (videoUri != null) {
+                    config.cameraPath = videoUri.toString();
+                }
+            } else {
+                int chooseMode = config.chooseMode ==
+                        PictureConfig.TYPE_ALL ? PictureConfig.TYPE_VIDEO : config.chooseMode;
+                String cameraFileName = "";
+                if (!TextUtils.isEmpty(config.cameraFileName)) {
+                    boolean isSuffixOfImage = PictureMimeType.isSuffixOfImage(config.cameraFileName);
+                    config.cameraFileName = isSuffixOfImage ? StringUtils.renameSuffix(config.cameraFileName, PictureMimeType.MP4) : config.cameraFileName;
+                    cameraFileName = config.camera ? config.cameraFileName : StringUtils.rename(config.cameraFileName);
+                }
+                File cameraFile = PictureFileUtils.createCameraFile(context.getApplicationContext(),
+                        chooseMode, cameraFileName, config.suffixType, config.outPutCameraPath);
+                if (cameraFile != null) {
+                    config.cameraPath = cameraFile.getAbsolutePath();
+                    videoUri = PictureFileUtils.parUri(context, cameraFile);
+                }
+            }
+
+            if (videoUri == null){
+                return;
+            }
+
+            config.cameraMimeType = PictureMimeType.ofVideo();
+            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoUri);
+            if (config.isCameraAroundState) {
+                cameraIntent.putExtra(PictureConfig.CAMERA_FACING, PictureConfig.CAMERA_BEFORE);
+            }
+            cameraIntent.putExtra(PictureConfig.EXTRA_QUICK_CAPTURE, config.isQuickCapture);
+            cameraIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, config.recordVideoSecond);
+            cameraIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, config.videoQuality);
+            ((Activity)context).startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
+        }
     }
 
     @Override
@@ -1865,22 +2003,493 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
             }
         }
     }
+
+    /**
+     * Camera Handle
+     *
+     * @param intent
+     */
+    protected void dispatchHandleCamera(Intent intent) {
+        // If PictureSelectionConfig is not empty, synchronize it
+        PictureSelectionConfig selectionConfig = intent != null ? intent.getParcelableExtra(PictureConfig.EXTRA_CONFIG) : null;
+        if (selectionConfig != null) {
+            config = selectionConfig;
+        }
+        boolean isAudio = config.chooseMode == PictureMimeType.ofAudio();
+        config.cameraPath = config.cameraPath;
+        if (TextUtils.isEmpty(config.cameraPath)) {
+            return;
+        }
+        showPleaseDialog();
+        PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<LocalMedia>() {
+
+            @Override
+            public LocalMedia doInBackground() {
+                LocalMedia media = new LocalMedia();
+                String mimeType = isAudio ? PictureMimeType.MIME_TYPE_AUDIO : "";
+                int[] newSize = new int[2];
+                long duration = 0;
+                if (!isAudio) {
+                    if (PictureMimeType.isContent(config.cameraPath)) {
+                        // content: Processing rules
+                        String path = PictureFileUtils.getPath(getContext(), Uri.parse(config.cameraPath));
+                        if (!TextUtils.isEmpty(path)) {
+                            File cameraFile = new File(path);
+                            mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
+                            media.setSize(cameraFile.length());
+                        }
+                        if (PictureMimeType.isHasImage(mimeType)) {
+                            newSize = MediaUtils.getImageSizeForUrlToAndroidQ(getContext(), config.cameraPath);
+                        } else if (PictureMimeType.isHasVideo(mimeType)) {
+                            newSize = MediaUtils.getVideoSizeForUri(getContext(), Uri.parse(config.cameraPath));
+                            duration = MediaUtils.extractDuration(getContext(), SdkVersionUtils.checkedAndroid_Q(), config.cameraPath);
+                        }
+                        int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
+                        media.setId(lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : -1);
+                        media.setRealPath(path);
+                        // Custom photo has been in the application sandbox into the file
+                        String mediaPath = intent != null ? intent.getStringExtra(PictureConfig.EXTRA_MEDIA_PATH) : null;
+                        media.setAndroidQToPath(mediaPath);
+                    } else {
+                        File cameraFile = new File(config.cameraPath);
+                        mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
+                        media.setSize(cameraFile.length());
+                        if (PictureMimeType.isHasImage(mimeType)) {
+                            int degree = PictureFileUtils.readPictureDegree(getContext(), config.cameraPath);
+                            BitmapUtils.rotateImage(degree, config.cameraPath);
+                            newSize = MediaUtils.getImageSizeForUrl(config.cameraPath);
+                        } else if (PictureMimeType.isHasVideo(mimeType)) {
+                            newSize = MediaUtils.getVideoSizeForUrl(config.cameraPath);
+                            duration = MediaUtils.extractDuration(getContext(), SdkVersionUtils.checkedAndroid_Q(), config.cameraPath);
+                        }
+                        // Taking a photo generates a temporary id
+                        media.setId(System.currentTimeMillis());
+                    }
+                    media.setPath(config.cameraPath);
+                    media.setDuration(duration);
+                    media.setMimeType(mimeType);
+                    media.setWidth(newSize[0]);
+                    media.setHeight(newSize[1]);
+                    if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasVideo(media.getMimeType())) {
+                        media.setParentFolderName(Environment.DIRECTORY_MOVIES);
+                    } else {
+                        media.setParentFolderName(PictureMimeType.CAMERA);
+                    }
+                    media.setChooseModel(config.chooseMode);
+                    long bucketId = MediaUtils.getCameraFirstBucketId(getContext());
+                    media.setBucketId(bucketId);
+                    // The width and height of the image are reversed if there is rotation information
+                    MediaUtils.setOrientationSynchronous(getContext(), media, config.isAndroidQChangeWH, config.isAndroidQChangeVideoWH);
+                }
+                return media;
+            }
+
+            @Override
+            public void onSuccess(LocalMedia result) {
+                dismissDialog();
+                // Refresh the system library
+                if (!SdkVersionUtils.checkedAndroid_Q()) {
+                    if (config.isFallbackVersion3) {
+                        new PictureMediaScannerConnection(getContext(), config.cameraPath);
+                    } else {
+                        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(config.cameraPath))));
+                    }
+                }
+                // add data Adapter
+                notifyAdapterData(result);
+                // Solve some phone using Camera, DCIM will produce repetitive problems
+                if (!SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasImage(result.getMimeType())) {
+                    int lastImageId = MediaUtils.getDCIMLastImageId(getContext());
+                    if (lastImageId != -1) {
+                        MediaUtils.removeMedia(getContext(), lastImageId);
+                    }
+                }
+            }
+        });
+
+    }
+
+
+    /**
+     * Update Adapter Data
+     *
+     * @param media
+     */
+    private void notifyAdapterData(LocalMedia media) {
+        if (mAdapter != null) {
+            boolean isAddSameImp = isAddSameImp(albumView.getFolder(0) != null ? albumView.getFolder(0).getImageNum() : 0);
+            if (!isAddSameImp) {
+                mAdapter.getData().add(0, media);
+                mOpenCameraCount++;
+            }
+            if (checkVideoLegitimacy(media)) {
+                if (config.selectionMode == PictureConfig.SINGLE) {
+                    dispatchHandleSingle(media);
+                } else {
+                    dispatchHandleMultiple(media);
+                }
+            }
+            mAdapter.notifyItemInserted(config.isCamera ? 1 : 0);
+            mAdapter.notifyItemRangeChanged(config.isCamera ? 1 : 0, mAdapter.getSize());
+            // Solve the problem that some mobile phones do not refresh the system library timely after using Camera
+            if (config.isPageStrategy) {
+                manualSaveFolderForPageModel(media);
+            } else {
+                manualSaveFolder(media);
+            }
+            mTvEmpty.setVisibility(mAdapter.getSize() > 0 || config.isSingleDirectReturn ? View.GONE : View.VISIBLE);
+            // update all count
+            if (albumView.getFolder(0) != null) {
+                mTvPictureTitle.setTag(R.id.view_count_tag, albumView.getFolder(0).getImageNum());
+            }
+            allFolderSize = 0;
+        }
+    }
+
+    /**
+     * Manually add the photo to the list of photos and set it to select
+     *
+     * @param media
+     */
+    private void manualSaveFolder(LocalMedia media) {
+        try {
+            boolean isEmpty = albumView.isEmpty();
+            int totalNum = albumView.getFolder(0) != null ? albumView.getFolder(0).getImageNum() : 0;
+            LocalMediaFolder allFolder;
+            if (isEmpty) {
+                // All Folder
+                createNewFolder(albumView.getFolderData());
+                allFolder = albumView.getFolderData().size() > 0 ? albumView.getFolderData().get(0) : null;
+                if (allFolder == null) {
+                    allFolder = new LocalMediaFolder();
+                    albumView.getFolderData().add(0, allFolder);
+                }
+            } else {
+                // All Folder
+                allFolder = albumView.getFolderData().get(0);
+            }
+            allFolder.setFirstImagePath(media.getPath());
+            allFolder.setData(mAdapter.getData());
+            allFolder.setBucketId(-1);
+            allFolder.setImageNum(isAddSameImp(totalNum) ? allFolder.getImageNum() : allFolder.getImageNum() + 1);
+
+            // Camera
+            LocalMediaFolder cameraFolder = getImageFolder(media.getPath(), media.getRealPath(), albumView.getFolderData());
+            if (cameraFolder != null) {
+                cameraFolder.setImageNum(isAddSameImp(totalNum) ? cameraFolder.getImageNum() : cameraFolder.getImageNum() + 1);
+                if (!isAddSameImp(totalNum)) {
+                    cameraFolder.getData().add(0, media);
+                }
+                cameraFolder.setBucketId(media.getBucketId());
+                cameraFolder.setFirstImagePath(config.cameraPath);
+            }
+            albumView.bindFolder(albumView.getFolderData());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Insert the image into the camera folder
+     *
+     * @param path
+     * @param imageFolders
+     * @return
+     */
+    protected LocalMediaFolder getImageFolder(String path, String realPath, List<LocalMediaFolder> imageFolders) {
+        File imageFile = new File(PictureMimeType.isContent(path) ? realPath : path);
+        File folderFile = imageFile.getParentFile();
+        for (LocalMediaFolder folder : imageFolders) {
+            if (folderFile != null && folder.getName().equals(folderFile.getName())) {
+                return folder;
+            }
+        }
+        LocalMediaFolder newFolder = new LocalMediaFolder();
+        newFolder.setName(folderFile != null ? folderFile.getName() : "");
+        newFolder.setFirstImagePath(path);
+        imageFolders.add(newFolder);
+        return newFolder;
+    }
+
+    /**
+     * If you don't have any albums, first create a camera film folder to come out
+     *
+     * @param folders
+     */
+    protected void createNewFolder(List<LocalMediaFolder> folders) {
+        if (folders.size() == 0) {
+            // 没有相册 先创建一个最近相册出来
+            LocalMediaFolder newFolder = new LocalMediaFolder();
+            String folderName = config.chooseMode == PictureMimeType.ofAudio() ?
+                    context.getString(R.string.picture_all_audio) : context.getString(R.string.picture_camera_roll);
+            newFolder.setName(folderName);
+            newFolder.setFirstImagePath("");
+            newFolder.setCameraFolder(true);
+            newFolder.setBucketId(-1);
+            newFolder.setChecked(true);
+            folders.add(newFolder);
+        }
+    }
+
+    /**
+     * Manually add the photo to the list of photos and set it to select-paging mode
+     *
+     * @param media
+     */
+    private void manualSaveFolderForPageModel(LocalMedia media) {
+        if (media == null) {
+            return;
+        }
+        int count = albumView.getFolderData().size();
+        LocalMediaFolder allFolder = count > 0 ? albumView.getFolderData().get(0) : new LocalMediaFolder();
+        if (allFolder != null) {
+            int totalNum = allFolder.getImageNum();
+            allFolder.setFirstImagePath(media.getPath());
+            allFolder.setImageNum(isAddSameImp(totalNum) ? allFolder.getImageNum() : allFolder.getImageNum() + 1);
+            // Create All folder
+            if (count == 0) {
+                allFolder.setName(config.chooseMode == PictureMimeType.ofAudio() ?
+                        context.getString(R.string.picture_all_audio) : context.getString(R.string.picture_camera_roll));
+                allFolder.setOfAllType(config.chooseMode);
+                allFolder.setCameraFolder(true);
+                allFolder.setChecked(true);
+                allFolder.setBucketId(-1);
+                albumView.getFolderData().add(0, allFolder);
+                // Create Camera
+                LocalMediaFolder cameraFolder = new LocalMediaFolder();
+                cameraFolder.setName(media.getParentFolderName());
+                cameraFolder.setImageNum(isAddSameImp(totalNum) ? cameraFolder.getImageNum() : cameraFolder.getImageNum() + 1);
+                cameraFolder.setFirstImagePath(media.getPath());
+                cameraFolder.setBucketId(media.getBucketId());
+                albumView.getFolderData().add(albumView.getFolderData().size(), cameraFolder);
+            } else {
+                boolean isCamera = false;
+                String newFolder = SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasVideo(media.getMimeType())
+                        ? Environment.DIRECTORY_MOVIES : PictureMimeType.CAMERA;
+                for (int i = 0; i < count; i++) {
+                    LocalMediaFolder cameraFolder = albumView.getFolderData().get(i);
+                    if (cameraFolder.getName().startsWith(newFolder)) {
+                        media.setBucketId(cameraFolder.getBucketId());
+                        cameraFolder.setFirstImagePath(config.cameraPath);
+                        cameraFolder.setImageNum(isAddSameImp(totalNum) ? cameraFolder.getImageNum() : cameraFolder.getImageNum() + 1);
+                        if (cameraFolder.getData() != null && cameraFolder.getData().size() > 0) {
+                            cameraFolder.getData().add(0, media);
+                        }
+                        isCamera = true;
+                        break;
+                    }
+                }
+                if (!isCamera) {
+                    // There is no Camera folder locally. Create one
+                    LocalMediaFolder cameraFolder = new LocalMediaFolder();
+                    cameraFolder.setName(media.getParentFolderName());
+                    cameraFolder.setImageNum(isAddSameImp(totalNum) ? cameraFolder.getImageNum() : cameraFolder.getImageNum() + 1);
+                    cameraFolder.setFirstImagePath(media.getPath());
+                    cameraFolder.setBucketId(media.getBucketId());
+                    albumView.getFolderData().add(cameraFolder);
+                    sortFolder(albumView.getFolderData());
+                }
+            }
+            albumView.bindFolder(albumView.getFolderData());
+        }
+    }
+
+    /**
+     * sort
+     *
+     * @param imageFolders
+     */
+    protected void sortFolder(List<LocalMediaFolder> imageFolders) {
+        Collections.sort(imageFolders, (lhs, rhs) -> {
+            if (lhs.getData() == null || rhs.getData() == null) {
+                return 0;
+            }
+            int lSize = lhs.getImageNum();
+            int rSize = rhs.getImageNum();
+            return Integer.compare(rSize, lSize);
+        });
+    }
+
+    /**
+     * After using Camera, MultiSelect mode handles the logic
+     *
+     * @param media
+     */
+    @SuppressLint("StringFormatMatches")
+    private void dispatchHandleMultiple(LocalMedia media) {
+        List<LocalMedia> selectedData = mAdapter.getSelectedData();
+        int count = selectedData.size();
+        String oldMimeType = count > 0 ? selectedData.get(0).getMimeType() : "";
+        boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(oldMimeType, media.getMimeType());
+        if (config.isWithVideoImage) {
+            int videoSize = 0;
+            for (int i = 0; i < count; i++) {
+                LocalMedia item = selectedData.get(i);
+                if (PictureMimeType.isHasVideo(item.getMimeType())) {
+                    videoSize++;
+                }
+            }
+            if (PictureMimeType.isHasVideo(media.getMimeType())) {
+                if (config.maxVideoSelectNum <= 0) {
+                    showPromptDialog(context.getString(R.string.picture_rule));
+                } else {
+                    if (selectedData.size() >= config.maxSelectNum) {
+                        showPromptDialog(context.getString(R.string.picture_message_max_num, config.maxSelectNum));
+                    } else {
+                        if (videoSize < config.maxVideoSelectNum) {
+                            selectedData.add(0, media);
+                            mAdapter.bindSelectData(selectedData);
+                        } else {
+                            showPromptDialog(StringUtils.getMsg(getContext(), media.getMimeType(),
+                                    config.maxVideoSelectNum));
+                        }
+                    }
+                }
+            } else {
+                if (selectedData.size() < config.maxSelectNum) {
+                    selectedData.add(0, media);
+                    mAdapter.bindSelectData(selectedData);
+                } else {
+                    showPromptDialog(StringUtils.getMsg(getContext(), media.getMimeType(),
+                            config.maxSelectNum));
+                }
+            }
+
+        } else {
+            if (PictureMimeType.isHasVideo(oldMimeType) && config.maxVideoSelectNum > 0) {
+                if (count < config.maxVideoSelectNum) {
+                    if (mimeTypeSame || count == 0) {
+                        if (selectedData.size() < config.maxVideoSelectNum) {
+                            selectedData.add(0, media);
+                            mAdapter.bindSelectData(selectedData);
+                        }
+                    }
+                } else {
+                    showPromptDialog(StringUtils.getMsg(getContext(), oldMimeType,
+                            config.maxVideoSelectNum));
+                }
+            } else {
+                if (count < config.maxSelectNum) {
+                    if (mimeTypeSame || count == 0) {
+                        selectedData.add(0, media);
+                        mAdapter.bindSelectData(selectedData);
+                    }
+                } else {
+                    showPromptDialog(StringUtils.getMsg(getContext(), oldMimeType,
+                            config.maxSelectNum));
+                }
+            }
+        }
+    }
+
+    /**
+     * After using the camera, the radio mode handles the logic
+     *
+     * @param media
+     */
+    private void dispatchHandleSingle(LocalMedia media) {
+        if (config.isSingleDirectReturn) {
+            List<LocalMedia> selectedData = mAdapter.getSelectedData();
+            selectedData.add(media);
+            mAdapter.bindSelectData(selectedData);
+            singleDirectReturnCameraHandleResult(media.getMimeType());
+        } else {
+            List<LocalMedia> selectedData = mAdapter.getSelectedData();
+            String mimeType = selectedData.size() > 0 ? selectedData.get(0).getMimeType() : "";
+            boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(mimeType, media.getMimeType());
+            if (mimeTypeSame || selectedData.size() == 0) {
+                singleRadioMediaImage();
+                selectedData.add(media);
+                mAdapter.bindSelectData(selectedData);
+            }
+        }
+    }
+
+
+    /**
+     * Just make sure you pick one
+     */
+    private void singleRadioMediaImage() {
+        List<LocalMedia> selectData = mAdapter.getSelectedData();
+        if (selectData != null
+                && selectData.size() > 0) {
+            LocalMedia media = selectData.get(0);
+            int position = media.getPosition();
+            selectData.clear();
+            mAdapter.notifyItemChanged(position);
+        }
+    }
+
+    /**
+     * singleDirectReturn
+     *
+     * @param mimeType
+     */
+    private void singleDirectReturnCameraHandleResult(String mimeType) {
+        boolean isHasImage = PictureMimeType.isHasImage(mimeType);
+        if (config.enableCrop && isHasImage) {
+            config.originalPath = config.cameraPath;
+            startCrop(config.cameraPath, mimeType);
+        } else if (config.isCompress && isHasImage) {
+            List<LocalMedia> selectedImages = mAdapter.getSelectedData();
+            compressImage(selectedImages);
+        } else {
+            onResult(mAdapter.getSelectedData());
+        }
+    }
+
+    /**
+     * Verify the validity of the video
+     *
+     * @param media
+     * @return
+     */
+    private boolean checkVideoLegitimacy(LocalMedia media) {
+        boolean isEnterNext = true;
+        if (PictureMimeType.isHasVideo(media.getMimeType())) {
+            if (config.videoMinSecond > 0 && config.videoMaxSecond > 0) {
+                // The user sets the minimum and maximum video length to determine whether the video is within the interval
+                if (media.getDuration() < config.videoMinSecond || media.getDuration() > config.videoMaxSecond) {
+                    isEnterNext = false;
+                    showPromptDialog(context.getString(R.string.picture_choose_limit_seconds, config.videoMinSecond / 1000, config.videoMaxSecond / 1000));
+                }
+            } else if (config.videoMinSecond > 0) {
+                // The user has only set a minimum video length limit
+                if (media.getDuration() < config.videoMinSecond) {
+                    isEnterNext = false;
+                    showPromptDialog(context.getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
+                }
+            } else if (config.videoMaxSecond > 0) {
+                // Only the maximum length of video is set
+                if (media.getDuration() > config.videoMaxSecond) {
+                    isEnterNext = false;
+                    showPromptDialog(context.getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
+                }
+            }
+        }
+        return isEnterNext;
+    }
+
+    /**
+     * Is the quantity consistent
+     *
+     * @return
+     */
+    private boolean isAddSameImp(int totalNum) {
+        if (totalNum == 0) {
+            return false;
+        }
+        return allFolderSize > 0 && allFolderSize < totalNum;
+    }
+
     @Override
     public void onItemClick(View v, int position) {
         switch (position) {
             case PhotoItemSelectedDialog.IMAGE_CAMERA:
-                if (PictureSelectionConfig.onCustomCameraInterfaceListener != null) {
-                    PictureSelectionConfig.onCustomCameraInterfaceListener.onCameraClick(getContext(), config, PictureConfig.TYPE_IMAGE);
-                    config.cameraMimeType = PictureMimeType.ofImage();
-                } else {
-                }
+                startOpenCamera();
                 break;
             case PhotoItemSelectedDialog.VIDEO_CAMERA:
-                if (PictureSelectionConfig.onCustomCameraInterfaceListener != null) {
-                    PictureSelectionConfig.onCustomCameraInterfaceListener.onCameraClick(getContext(), config, PictureConfig.TYPE_IMAGE);
-                    config.cameraMimeType = PictureMimeType.ofVideo();
-                } else {
-                }
+                startOpenCameraVideo();
                 break;
             default:
                 break;
