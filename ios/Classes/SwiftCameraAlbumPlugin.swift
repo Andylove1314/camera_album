@@ -31,17 +31,31 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
     case "requestImageFile":
         let params = call.arguments as! NSDictionary
         let identifier = params["identifier"] as! String
+        let isOrigin = params["origin"] as? Bool ?? false
         if let image = Image.initWith(identifier: identifier) {
-        image.resolveImageData { (imageData, info) in
-            if let imageData = imageData, let info = info, let fileName = info["PHImageFileUTIKey"] as? String {
-                var path = tmpNwdn + identifier.replacingOccurrences(of: "/", with: "") + "." + (fileName.components(separatedBy: ".").last ?? "")
-                if path.components(separatedBy: ".").last == "heic" {
-                    path = (path.components(separatedBy: ".").first ?? "") + ".jpeg"
-                }
-                
-                try? FileManager.default.removeItem(atPath: path)
-                try? imageData.write(to: URL(fileURLWithPath: path), options: .atomic)
-                result(path)
+            if isOrigin {
+                // 取原图
+                image.resolveImageData { (imageData, info) in
+                    if let imageData = imageData, let info = info, let fileName = info["PHImageFileUTIKey"] as? String {
+                        var path = tmpNwdn + identifier.replacingOccurrences(of: "/", with: "") + "." + (fileName.components(separatedBy: ".").last ?? "")
+                        if path.components(separatedBy: ".").last == "heic" {
+                            path = (path.components(separatedBy: ".").first ?? "") + ".jpeg"
+                        }
+                        try? FileManager.default.removeItem(atPath: path)
+                        try? imageData.write(to: URL(fileURLWithPath: path), options: .atomic)
+                        result(path)
+                        }
+                    }
+            } else {
+                // 真机6s最大会处理成2048x2048
+                image.resolve { (image, info) in
+                    if let image = image, let _ = info, let fileName = identifier.components(separatedBy: "/").first {
+                        let path = tmpNwdn + fileName
+                        
+                        try? FileManager.default.removeItem(atPath: path)
+                        try? image.jpegData(compressionQuality: 1)?.write(to: URL(fileURLWithPath: path), options: .atomic)
+                        result(path)
+                    }
                 }
             }
         }
