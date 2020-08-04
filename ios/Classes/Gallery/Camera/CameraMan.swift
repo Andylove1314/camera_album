@@ -15,6 +15,8 @@ class CameraMan {
   var isRecordVideo: Bool = false
   var isFrontCamera: Bool = true
 
+  var lastFlashMode: AVCaptureDevice.FlashMode = .off
+
   let session = AVCaptureSession()
   let queue = DispatchQueue(label: "no.hyper.Gallery.Camera.SessionQueue", qos: .background)
   let savingQueue = DispatchQueue(label: "no.hyper.Gallery.Camera.SavingQueue", qos: .background)
@@ -124,6 +126,9 @@ class CameraMan {
             if let input = try? AVCaptureDeviceInput(device: camera) {
                 self.addInput(input)
                 self.isFrontCamera.toggle()
+                if !self.isRecordVideo {
+                    self.flash(self.lastFlashMode)
+                }
             }
         }
       }
@@ -238,6 +243,7 @@ class CameraMan {
             device.torchMode = torchMode
         }
         device.flashMode = mode
+        self.lastFlashMode = mode
       }
     }
   }
