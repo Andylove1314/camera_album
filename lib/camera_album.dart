@@ -11,6 +11,7 @@ import 'album_picker.dart';
 export 'ui_kit_album.dart';
 export 'ui_kit_camera.dart';
 export 'camera_album_config.dart';
+export 'package:camera_album/view_camera.dart';
 
 /*
     off = 0
@@ -155,10 +156,13 @@ class CameraAlbum {
           takeStart();
           break;
         case "onTakeDone":
-          var identifier = backs["identifier"];
-          String path =
-              await CameraAlbum.requestImageFile(identifier: identifier);
-          completion(path);
+          if(Platform.isIOS){
+            var identifier = backs["identifier"];
+            String path = await CameraAlbum.requestImageFile(identifier: identifier);
+            completion(path);
+          }else{
+            completion(backs);
+          }
           break;
         default:
           throw UnsupportedError("Unrecognized JSON message");
@@ -187,8 +191,14 @@ class CameraAlbum {
           onRecordStart();
           break;
         case "onRecodeDone":
-          String path = back["path"];
-          onRecodeDone(path);
+
+          if(Platform.isIOS){
+            String path = back["path"];
+            onRecodeDone(path);
+          }else{
+            onRecodeDone(back);
+          }
+
           break;
         default:
           throw UnsupportedError("Unrecognized JSON message");

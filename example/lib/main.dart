@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:camera_album/camera_album.dart';
 
+import 'android_camera_widget.dart';
 import 'newpage.dart';
 
 void main() {
@@ -61,6 +62,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         IconButton(
             icon: Icon(Icons.photo),
@@ -77,6 +79,7 @@ class _HomeState extends State<Home> {
                       isMulti: true,
                       multiCount: 5,
                       cute: false,
+                      customCamera: true,
                       guides: [
                         [
                           'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/VHByy0e26624d87a5a1156eea6711d5125858.jpg',
@@ -135,6 +138,7 @@ class _HomeState extends State<Home> {
                       firstCamera: false,
                       showBottomCamera: true,
                       showGridCamera: true,
+                      customCamera: true,
                       showAlbum: true,
                       isMulti: true,
                       multiCount: 5,
@@ -275,6 +279,17 @@ class _HomeState extends State<Home> {
                 );
               }));
             }),
+        GestureDetector(child: Row(children: <Widget>[
+
+          Icon(Icons.camera),
+          Text('android camera view')
+
+        ],),onTap: (){
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) {
+                return AndroidCameraPage();
+              }));
+        },),
       ],
     );
   }

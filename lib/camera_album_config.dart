@@ -13,6 +13,7 @@ class CameraAlbumConfig {
   var guides;
   var multiCount;
   bool cute;
+  bool customCamera;
 
   CameraAlbumConfig(
       {this.actionId,
@@ -25,7 +26,8 @@ class CameraAlbumConfig {
       this.isMulti = false,
       this.guides,
       this.multiCount = 5,
-      this.cute = false});
+      this.cute = false,
+      this.customCamera = false});
 
   CameraAlbumConfig.from(Map<String, dynamic> data) {
     if (data != null) {
@@ -40,6 +42,7 @@ class CameraAlbumConfig {
       this.guides = data['guides'];
       this.multiCount = data['multiCount'];
       this.cute = data['cute'];
+      this.customCamera = data['customCamera'];
     }
   }
 
@@ -57,6 +60,7 @@ class CameraAlbumConfig {
     map['guides'] = guides;
     map['multiCount'] = multiCount;
     map['cute'] = cute;
+    map['customCamera'] = customCamera;
 
     return map;
   }

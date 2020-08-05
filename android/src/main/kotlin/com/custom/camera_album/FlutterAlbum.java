@@ -206,7 +206,7 @@ public class FlutterAlbum extends LinearLayout implements View.OnClickListener, 
         cameraOrAlbum
                 .imageEngine(GlideEngine.createGlideEngine()) // 外部传入图片加载引擎，必传项
                 .isWeChatStyle(false) // 是否开启微信图片选择风格
-                .isUseCustomCamera(false) // 是否使用自定义相机
+                .isUseCustomCamera((Boolean) data.get("customCamera")) // 是否使用自定义相机
                 .setLanguage(LanguageConfig.ENGLISH) // 设置语言，默认中文
                 .isPageStrategy(false) // 是否开启分页策略 & 每页多少条；默认开启
                 .setPictureStyle(getWhiteStyle()) // 动态自定义相册主题
