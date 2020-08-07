@@ -15,6 +15,7 @@ let kTop: CGFloat = 45
 class GalleryView: UIView {
     
     var collectionView: UICollectionView!
+    lazy var emptyView: UIView = self.makeEmptyView()
     
     /// 已选相册
     var selectedAlbum: Album?
@@ -73,6 +74,9 @@ class GalleryView: UIView {
         collectionView.g_pin(on: .left)
         collectionView.g_pin(on:.right)
         collectionView.g_pin(on: .bottom)
+        
+        addSubview(emptyView)
+        emptyView.g_pinEdges(view: collectionView)
     }
     
     required init?(coder: NSCoder) {
@@ -112,6 +116,9 @@ class GalleryView: UIView {
                 if let album = self?.imageLibrary?.albums.first {
                     self?.selectedAlbum = album
                     self?.show(album: album)
+                } else {
+                    self?.arrowButton.isHidden = true
+                    self?.emptyView.isHidden = false
                 }
             }
         }
@@ -138,6 +145,14 @@ class GalleryView: UIView {
       imageItems = album.items
       collectionView.reloadData()
       collectionView.g_scrollToTop()
+      emptyView.isHidden = !album.items.isEmpty
+    }
+
+    private func makeEmptyView() -> EmptyView {
+      let view = EmptyView()
+      view.isHidden = true
+
+      return view
     }
 }
 
