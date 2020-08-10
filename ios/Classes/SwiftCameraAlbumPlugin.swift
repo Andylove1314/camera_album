@@ -56,7 +56,7 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
                 // 真机6s最大会处理成2048x2048
                 image.resolve { (image, info) in
                     if let image = image, let _ = info, let fileName = identifier.components(separatedBy: "/").first {
-                        let path = tmpNwdn + fileName
+                        let path = tmpNwdn + fileName + ".jpeg"
                         
                         try? FileManager.default.removeItem(atPath: path)
                         try? image.jpegData(compressionQuality: 1)?.write(to: URL(fileURLWithPath: path), options: .atomic)
