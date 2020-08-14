@@ -6,6 +6,7 @@ import 'camera_album.dart';
 import 'ui_kit_album.dart';
 
 class AlbumPicker extends StatefulWidget {
+  final Widget leading;
   final String title;
   final int limit;
   final MediaType mediaType;
@@ -16,6 +17,7 @@ class AlbumPicker extends StatefulWidget {
 
   const AlbumPicker(
       {Key key,
+      this.leading,
       this.title = "",
       this.limit = 1,
       @required this.mediaType,
@@ -37,11 +39,12 @@ class _AlbumPickerState extends State<AlbumPicker> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: widget.leading ?? null,
         title: Text(
           widget.title,
           style: TextStyle(
             fontSize: 20,
-            fontWeight: FontWeight.normal,
+            fontWeight: FontWeight.bold,
             color: Color(0xFF333333),
           ),
           textAlign: TextAlign.center,
@@ -52,7 +55,6 @@ class _AlbumPickerState extends State<AlbumPicker> {
             : <Widget>[
                 FlatButton(
                     onPressed: () async {
-
                       List<String> pathList = [];
                       List<int> durationList = [];
 
@@ -69,7 +71,9 @@ class _AlbumPickerState extends State<AlbumPicker> {
                       Navigator.pop(context);
                       widget.onSelected(pathList, durationList);
                     },
-                    child: Platform.isIOS?Text("Done(${identifier.length})"):SizedBox())
+                    child: Platform.isIOS
+                        ? Text("Done(${identifier.length})", style: TextStyle(color: Color(0xffF04B42)),)
+                        : SizedBox())
               ],
       ),
       body: Container(
@@ -96,7 +100,7 @@ class _AlbumPickerState extends State<AlbumPicker> {
               Navigator.pop(context);
               widget.onSelected([path], [seconds]);
             } else {
-              if(widget.androidView){
+              if (widget.androidView) {
                 Navigator.pop(context);
               }
               widget.onSelected(info.paths, info.durs);

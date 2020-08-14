@@ -53,6 +53,8 @@ class CameraAlbum {
   ///打开相册插件
   static Future<String> openAlbum({
     @required CameraAlbumConfig config,
+    /// 返回按钮样式可以不传
+    Widget leading,
     BuildContext context,
     Function(CameraAlbumBack back) callback,
     void Function(List identifier, List duration) onChanged,
@@ -99,6 +101,7 @@ class CameraAlbum {
             config.inType == "image" ? MediaType.image : MediaType.video;
         bool isMulti = config.isMulti;
         return AlbumPicker(
+          leading: leading,
           config: config,
           androidView: androidView,
           title: config.title,
