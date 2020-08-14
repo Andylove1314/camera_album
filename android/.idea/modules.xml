@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/camera_album.iml" filepath="$PROJECT_DIR$/.idea/modules/camera_album.iml" group="camera_album" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.custom.camera_album-camera_album.iml" filepath="$PROJECT_DIR$/.idea/modules/com.custom.camera_album-camera_album.iml" group="camera_album" />
     </modules>
   </component>
 </project>

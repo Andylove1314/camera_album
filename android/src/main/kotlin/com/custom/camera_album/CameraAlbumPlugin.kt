@@ -118,7 +118,7 @@ public class CameraAlbumPlugin : FlutterPlugin, MethodCallHandler, ActivityAware
         // 相册文件夹列表选中圆点
         mPictureParameterStyle.pictureFolderCheckedDotStyle = R.drawable.picture_orange_oval
         // 相册返回箭头
-        mPictureParameterStyle.pictureLeftBackIcon = R.drawable.ic_back_arrow
+        mPictureParameterStyle.pictureLeftBackIcon = R.drawable.appbar_nav_back_icon_native
         // 标题栏字体颜色
         mPictureParameterStyle.pictureTitleTextColor = ContextCompat.getColor(con as Context, R.color.picture_color_black)
         // 相册右侧取消按钮字体颜色  废弃 改用.pictureRightDefaultTextColor和.pictureRightDefaultTextColor
