@@ -20,7 +20,8 @@
             android:maxLines="1"
             android:text="@string/picture_camera_roll"
             android:textColor="@color/picture_color_black"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:textStyle="bold"/>
 
        <LinearLayout
            android:id="@+id/task_guide_tip_icon"
