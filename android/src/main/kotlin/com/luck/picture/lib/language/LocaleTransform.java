@@ -33,7 +33,7 @@ public class LocaleTransform {
                 return new Locale("vi");
             default:
                 // 简体中文
-                return Locale.CHINESE;
+                return Locale.ENGLISH;
         }
     }
 }
