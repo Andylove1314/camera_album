@@ -25,27 +25,35 @@ public class Image: Equatable {
 
 extension Image {
 
+    /// Resolve UIImage synchronously
+    ///
+    /// - Parameter size: The target size
+    /// - Returns: The resolved UIImage, otherwise nil
+    public func resolveTargetSize(_ size: CGSize?, completion: @escaping (UIImage?, [AnyHashable : Any]?) -> Void) {
+      let options = PHImageRequestOptions()
+      options.isNetworkAccessAllowed = true
+      options.deliveryMode = .highQualityFormat
+
+      let targetSize = size ?? CGSize(
+        width: asset.pixelWidth,
+        height: asset.pixelHeight
+      )
+
+      PHImageManager.default().requestImage(
+        for: asset,
+        targetSize: targetSize,
+        contentMode: .default,
+        options: options) { (image, info) in
+          completion(image, info)
+      }
+    }
+
   /// Resolve UIImage synchronously
   ///
   /// - Parameter size: The target size
   /// - Returns: The resolved UIImage, otherwise nil
   public func resolve(completion: @escaping (UIImage?, [AnyHashable : Any]?) -> Void) {
-    let options = PHImageRequestOptions()
-    options.isNetworkAccessAllowed = true
-    options.deliveryMode = .highQualityFormat
-
-    let targetSize = CGSize(
-      width: asset.pixelWidth,
-      height: asset.pixelHeight
-    )
-
-    PHImageManager.default().requestImage(
-      for: asset,
-      targetSize: targetSize,
-      contentMode: .default,
-      options: options) { (image, info) in
-        completion(image, info)
-    }
+    return resolveTargetSize(nil, completion: completion)
   }
 
     /// Resolve mageData synchronously

@@ -39,6 +39,7 @@ class CameraAlbum {
 
   /// call
   static const String method_openAlbum = 'openAlbum';
+  static const String method_requestImagePreview = 'requestImagePreview';
   static const String method_requestImageFile = 'requestImageFile';
   static const String method_requestVideoFile = 'requestVideoFile';
   static const String method_switchCamera = 'switchCamera';
@@ -120,6 +121,11 @@ class CameraAlbum {
   }
 
   static Future requestImageFile({@required identifier}) {
+    return _channel
+        .invokeMethod(method_requestImagePreview, {"identifier": identifier});
+  }
+
+  static Future requestImagePreview({@required identifier}) {
     return _channel
         .invokeMethod(method_requestImageFile, {"identifier": identifier});
   }
