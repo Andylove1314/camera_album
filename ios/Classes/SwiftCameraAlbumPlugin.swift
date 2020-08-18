@@ -48,13 +48,14 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
         let identifier = params["identifier"] as! String
 //        let isOrigin = params["origin"] as? Bool ?? false
         if let image = Image.initWith(identifier: identifier) {
-//            let limit = 4096
+            /// 图片像素超过4096*4096时取4096
+            let limit = 4096
 //            print("宽度:")
 //            print(image.asset.pixelWidth)
 //            print("高度:")
 //            print(image.asset.pixelHeight)
-//            let isOrigin = image.asset.pixelWidth < limit && image.asset.pixelHeight < limit
-//            if isOrigin {
+            let isOrigin = image.asset.pixelWidth < limit && image.asset.pixelHeight < limit
+            if isOrigin {
                 // 取原图
                 image.resolveImageData { (imageData, info) in
                     if let imageData = imageData, let info = info, let fileName = info["PHImageFileUTIKey"] as? String {
@@ -67,18 +68,18 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
                         result(path)
                         }
                     }
-//            } else {
-//                // 真机6s最大会处理成2048x2048
-//                image.resolve { (image, info) in
-//                    if let image = image, let _ = info, let fileName = identifier.components(separatedBy: "/").first {
-//                        let path = tmpNwdn + fileName + ".jpeg"
-//
-//                        try? FileManager.default.removeItem(atPath: path)
-//                        try? image.jpegData(compressionQuality: 1)?.write(to: URL(fileURLWithPath: path), options: .atomic)
-//                        result(path)
-//                    }
-//                }
-//            }
+            } else {
+                image.resolveTargetSize(CGSize(width: 4096, height: 4096)) { (image, info) in
+                    if let image = image, let _ = info, let fileName = identifier.components(separatedBy: "/").first {
+                                            
+                        let path = tmpNwdn + fileName + ".jpeg"
+                    
+                        try? FileManager.default.removeItem(atPath: path)
+                        try? image.jpegData(compressionQuality: 1)?.write(to: URL(fileURLWithPath: path), options: .atomic)
+                        result(path)
+                    }
+                }
+            }
         }
     case "requestVideoFile":
         let params = call.arguments as! NSDictionary
