@@ -120,12 +120,12 @@ class CameraAlbum {
     }
   }
 
-  static Future requestImageFile({@required identifier}) {
+  static Future requestImagePreview({@required identifier}) {
     return _channel
         .invokeMethod(method_requestImagePreview, {"identifier": identifier});
   }
 
-  static Future requestImagePreview({@required identifier}) {
+  static Future requestImageFile({@required identifier}) {
     return _channel
         .invokeMethod(method_requestImageFile, {"identifier": identifier});
   }
