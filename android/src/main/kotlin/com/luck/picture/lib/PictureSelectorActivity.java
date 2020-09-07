@@ -262,8 +262,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 public void onClick(View view) {
 
                     ///todo 使用现有相机
-                    config.channel.invokeMethod("callCamera", "");
-                    closeActivity();
+                    if (config != null && config.channel != null){
+                        config.channel.invokeMethod("callCamera", "");
+                        closeActivity();
+                    }
 
                     // Check the permissions
 //                    if (PermissionChecker.checkSelfPermission(PictureSelectorActivity.this, Manifest.permission.CAMERA)) {
