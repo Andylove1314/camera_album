@@ -55,7 +55,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 
 /**
@@ -64,6 +63,10 @@ import java.util.Objects;
  * @describe: BaseActivity
  */
 public abstract class PictureBaseActivity extends AppCompatActivity {
+
+    //照片列数
+    protected final int IMAGE_SPAN_COUNT = 4;
+
     protected PictureSelectionConfig config;
     protected boolean openWhiteStatusBar, numComplete;
     protected int colorPrimary, colorPrimaryDark;
