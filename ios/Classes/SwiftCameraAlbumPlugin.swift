@@ -75,7 +75,7 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
                         let path = tmpNwdn + fileName + ".jpeg"
                     
                         try? FileManager.default.removeItem(atPath: path)
-                        try? image.jpegData(compressionQuality: 1)?.write(to: URL(fileURLWithPath: path), options: .atomic)
+                        try? image.jpegData(compressionQuality: 0.9)?.write(to: URL(fileURLWithPath: path), options: .atomic)
                         result(path)
                     }
                 }
