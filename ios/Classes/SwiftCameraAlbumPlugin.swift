@@ -116,6 +116,28 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
         NotificationCenter.default.post(name: NSNotification.Name("startRecord"), object: self, userInfo: nil)
     case "stopRecord":
         NotificationCenter.default.post(name: NSNotification.Name("stopRecord"), object: self, userInfo: nil)
+    case "requestLastImage":
+        if let params = call.arguments as? NSDictionary {
+        if let type = params["type"] as? String {
+        let imagesLibrary = ImagesLibrary(mediaType: type == "video" ? .video : .image)
+        imagesLibrary.reload {
+            if let album = imagesLibrary.albums.first {
+                if let item = album.items.first {
+                    let options = PHImageRequestOptions()
+                    options.isNetworkAccessAllowed = true
+
+                      PHImageManager.default().requestImage(
+                        for: item.asset,
+                      targetSize: CGSize(width: 100, height: 100),
+                      contentMode: .aspectFill,
+                      options: options) { image, _ in
+                        result(image?.jpegData(compressionQuality: 0.8))
+                    }
+                }
+            }
+        }
+        }
+        }
     default: break
     }
   }

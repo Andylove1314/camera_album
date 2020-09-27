@@ -42,6 +42,7 @@ class CameraAlbum {
   static const String method_requestImagePreview = 'requestImagePreview';
   static const String method_requestImageFile = 'requestImageFile';
   static const String method_requestVideoFile = 'requestVideoFile';
+  static const String method_requestLastImage = 'requestLastImage';
   static const String method_switchCamera = 'switchCamera';
   static const String method_setFlashMode = 'setFlashMode';
   static const String method_startCamera = 'startCamera';
@@ -133,6 +134,10 @@ class CameraAlbum {
   static Future requestVideoFile({@required identifier}) {
     return _channel
         .invokeMethod(method_requestVideoFile, {"identifier": identifier});
+  }
+
+  static Future requestLastImage(String type) {
+    return _channel.invokeMethod(method_requestLastImage, {"type": type});
   }
 
   /// 开始预览
