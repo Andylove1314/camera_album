@@ -11,14 +11,19 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
+import com.luck.picture.lib.PictureSelectionModel
 import com.luck.picture.lib.PictureSelector
 import com.luck.picture.lib.R
 import com.luck.picture.lib.config.PictureConfig
 import com.luck.picture.lib.config.PictureMimeType
 import com.luck.picture.lib.entity.LocalMedia
-import com.luck.picture.lib.language.LanguageConfig
+import com.luck.picture.lib.entity.LocalMediaFolder
 import com.luck.picture.lib.listener.OnResultCallbackListener
+import com.luck.picture.lib.model.LocalMediaLoader
 import com.luck.picture.lib.style.PictureParameterStyle
+import com.luck.picture.lib.thread.PictureThreadUtils
+import com.luck.picture.lib.thread.PictureThreadUtils.SimpleTask
+import com.luck.picture.lib.tools.AndroidQTransformUtils
 import com.luck.picture.lib.tools.SdkVersionUtils
 import com.yalantis.ucrop.UCrop
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -29,7 +34,6 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.Registrar
-import java.util.*
 
 
 /** CameraAlbumPlugin */
@@ -46,6 +50,7 @@ public class CameraAlbumPlugin : FlutterPlugin, MethodCallHandler, ActivityAware
     private val methodSetFlashMode = "setFlashMode"
     private val methodStartRecord = "startRecord"
     private val methodStopRecord = "stopRecord"
+    private val methodRequestLastImage = "requestLastImage"
 
 
     private lateinit var con: Activity
@@ -240,11 +245,50 @@ public class CameraAlbumPlugin : FlutterPlugin, MethodCallHandler, ActivityAware
             factory2.startRecord()
         } else if (call.method == methodStopRecord) {
             factory2.stopRecord()
+        } else if (call.method == methodRequestLastImage) {
+            var type: String? = call?.argument<String>("type")
+            requestLastImage(type = type, result = result)
         } else {
             result.notImplemented()
         }
     }
 
+    /**
+     * 获取最近一视频或者图片
+     */
+    private fun requestLastImage(type: String?, result: Result?){
+
+        try {
+            val cameraOrAlbum = PictureSelectionModel(PictureSelector.create(con), if ("video" == type) PictureMimeType.ofVideo() else PictureMimeType.ofImage())
+
+            PictureThreadUtils.executeByIo<List<LocalMediaFolder>>(object : SimpleTask<List<LocalMediaFolder>?>() {
+                override fun doInBackground(): List<LocalMediaFolder> {
+
+                    return LocalMediaLoader(con, cameraOrAlbum.selectionConfig).loadAllMedia()
+                }
+
+                override fun onSuccess(folders: List<LocalMediaFolder>?) {
+                   try {
+                    var img:String = ""
+                    if (folders != null && folders?.isNotEmpty()) {
+                        var media = folders?.get(0)?.data?.get(0)
+                        
+                        img = media?.path.toString()
+                        if (SdkVersionUtils.checkedAndroid_Q()){
+                            img = AndroidQTransformUtils.copyPathToAndroidQ(con,
+                                    media?.path, media?.width!!, media?.height!!, media?.mimeType, media?.fileName)
+                        }
+                        
+                    }
+                    result?.success(img)
+                   }catch (e:Exception){
+                   }
+                }
+            })
+        }catch (e: Exception){
+            
+        }
+    }
 
     /**
      * 返回结果回调
