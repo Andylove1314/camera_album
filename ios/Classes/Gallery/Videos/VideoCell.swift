@@ -14,7 +14,17 @@ class VideoCell: ImageCell {
 
     video.fetchDuration { duration in
       DispatchQueue.main.async {
-        self.durationLabel.text = "\(Utils.format(duration))"
+        print(duration);
+        if duration <= 0 {
+            self.bottomOverlay.isHidden = true;
+            self.cameraImageView.isHidden = true;
+            self.durationLabel.isHidden = true;
+        } else {
+            self.bottomOverlay.isHidden = false;
+            self.cameraImageView.isHidden = false;
+            self.durationLabel.isHidden = false;
+            self.durationLabel.text = "\(Utils.format(duration))"
+        }
       }
     }
   }
