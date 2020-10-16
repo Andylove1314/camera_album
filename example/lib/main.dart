@@ -142,6 +142,7 @@ class _HomeState extends State<Home> {
                       showAlbum: true,
                       isMulti: true,
                       multiCount: 5,
+                      bottomActionTitle: 'fuck camera',
                       guides: [
                         [
                           'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/VHByy0e26624d87a5a1156eea6711d5125858.jpg',

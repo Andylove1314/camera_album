@@ -178,8 +178,8 @@ public class CameraAlbumPlugin : FlutterPlugin, MethodCallHandler, ActivityAware
             var showAlbum: Boolean? = call?.argument<Boolean>("showAlbum")
             var cute: Boolean? = call?.argument<Boolean>("cute")
             var customCamera: Boolean? = call?.argument<Boolean>("customCamera")
-
-
+            var bottomActionTitle: String? = call?.argument<String>("bottomActionTitle")
+            
             ///文件类型
             var picType = if ("video" == inType) PictureMimeType.ofVideo() else PictureMimeType.ofImage()
 
@@ -234,6 +234,7 @@ public class CameraAlbumPlugin : FlutterPlugin, MethodCallHandler, ActivityAware
                     .showBottomCamera(showBottomCamera == true)
                     .showAlbum(showAlbum == true)
                     .setFlutterChannel(channel)
+                    .setBottomActionTitle(bottomActionTitle)
                     .forResult(MyResultCallback(channel, result))
         } else if (call.method == methodTakePhoto) {
             factory2.takePhoto()

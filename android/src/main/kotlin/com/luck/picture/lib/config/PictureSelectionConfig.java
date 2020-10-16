@@ -170,6 +170,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean showBottomCamera = true;
     public boolean showAlbum = true;
     public MethodChannel channel;
+    public String bottomActionTitle = "";
 
     protected void initDefaultValue() {
         chooseMode = PictureMimeType.ofImage();

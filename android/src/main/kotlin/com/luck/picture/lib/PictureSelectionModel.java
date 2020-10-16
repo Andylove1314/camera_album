@@ -1455,4 +1455,15 @@ public class PictureSelectionModel {
         return this;
     }
 
+    /**
+     * @param bottomActionTitle//业务相关
+     * @return
+     */
+    public PictureSelectionModel setBottomActionTitle(String bottomActionTitle) {
+        selectionConfig.bottomActionTitle = bottomActionTitle;
+        return this;
+    }
+
+
+
 }

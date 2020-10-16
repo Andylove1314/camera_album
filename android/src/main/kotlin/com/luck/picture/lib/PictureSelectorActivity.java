@@ -255,6 +255,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
 
         ///是否展示相机底部按钮
         LinearLayout bottomCamera = findViewById(R.id.camera_bottom);
+        TextView cameraTitle = findViewById(R.id.bottom_camera_title);
         if (config.showBottomCamera){
             bottomCamera.setVisibility(View.VISIBLE);
             bottomCamera.setOnClickListener(new View.OnClickListener() {
@@ -286,6 +287,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
 //                    }
                 }
             });
+            cameraTitle.setText(config.bottomActionTitle);
         }
 
         ///是否有引导

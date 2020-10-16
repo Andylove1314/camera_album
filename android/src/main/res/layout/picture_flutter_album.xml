@@ -73,35 +73,6 @@
 
         </RelativeLayout>
 
-        <!--底部相机-->
-        <LinearLayout
-            android:id="@+id/camera_bottom"
-            android:layout_width="match_parent"
-            android:layout_height="87dp"
-            android:background="#ffF7F7F7"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:visibility="gone">
-
-
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="24dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/super_self_icon_camera" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_centerVertical="true"
-                android:gravity="center"
-                android:text="Take a picture"
-                android:textColor="#ff444444"
-                android:textSize="15sp" />
-
-        </LinearLayout>
-
         <!-- 多选底部操作栏-->
         <RelativeLayout
             android:id="@+id/rl_bottom"
