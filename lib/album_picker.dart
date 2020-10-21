@@ -8,6 +8,7 @@ import 'ui_kit_album.dart';
 class AlbumPicker extends StatefulWidget {
   final Widget leading;
   final String title;
+  final String doneTitle;
   final int limit;
   final MediaType mediaType;
   final void Function(List<dynamic> path, List<dynamic> seconds) onSelected;
@@ -24,7 +25,8 @@ class AlbumPicker extends StatefulWidget {
       this.onSelected,
       this.onLimitCallback,
       this.config,
-      this.androidView = false})
+      this.androidView = false,
+      this.doneTitle})
       : super(key: key);
 
   @override
@@ -72,7 +74,10 @@ class _AlbumPickerState extends State<AlbumPicker> {
                       widget.onSelected(pathList, durationList);
                     },
                     child: Platform.isIOS
-                        ? Text("Done(${identifier.length})", style: TextStyle(color: Color(0xffF04B42)),)
+                        ? Text(
+                            "${widget.doneTitle ?? 'Done'}(${identifier.length})",
+                            style: TextStyle(color: Color(0xffF04B42)),
+                          )
                         : SizedBox())
               ],
       ),

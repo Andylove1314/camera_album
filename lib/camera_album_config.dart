@@ -4,6 +4,7 @@ import 'dart:convert';
 class CameraAlbumConfig {
   var actionId;
   var title;
+  var doneTitle;
   var inType;
   var firstCamera;
   var showBottomCamera;
@@ -19,6 +20,7 @@ class CameraAlbumConfig {
   CameraAlbumConfig(
       {this.actionId,
       this.title,
+      this.doneTitle,
       this.inType = 'image',
       this.firstCamera = false,
       this.showBottomCamera = true,
@@ -35,6 +37,7 @@ class CameraAlbumConfig {
     if (data != null) {
       this.actionId = data['actionId'];
       this.title = data['actiotitlenId'];
+      this.doneTitle = data['doneTitle'];
       this.inType = data['inType'];
       this.firstCamera = data['firstCamera'];
       this.showBottomCamera = data['showBottomCamera'];
@@ -54,6 +57,7 @@ class CameraAlbumConfig {
 
     map['actionId'] = actionId;
     map['title'] = title;
+    map['doneTitle'] = doneTitle;
     map['inType'] = inType;
     map['firstCamera'] = firstCamera;
     map['showBottomCamera'] = showBottomCamera;

@@ -107,6 +107,7 @@ class CameraAlbum {
           config: config,
           androidView: androidView,
           title: config.title,
+          doneTitle: config.doneTitle,
           limit: isMulti ? config.multiCount : 1,
           mediaType: mediaType,
           onSelected: (paths, seconds) {
