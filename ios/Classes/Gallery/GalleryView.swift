@@ -22,6 +22,7 @@ class GalleryView: UIView {
     var selectedAlbumIndex: Int?
     
     var arrowButton: ArrowButton!
+    let loadingView = UIActivityIndicatorView(style: .gray)
     
     /// 所有图片
     var imageItems: [Image] = []
@@ -49,6 +50,7 @@ class GalleryView: UIView {
         super.init(frame: frame)
         
         arrowButton = ArrowButton()
+        arrowButton.isHidden = true;
         addSubview(arrowButton)
         
         arrowButton.g_pin(on: .top)
@@ -75,8 +77,12 @@ class GalleryView: UIView {
         collectionView.g_pin(on:.right)
         collectionView.g_pin(on: .bottom)
         
+        addSubview(loadingView)
+        loadingView.g_pinEdges(view: collectionView)
+        
         addSubview(emptyView)
         emptyView.g_pinEdges(view: collectionView)
+        
     }
     
     required init?(coder: NSCoder) {
@@ -86,6 +92,7 @@ class GalleryView: UIView {
     // MARK: - Logic
 
     func check() {
+        loadingView.startAnimating()
       if Permission.Photos.status == .notDetermined {
         Permission.Photos.request { [weak self] in
           self?.check()
@@ -113,6 +120,7 @@ class GalleryView: UIView {
 //            }
             self?.imageLibrary = ImagesLibrary(mediaType: mediaType)
             self?.imageLibrary?.reload {
+                self?.loadingView.stopAnimating()
                 if let album = self?.imageLibrary?.albums.first {
                     self?.selectedAlbum = album
                     self?.show(album: album)
