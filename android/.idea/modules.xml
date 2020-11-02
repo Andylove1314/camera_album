@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/android-camera_album.iml" filepath="$PROJECT_DIR$/.idea/modules/android-camera_album.iml" group="camera_album" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/camera_album.iml" filepath="$PROJECT_DIR$/.idea/modules/camera_album.iml" group="camera_album" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.custom.camera_album-camera_album.iml" filepath="$PROJECT_DIR$/.idea/modules/com.custom.camera_album-camera_album.iml" group="camera_album" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.custom.camera_album.camera_album.iml" filepath="$PROJECT_DIR$/.idea/modules/com.custom.camera_album.camera_album.iml" />
     </modules>
   </component>
 </project>
