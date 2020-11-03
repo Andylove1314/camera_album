@@ -50,7 +50,7 @@ class GalleryView: UIView {
         super.init(frame: frame)
         
         arrowButton = ArrowButton()
-        arrowButton.isHidden = true;
+        arrowButton.isHidden = true
         addSubview(arrowButton)
         
         arrowButton.g_pin(on: .top)
@@ -94,8 +94,11 @@ class GalleryView: UIView {
     func check() {
         loadingView.startAnimating()
       if Permission.Photos.status == .notDetermined {
-        Permission.Photos.request { [weak self] in
-          self?.check()
+        let dispatchTime = DispatchTime.now() + 0.5
+        DispatchQueue.main.asyncAfter(deadline: dispatchTime) {
+            Permission.Photos.request { [weak self] in
+              self?.check()
+            }
         }
 
         return
@@ -121,7 +124,9 @@ class GalleryView: UIView {
             self?.imageLibrary = ImagesLibrary(mediaType: mediaType)
             self?.imageLibrary?.reload {
                 self?.loadingView.stopAnimating()
+                self?.loadingView.isHidden = true
                 if let album = self?.imageLibrary?.albums.first {
+                    self?.arrowButton.isHidden = false
                     self?.selectedAlbum = album
                     self?.show(album: album)
                 } else {
