@@ -1,3 +1,4 @@
 ## 0.0.1
 
-* TODO: Describe initial release.
+* ios PlatformView相册视图 &&
+  android PlatformView相册视图、新开Activity页面视图

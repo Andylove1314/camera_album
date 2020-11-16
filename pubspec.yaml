@@ -1,8 +1,8 @@
 name: camera_album
 description: 原生相机相册插件
 version: 0.0.1
-author:
-homepage:
+author: fengkun19890@gmail.com
+homepage: https://github.com/Andylove1314/camera_album.git
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
