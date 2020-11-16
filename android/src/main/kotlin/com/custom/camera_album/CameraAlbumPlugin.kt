@@ -167,6 +167,7 @@ public class CameraAlbumPlugin : FlutterPlugin, MethodCallHandler, ActivityAware
 
             ///业务参数
             var actionId: String? = call?.argument<String>("actionId")
+            var autoShowGuide: Boolean? = call?.argument<Boolean>("autoShowGuide")
             var title: String? = call?.argument<String>("title")
             var inType: String? = call?.argument<String>("inType")
             var guides: List<List<String>>? = call?.argument<List<List<String>>>("guides")
@@ -229,6 +230,7 @@ public class CameraAlbumPlugin : FlutterPlugin, MethodCallHandler, ActivityAware
                     .minimumCompressSize(100) // 小于多少kb的图片不压缩.setTask(title)
                     ///业务相关
                     .setActionId(actionId)
+                    .setAutoShowGuide(autoShowGuide == true)
                     .setPageTitle(title)
                     .setGuidea(guides)
                     .showBottomCamera(showBottomCamera == true)

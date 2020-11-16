@@ -133,6 +133,7 @@ class _HomeState extends State<Home> {
               CameraAlbum.openAlbum(
                   config: CameraAlbumConfig(
                       actionId: 'ssshshhshsh',
+                      autoShowGuide: false,
                       title: 'Native Gallery',
                       inType: 'image',
                       firstCamera: false,

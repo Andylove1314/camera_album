@@ -303,7 +303,14 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 }
             });
 
-            ///是否自动弹出引导
+            if (TextUtils.isEmpty(config.actionId)){
+                if (config.autoShowGuide){
+                    guideView.setVisibility(View.VISIBLE);
+                }else {
+                    guideView.setVisibility(View.GONE);
+                }
+            }else {
+                  ///是否自动弹出引导
             SharedPreferences sharedPreferences = getSharedPreferences("remini_native_guide",0);
             String action = sharedPreferences.getString(config.actionId + "", "");
             if (TextUtils.isEmpty(action)){
@@ -315,7 +322,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             }else {
                 guideView.setVisibility(View.GONE);
             }
-
+            }
         }
 
     }

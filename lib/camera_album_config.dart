@@ -3,6 +3,7 @@ import 'dart:convert';
 /// flutter to native
 class CameraAlbumConfig {
   var actionId;
+  var autoShowGuide;
   var title;
   var doneTitle;
   var inType;
@@ -19,6 +20,7 @@ class CameraAlbumConfig {
 
   CameraAlbumConfig(
       {this.actionId,
+        this.autoShowGuide,
       this.title,
       this.doneTitle,
       this.inType = 'image',
@@ -49,6 +51,7 @@ class CameraAlbumConfig {
       this.cute = data['cute'];
       this.customCamera = data['customCamera'];
       this.bottomActionTitle = data['bottomActionTitle'];
+      this.autoShowGuide = data['autoShowGuide'];
     }
   }
 
@@ -69,6 +72,7 @@ class CameraAlbumConfig {
     map['cute'] = cute;
     map['customCamera'] = customCamera;
     map['bottomActionTitle'] = bottomActionTitle;
+    map['autoShowGuide'] = autoShowGuide;
 
     return map;
   }

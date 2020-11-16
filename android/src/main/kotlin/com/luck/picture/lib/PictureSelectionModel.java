@@ -1417,6 +1417,15 @@ public class PictureSelectionModel {
         selectionConfig.actionId = actionId;
         return this;
     }
+    
+    /**
+     * @param autoShowGuide//业务相关
+     * @return
+     */
+    public PictureSelectionModel setAutoShowGuide(boolean autoShowGuide) {
+        selectionConfig.autoShowGuide = autoShowGuide;
+        return this;
+    }
 
 
     /**
