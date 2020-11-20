@@ -32,6 +32,7 @@ extension Image {
     public func resolveTargetSize(_ size: CGSize?, completion: @escaping (UIImage?, [AnyHashable : Any]?) -> Void) {
       let options = PHImageRequestOptions()
       options.isNetworkAccessAllowed = true
+      options.isSynchronous = true
       options.deliveryMode = .highQualityFormat
 
       let targetSize = size ?? CGSize(
