@@ -155,12 +155,15 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
             config.allowEditImage = false
             config.allowTakePhotoInLibrary = false
             config.maxSelectCount = maxSelectCount
-            config.showSelectBtnWhenSingleSelect = true
+            config.showSelectBtnWhenSingleSelect = false
             config.allowSelectOriginal = false
             config.allowPreviewPhotos = false
             config.showSelectedPhotoPreview = false
             config.showPreviewButtonInAlbum = false
             config.allowMixSelect = false
+            if maxSelectCount == 1 {
+                config.showSelectedIndex = false
+            }
             switch mediaType {
             case .image:
                 config.allowSelectVideo = false

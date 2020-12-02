@@ -874,6 +874,11 @@ extension ZLThumbnailViewController: UICollectionViewDataSource, UICollectionVie
         
         if !ZLPhotoConfiguration.default().allowPreviewPhotos {
             cell.btnSelectClick()
+            // + TODO:修改源码 *选单个图或视频不需要点完成按钮*
+            if (ZLPhotoConfiguration.default().maxSelectCount == 1 || ZLPhotoConfiguration.default().maxVideoSelectCount == 1) {
+                doneBtnClick()
+            }
+            // + TODO:修改源码 *选单个图或视频不需要点完成按钮*
             return
         }
         
