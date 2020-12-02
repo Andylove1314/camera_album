@@ -151,7 +151,12 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
         let maxSelectCount = params["maxSelectCount"] as! Int
         let mediaType =  PHAssetMediaType(rawValue: (params["mediaType"] as! Int))
         if let sender = UIApplication.shared.keyWindow?.rootViewController {
+            
+            let deploy = ZLPhotoThemeColorDeploy.default()
+            deploy.thumbnailBgColor = UIColor.white
+            
             let config = ZLPhotoConfiguration.default()
+            config.themeColorDeploy = deploy
             config.allowEditImage = false
             config.allowTakePhotoInLibrary = false
             config.maxSelectCount = maxSelectCount
