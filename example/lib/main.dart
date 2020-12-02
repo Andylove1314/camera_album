@@ -68,7 +68,6 @@ class _HomeState extends State<Home> {
           icon: Icon(Icons.add_photo_alternate),
           onPressed: () async {
             CameraAlbum.showPhotoLibrary(onSelected: (var paths) {
-              print("$paths");
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return NewPage(
                   MediaType.image,
@@ -84,7 +83,6 @@ class _HomeState extends State<Home> {
             CameraAlbum.showPhotoLibrary(
                 maxSelectCount: 9,
                 onSelected: (var paths) {
-                  print("$paths");
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return NewPage(
                       MediaType.image,
@@ -100,7 +98,6 @@ class _HomeState extends State<Home> {
             CameraAlbum.showPhotoLibrary(
                 mediaType: MediaType.video,
                 onSelected: (var paths) {
-                  print("$paths");
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return NewPage(
                       MediaType.video,
