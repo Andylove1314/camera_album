@@ -137,6 +137,117 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
             }
         }
         }
+    }
+    case "showPhotoLibrary":
+        /*
+         enum MediaType {
+           unknown, // 0
+           image, // 1
+           video, // 2
+           audio, // 3
+         }
+         */
+        let params = call.arguments as! NSDictionary
+        let maxSelectCount = params["maxSelectCount"] as! Int
+        let mediaType =  PHAssetMediaType(rawValue: (params["mediaType"] as! Int))
+        if let sender = UIApplication.shared.keyWindow?.rootViewController {
+            let config = ZLPhotoConfiguration.default()
+            config.allowEditImage = false
+            config.allowTakePhotoInLibrary = false
+            config.maxSelectCount = maxSelectCount
+            config.showSelectBtnWhenSingleSelect = true
+            config.allowSelectOriginal = false
+            config.allowPreviewPhotos = false
+            config.showSelectedPhotoPreview = false
+            config.showPreviewButtonInAlbum = false
+            config.allowMixSelect = false
+            switch mediaType {
+            case .image:
+                config.allowSelectVideo = false
+                config.allowSelectImage = true
+            case .video:
+                config.allowSelectVideo = true
+                config.allowSelectImage = false
+            default:
+                break
+            }
+            let ac = ZLPhotoPreviewSheet()
+            ac.selectImageBlock = { (images, assets, isOriginal) in
+                debugPrint("\(images)  -  \(assets) - \(isOriginal)")
+                var paths: [String] = []
+                var count: Int = 0
+                assets.forEach { (asset) in
+                    switch mediaType {
+                    case .image:
+                        ZLPhotoManager.fetchOriginalImageData(for: asset) { (data, info, isDegraded) in
+                            let isHEIC: Bool = data.imageFormat == .HEIC || data.imageFormat == .HEIF
+                            debugPrint("isDegraded: \(isDegraded)    isHEIC: \(isHEIC)")
+                            var imageData = data
+                            if isHEIC {
+                                if let ciImage = CIImage(data: data) {
+                                    let context = CIContext()
+                                    if let colorSpace = ciImage.colorSpace {
+                                        if #available(iOS 10.0, *) {
+                                            if let data = context.jpegRepresentation(of: ciImage, colorSpace: colorSpace) {
+                                                imageData = data
+                                            }
+                                        } else {
+                                            /*heic文件是目前苹果公司专门制作出来的一种图片格式们目前只适合苹果用户专用，和我们熟知的JPEG、PNG等同类，HEIC是一种图像格式，由苹果公司在近几年推出，iOS11、MacOS High Sierra（10.13）以及更新的版本支持该图片格式。并不是所有的iOS设备都默认支持HEIC图像格式，只有使用A9芯片及以上的设备才可以，比如搭载最新的A11仿生的芯片的iPhone X、iPhone8、iPhone8 Plus会默认使用HEIC图像格式。
+
+                                            作者：规规这小子真帅
+                                            链接：https://www.zhihu.com/question/266966789/answer/356730794
+                                            来源：知乎
+                                            著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。*/
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            let path = tmpNwdn + asset.localIdentifier.replacingOccurrences(of: "/", with: "")
+                            try? FileManager.default.removeItem(atPath: path)
+                            try? imageData.write(to: URL(fileURLWithPath: path), options: .atomic)
+                            paths.append(path)
+                            count = count + 1
+                            if count == assets.count {
+                                SwiftCameraAlbumPlugin.channel.invokeMethod("onSelectedHandler", arguments: ["paths": paths])
+                            }
+                        }
+                    case .video:
+                        // https://blog.csdn.net/qq_22157341/article/details/80758683
+                        if let assetResource = PHAssetResource.assetResources(for: asset).first {
+                        let fileName = assetResource.originalFilename
+                            let path = tmpNwdn + fileName
+                            try? FileManager.default.removeItem(atPath: path)
+                        
+                        let options = PHAssetResourceRequestOptions()
+                            options.isNetworkAccessAllowed = true;
+                        PHAssetResourceManager.default().writeData(for: assetResource, toFile: URL(fileURLWithPath: path), options: options) { (error) in
+                            if let error = error {
+                                debugPrint(error);
+                            } else {
+                                paths.append(path)
+                                count = count + 1
+                                if count == assets.count {
+                                    SwiftCameraAlbumPlugin.channel.invokeMethod("onSelectedHandler", arguments: ["paths": paths])
+                                }
+                            }
+                        }
+                    }
+                    default:
+                        break;
+                    }
+                }
+            }
+        
+            ac.cancelBlock = {
+                debugPrint("cancel select")
+            }
+            ac.selectImageRequestErrorBlock = { (errorAssets, errorIndexs) in
+                debugPrint("fetch error assets: \(errorAssets), error indexs: \(errorIndexs)")
+            }
+            ac.showPhotoLibrary(sender: sender)
+        } else {
+            result([])
         }
     default: break
     }

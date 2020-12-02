@@ -46,15 +46,40 @@ class CameraAlbum {
   static const String method_switchCamera = 'switchCamera';
   static const String method_setFlashMode = 'setFlashMode';
   static const String method_startCamera = 'startCamera';
+  static const String method_showPhotoLibrary = 'showPhotoLibrary';
+  static const String method_onSelectedHandler = 'onSelectedHandler';
 
   static Future<String> get platformVersion async {
     final String version = await _channel.invokeMethod('getPlatformVersion');
     return version;
   }
 
+  /// 直接进入相册选择
+  static void showPhotoLibrary(
+      {MediaType mediaType = MediaType.image,
+      int maxSelectCount = 1,
+      ValueChanged<List<String>> onSelected}) async {
+    _channel.setMethodCallHandler((MethodCall call) async {
+      String method = call.method;
+      Map arguments = call.arguments;
+      print('$method -> $arguments');
+      switch (method) {
+        case method_onSelectedHandler:
+          List paths = arguments["paths"];
+          onSelected(paths.map((e) => "$e").toList());
+          break;
+        default:
+          throw UnsupportedError("Unrecognized JSON message");
+      }
+    });
+    _channel.invokeMethod(method_showPhotoLibrary,
+        {'mediaType': mediaType.index, 'maxSelectCount': maxSelectCount});
+  }
+
   ///打开相册插件
   static Future<String> openAlbum({
     @required CameraAlbumConfig config,
+
     /// 返回按钮样式可以不传
     Widget leading,
     BuildContext context,
@@ -171,11 +196,12 @@ class CameraAlbum {
           takeStart();
           break;
         case "onTakeDone":
-          if(Platform.isIOS){
+          if (Platform.isIOS) {
             var identifier = backs["identifier"];
-            String path = await CameraAlbum.requestImageFile(identifier: identifier);
+            String path =
+                await CameraAlbum.requestImageFile(identifier: identifier);
             completion(path);
-          }else{
+          } else {
             completion(backs);
           }
           break;
@@ -206,11 +232,10 @@ class CameraAlbum {
           onRecordStart();
           break;
         case "onRecodeDone":
-
-          if(Platform.isIOS){
+          if (Platform.isIOS) {
             String path = back["path"];
             onRecodeDone(path);
-          }else{
+          } else {
             onRecodeDone(back);
           }
 

@@ -65,6 +65,52 @@ class _HomeState extends State<Home> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         IconButton(
+          icon: Icon(Icons.add_photo_alternate),
+          onPressed: () async {
+            CameraAlbum.showPhotoLibrary(onSelected: (var paths) {
+              print("$paths");
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return NewPage(
+                  MediaType.image,
+                  paths,
+                );
+              }));
+            });
+          },
+        ),
+        IconButton(
+          icon: Icon(Icons.add_photo_alternate_outlined),
+          onPressed: () async {
+            CameraAlbum.showPhotoLibrary(
+                maxSelectCount: 9,
+                onSelected: (var paths) {
+                  print("$paths");
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return NewPage(
+                      MediaType.image,
+                      paths,
+                    );
+                  }));
+                });
+          },
+        ),
+        IconButton(
+          icon: Icon(Icons.add_to_queue),
+          onPressed: () async {
+            CameraAlbum.showPhotoLibrary(
+                mediaType: MediaType.video,
+                onSelected: (var paths) {
+                  print("$paths");
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return NewPage(
+                      MediaType.video,
+                      paths,
+                    );
+                  }));
+                });
+          },
+        ),
+        IconButton(
             icon: Icon(Icons.photo),
             onPressed: () async {
               CameraAlbum.openAlbum(
@@ -100,11 +146,11 @@ class _HomeState extends State<Home> {
                     print('callback2： -> $backs');
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
-                          return NewPage(
-                            MediaType.image,
-                            backs.paths,
-                          );
-                        }));
+                      return NewPage(
+                        MediaType.image,
+                        backs.paths,
+                      );
+                    }));
                   },
                   callCamera: () {
                     print('open custom camera');
@@ -162,11 +208,11 @@ class _HomeState extends State<Home> {
                   callback: (backs) {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
-                          return NewPage(
-                            MediaType.image,
-                            backs.paths,
-                          );
-                        }));
+                      return NewPage(
+                        MediaType.image,
+                        backs.paths,
+                      );
+                    }));
                   },
                   onLimitCallback: () {
                     print("超出限制");
@@ -217,11 +263,11 @@ class _HomeState extends State<Home> {
                   callback: (backs) {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
-                          return NewPage(
-                            MediaType.video,
-                            backs.paths,
-                          );
-                        }));
+                      return NewPage(
+                        MediaType.video,
+                        backs.paths,
+                      );
+                    }));
                   });
             }),
         IconButton(
@@ -256,11 +302,11 @@ class _HomeState extends State<Home> {
                   callback: (backs) {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
-                          return NewPage(
-                            MediaType.video,
-                            backs.paths,
-                          );
-                        }));
+                      return NewPage(
+                        MediaType.video,
+                        backs.paths,
+                      );
+                    }));
                   });
             }),
         IconButton(
@@ -281,31 +327,27 @@ class _HomeState extends State<Home> {
                 );
               }));
             }),
-        GestureDetector(child: Row(children: <Widget>[
-
-          Icon(Icons.camera),
-          Text('android camera view')
-
-        ],), onTap: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) {
-                return AndroidCameraPage();
-              }));
-        },),
+        GestureDetector(
+          child: Row(
+            children: <Widget>[Icon(Icons.camera), Text('android camera view')],
+          ),
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return AndroidCameraPage();
+            }));
+          },
+        ),
         IconButton(
             icon: Icon(Icons.image),
             onPressed: () async {
               CameraAlbum.requestLastImage('image').then((imge) {
                 print('last img:$imge');
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context)
-                {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return NewPage(
                     MediaType.image,
                     ['$imge'],
                   );
                 }));
-
               });
             }),
       ],
@@ -350,7 +392,9 @@ class _CameraDemoState extends State<CameraDemo> {
                 child: Text(
                   flashMode.index == 0
                       ? "OFF"
-                      : flashMode.index == 1 ? "ON" : "AUTO",
+                      : flashMode.index == 1
+                          ? "ON"
+                          : "AUTO",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.normal,
@@ -379,8 +423,8 @@ class _CameraDemoState extends State<CameraDemo> {
                   ),
                   Center(
                       child: Text(
-                        "Camera Demo",
-                      )),
+                    "Camera Demo",
+                  )),
                 ],
               ),
             ),
@@ -400,36 +444,36 @@ class _CameraDemoState extends State<CameraDemo> {
                       enableTakePhoto
                           ? Container()
                           : CupertinoActivityIndicator(
-                        radius: 15,
-                      ),
+                              radius: 15,
+                            ),
                     ],
                   ),
                   onPressed: enableTakePhoto
                       ? () {
-                    if (widget.isRecordVideo) {
-                      CameraAlbum.startRecord();
-                      Future.delayed(Duration(seconds: 5), () {
-                        CameraAlbum.stopRecord();
-                      });
-                      return;
-                    }
-                    CameraAlbum.takePhoto(takeStart: () {
-                      debugPrint("takeStart");
-                      setState(() {
-                        enableTakePhoto = false;
-                      });
-                    }, completion: (path) async {
-                      debugPrint(path);
-                      await Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                            return NewPage(MediaType.image, [path]);
-                          }));
-                      setState(() {
-                        enableTakePhoto = true;
-                      });
-                      CameraAlbum.startCamera();
-                    });
-                  }
+                          if (widget.isRecordVideo) {
+                            CameraAlbum.startRecord();
+                            Future.delayed(Duration(seconds: 5), () {
+                              CameraAlbum.stopRecord();
+                            });
+                            return;
+                          }
+                          CameraAlbum.takePhoto(takeStart: () {
+                            debugPrint("takeStart");
+                            setState(() {
+                              enableTakePhoto = false;
+                            });
+                          }, completion: (path) async {
+                            debugPrint(path);
+                            await Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return NewPage(MediaType.image, [path]);
+                            }));
+                            setState(() {
+                              enableTakePhoto = true;
+                            });
+                            CameraAlbum.startCamera();
+                          });
+                        }
                       : null,
                 ),
                 Expanded(
