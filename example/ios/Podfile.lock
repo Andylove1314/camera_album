@@ -4,14 +4,11 @@ PODS:
   - Flutter (1.0.0)
   - video_player (0.0.1):
     - Flutter
-  - video_player_web (0.0.1):
-    - Flutter
 
 DEPENDENCIES:
   - camera_album (from `.symlinks/plugins/camera_album/ios`)
   - Flutter (from `Flutter`)
   - video_player (from `.symlinks/plugins/video_player/ios`)
-  - video_player_web (from `.symlinks/plugins/video_player_web/ios`)
 
 EXTERNAL SOURCES:
   camera_album:
@@ -20,15 +17,12 @@ EXTERNAL SOURCES:
     :path: Flutter
   video_player:
     :path: ".symlinks/plugins/video_player/ios"
-  video_player_web:
-    :path: ".symlinks/plugins/video_player_web/ios"
 
 SPEC CHECKSUMS:
-  camera_album: cc54a8e15c8ca493e22c2397b0ae35f92c1bc1f6
+  camera_album: 0fc736f94bf821b56d7bed7421dbe430b0b29c9f
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
-  video_player_web: da8cadb8274ed4f8dbee8d7171b420dedd437ce7
 
-PODFILE CHECKSUM: c34e2287a9ccaa606aeceab922830efb9a6ff69a
+PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
 
-COCOAPODS: 1.9.3
+COCOAPODS: 1.10.0
