@@ -163,7 +163,6 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
             config.navTaskTitle = taskTitle
             config.style = .dagongAlbumList
             config.statusBarStyle = .default
-            config.navViewBlurEffect = .none
             config.themeColorDeploy = deploy
             config.allowEditImage = false
             config.allowTakePhotoInLibrary = false
@@ -177,6 +176,9 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
             if maxSelectCount == 1 {
                 config.showSelectedIndex = false
                 config.allowSlideSelect = false
+            } else {
+                config.showSelectedIndex = true
+                config.allowSlideSelect = true
             }
             switch mediaType {
             case .image:
