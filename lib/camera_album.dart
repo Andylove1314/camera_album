@@ -58,6 +58,7 @@ class CameraAlbum {
   static void showPhotoLibrary(
       {MediaType mediaType = MediaType.image,
       int maxSelectCount = 1,
+      String taskTitle = "",
       ValueChanged<List<String>> onSelected}) async {
     _channel.setMethodCallHandler((MethodCall call) async {
       String method = call.method;
@@ -72,8 +73,11 @@ class CameraAlbum {
           throw UnsupportedError("Unrecognized JSON message");
       }
     });
-    _channel.invokeMethod(method_showPhotoLibrary,
-        {'mediaType': mediaType.index, 'maxSelectCount': maxSelectCount});
+    _channel.invokeMethod(method_showPhotoLibrary, {
+      'mediaType': mediaType.index,
+      'maxSelectCount': maxSelectCount,
+      'taskTitle': taskTitle,
+    });
   }
 
   ///打开相册插件

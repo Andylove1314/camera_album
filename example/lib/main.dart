@@ -67,7 +67,7 @@ class _HomeState extends State<Home> {
         IconButton(
           icon: Icon(Icons.add_photo_alternate),
           onPressed: () async {
-            CameraAlbum.showPhotoLibrary(onSelected: (var paths) {
+            CameraAlbum.showPhotoLibrary(taskTitle: "单选", onSelected: (var paths) {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return NewPage(
                   MediaType.image,
