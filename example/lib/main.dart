@@ -67,14 +67,34 @@ class _HomeState extends State<Home> {
         IconButton(
           icon: Icon(Icons.add_photo_alternate),
           onPressed: () async {
-            CameraAlbum.showPhotoLibrary(taskTitle: "单选", onSelected: (var paths) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return NewPage(
-                  MediaType.image,
-                  paths,
-                );
-              }));
-            });
+            CameraAlbum.showPhotoLibrary(
+                taskTitle: "照片单选",
+                onSelected: (var paths, var dataList) {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return NewPage(
+                      MediaType.image,
+                      paths,
+                      dataList: dataList,
+                    );
+                  }));
+                });
+          },
+        ),
+        IconButton(
+          icon: Icon(Icons.add_photo_alternate),
+          onPressed: () async {
+            CameraAlbum.showPhotoLibrary(
+                mediaType: MediaType.video,
+                taskTitle: "视频单选",
+                onSelected: (var paths, var dataList) {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return NewPage(
+                      MediaType.video,
+                      paths,
+                      dataList: dataList,
+                    );
+                  }));
+                });
           },
         ),
         IconButton(
@@ -82,7 +102,7 @@ class _HomeState extends State<Home> {
           onPressed: () async {
             CameraAlbum.showPhotoLibrary(
                 maxSelectCount: 9,
-                onSelected: (var paths) {
+                onSelected: (var paths, var dataList) {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return NewPage(
                       MediaType.image,
@@ -97,7 +117,7 @@ class _HomeState extends State<Home> {
           onPressed: () async {
             CameraAlbum.showPhotoLibrary(
                 mediaType: MediaType.video,
-                onSelected: (var paths) {
+                onSelected: (var paths, var dataList) {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return NewPage(
                       MediaType.video,

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:camera_album/camera_album_config.dart';
 import 'package:camera_album/ui_kit_album.dart';
@@ -59,7 +60,8 @@ class CameraAlbum {
       {MediaType mediaType = MediaType.image,
       int maxSelectCount = 1,
       String taskTitle = "",
-      ValueChanged<List<String>> onSelected}) async {
+      void Function(List<String> pathList, List<Uint8List> dataList)
+          onSelected}) async {
     _channel.setMethodCallHandler((MethodCall call) async {
       String method = call.method;
       Map arguments = call.arguments;
@@ -67,7 +69,9 @@ class CameraAlbum {
       switch (method) {
         case method_onSelectedHandler:
           List paths = arguments["paths"];
-          onSelected(paths.map((e) => "$e").toList());
+          List dataList = arguments["datas"];
+          onSelected(paths.map((e) => "$e").toList(),
+              dataList.map((e) => e as Uint8List).toList());
           break;
         default:
           throw UnsupportedError("Unrecognized JSON message");

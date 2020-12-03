@@ -9,9 +9,10 @@ import 'package:video_player/video_player.dart';
 class NewPage extends StatefulWidget {
   List paths;
   List durs;
+  List dataList;
   MediaType mediaType;
 
-  NewPage(this.mediaType, this.paths,{this.durs});
+  NewPage(this.mediaType, this.paths, {this.durs, this.dataList});
 
   @override
   _NewPagePageState createState() => _NewPagePageState();
@@ -43,9 +44,15 @@ class _NewPagePageState extends State<NewPage> {
 
   List<Widget> _getImages() {
     var images = List<Widget>();
-    widget?.paths?.forEach((path) {
-      images.add(Image.file(File(path)));
-    });
+    if (widget.dataList != null) {
+      widget?.dataList?.forEach((bytes) {
+        images.add(Image.memory(bytes));
+      });
+    } else {
+      widget?.paths?.forEach((path) {
+        images.add(Image.file(File(path)));
+      });
+    }
     return images;
   }
 }

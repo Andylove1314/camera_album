@@ -195,7 +195,8 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
             ac.selectImageBlock = { (images, assets, isOriginal) in
                 debugPrint("\(images)  -  \(assets) - \(isOriginal)")
                 var paths: [String] = []
-                var count: Int = 0
+                var datas: [FlutterStandardTypedData] = []
+                var index: Int = 0
                 assets.forEach { (asset) in
                     switch mediaType {
                     case .image:
@@ -227,9 +228,10 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
                             try? FileManager.default.removeItem(atPath: path)
                             try? imageData.write(to: URL(fileURLWithPath: path), options: .atomic)
                             paths.append(path)
-                            count = count + 1
-                            if count == assets.count {
-                                SwiftCameraAlbumPlugin.channel.invokeMethod("onSelectedHandler", arguments: ["paths": paths])
+                            datas.append(FlutterStandardTypedData(bytes: images[index].jpegData(compressionQuality: 1)!))
+                            index = index + 1
+                            if index == assets.count {
+                                SwiftCameraAlbumPlugin.channel.invokeMethod("onSelectedHandler", arguments: ["paths": paths, "datas": datas])
                             }
                         }
                     case .video:
@@ -246,8 +248,8 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
                                 debugPrint(error);
                             } else {
                                 paths.append(path)
-                                count = count + 1
-                                if count == assets.count {
+                                index = index + 1
+                                if index == assets.count {
                                     SwiftCameraAlbumPlugin.channel.invokeMethod("onSelectedHandler", arguments: ["paths": paths])
                                 }
                             }
