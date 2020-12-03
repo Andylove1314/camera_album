@@ -83,6 +83,13 @@ class _HomeState extends State<Home> {
                       dataList: dataList,
                     );
                   }));
+                },
+                openCamera: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return CameraDemo(
+                      isRecordVideo: false,
+                    );
+                  }));
                 });
           },
         ),
@@ -106,7 +113,13 @@ class _HomeState extends State<Home> {
                       dataList: dataList,
                     );
                   }));
-                });
+                }, openCamera: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return CameraDemo(
+                  isRecordVideo: true,
+                );
+              }));
+            });
           },
         ),
         CupertinoButton(

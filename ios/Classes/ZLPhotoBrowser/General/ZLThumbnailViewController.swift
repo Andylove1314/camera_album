@@ -280,8 +280,12 @@ class ZLThumbnailViewController: UIViewController {
         
         // + TODO:修改源码
         self.dagongBottomView = DGBottomView()
-        self.dagongBottomView.takeBlock = {
-            self.showCamera()
+        self.dagongBottomView.takeBlock = { [weak self] in
+//            self?.showCamera()
+            let nav = self?.navigationController as? ZLImageNavController
+//            nav?.cancelBlock?()
+            nav?.dismiss(animated: true, completion: nil)
+            SwiftCameraAlbumPlugin.channel.invokeMethod("callCamera", arguments: nil)
         }
         self.view.addSubview(self.dagongBottomView)
         // + TODO:修改源码

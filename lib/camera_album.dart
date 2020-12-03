@@ -61,8 +61,8 @@ class CameraAlbum {
       int maxSelectCount = 1,
       String taskTitle = "",
       String takeTitle = "",
-      void Function(List<String> pathList, List<Uint8List> dataList)
-          onSelected}) async {
+      void Function(List<String> pathList, List<Uint8List> dataList) onSelected,
+      VoidCallback openCamera}) async {
     _channel.setMethodCallHandler((MethodCall call) async {
       String method = call.method;
       Map arguments = call.arguments;
@@ -73,6 +73,11 @@ class CameraAlbum {
           List dataList = arguments["datas"];
           onSelected(paths.map((e) => "$e").toList(),
               dataList?.map((e) => e as Uint8List)?.toList());
+          break;
+        case method_callCamera:
+          if (openCamera != null) {
+            openCamera();
+          }
           break;
         default:
           throw UnsupportedError("Unrecognized JSON message");
