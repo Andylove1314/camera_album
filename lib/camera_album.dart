@@ -71,7 +71,7 @@ class CameraAlbum {
           List paths = arguments["paths"];
           List dataList = arguments["datas"];
           onSelected(paths.map((e) => "$e").toList(),
-              dataList.map((e) => e as Uint8List).toList());
+              dataList?.map((e) => e as Uint8List)?.toList());
           break;
         default:
           throw UnsupportedError("Unrecognized JSON message");
