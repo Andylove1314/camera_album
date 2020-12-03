@@ -188,12 +188,14 @@ class ZLThumbnailViewController: UIViewController {
             insets = self.view.safeAreaInsets
         }
         
-        let navViewFrame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: insets.top + 44)
-        self.externalNavView?.frame = navViewFrame
-        self.embedNavView?.frame = navViewFrame
         // + TODO:修改源码
+//        let navViewFrame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: insets.top + 44)
+        let topViewH: CGFloat = (ZLPhotoConfiguration.default().style == .dagongAlbumList && ZLPhotoConfiguration.default().navTaskTitle != "") ? 88 : 44
+        let navViewFrame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: insets.top + topViewH)
         self.dagongNavView?.frame = navViewFrame
         // + TODO:修改源码
+        self.externalNavView?.frame = navViewFrame
+        self.embedNavView?.frame = navViewFrame
         
         self.embedAlbumListView?.frame = CGRect(x: 0, y: navViewFrame.maxY, width: self.view.bounds.width, height: self.view.bounds.height-navViewFrame.maxY)
         
@@ -212,7 +214,10 @@ class ZLThumbnailViewController: UIViewController {
         
         let totalWidth = self.view.frame.width - insets.left - insets.right
         self.collectionView.frame = CGRect(x: insets.left, y: 0, width: totalWidth, height: self.view.frame.height)
-        self.collectionView.contentInset = UIEdgeInsets(top: 44, left: 0, bottom: bottomViewH, right: 0)
+        // + TODO:修改源码
+//        self.collectionView.contentInset = UIEdgeInsets(top: 44, left: 0, bottom: bottomViewH, right: 0)
+        self.collectionView.contentInset = UIEdgeInsets(top: topViewH, left: 0, bottom: bottomViewH, right: 0)
+        // + TODO:修改源码
         self.collectionView.scrollIndicatorInsets = UIEdgeInsets(top: insets.top, left: 0, bottom: bottomViewH, right: 0)
         
         guard showBottomView else { return }
@@ -1154,6 +1159,8 @@ class DGEmbedAlbumListNavView: UIView {
         }
     }
     
+    var navTitleLabel: UILabel!
+    
     var titleBgControl: UIControl!
     
     var albumTitleLabel: UILabel!
@@ -1186,6 +1193,7 @@ class DGEmbedAlbumListNavView: UIView {
         
         self.refreshTitleViewFrame()
         self.backBtn.frame = CGRect(x: insets.left, y: insets.top, width: 60, height: 44)
+        self.navTitleLabel.frame = CGRect(x: 0, y: insets.top, width: self.bounds.width, height: 44)
     }
     
     func refreshTitleViewFrame() {
@@ -1198,7 +1206,7 @@ class DGEmbedAlbumListNavView: UIView {
         let titleBgControlW = albumTitleW + ZLEmbedAlbumListNavView.arrowH + 20
         
         UIView.animate(withDuration: 0.25) {
-            self.titleBgControl.frame = CGRect(x: (self.frame.width-titleBgControlW)/2, y: insets.top+(44-ZLEmbedAlbumListNavView.titleViewH)/2, width: titleBgControlW, height: ZLEmbedAlbumListNavView.titleViewH)
+            self.titleBgControl.frame = CGRect(x: (self.frame.width-titleBgControlW)/2, y: insets.top+(44-ZLEmbedAlbumListNavView.titleViewH)/2+((ZLPhotoConfiguration.default().style == .dagongAlbumList && ZLPhotoConfiguration.default().navTaskTitle != "") ? 44 : 0), width: titleBgControlW, height: ZLEmbedAlbumListNavView.titleViewH)
             self.albumTitleLabel.frame = CGRect(x: 10, y: 0, width: albumTitleW, height: ZLEmbedAlbumListNavView.titleViewH)
             self.arrow.frame = CGRect(x: self.albumTitleLabel.frame.maxX+5, y: (ZLEmbedAlbumListNavView.titleViewH-ZLEmbedAlbumListNavView.arrowH)/2.0, width: ZLEmbedAlbumListNavView.arrowH, height: ZLEmbedAlbumListNavView.arrowH)
         }
@@ -1206,6 +1214,13 @@ class DGEmbedAlbumListNavView: UIView {
     
     func setupUI() {
         self.backgroundColor = UIColor.white
+        
+        self.navTitleLabel = UILabel()
+        self.navTitleLabel.textColor = UIColor.black
+        self.navTitleLabel.font = ZLLayout.navTitleFont
+        self.navTitleLabel.text = ZLPhotoConfiguration.default().navTaskTitle
+        self.navTitleLabel.textAlignment = .center
+        self.addSubview(self.navTitleLabel)
         
         self.titleBgControl = UIControl()
         self.titleBgControl.backgroundColor = UIColor(red: 244/255, green: 244/255, blue: 244/255, alpha: 1)

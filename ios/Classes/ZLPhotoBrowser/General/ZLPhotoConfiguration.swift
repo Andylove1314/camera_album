@@ -37,6 +37,11 @@ public class ZLPhotoConfiguration: NSObject {
         return ZLPhotoConfiguration.single
     }
     
+    // + TODO:修改源码
+    /// 大觥专用的任务标题
+    @objc public var navTaskTitle: String = ""
+    // + TODO:修改源码
+    
     /// Framework style.
     @objc public var style: ZLPhotoBrowserStyle = .embedAlbumList
     

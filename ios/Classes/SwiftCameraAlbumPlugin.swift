@@ -149,7 +149,8 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
          */
         let params = call.arguments as! NSDictionary
         let maxSelectCount = params["maxSelectCount"] as! Int
-        let mediaType =  PHAssetMediaType(rawValue: (params["mediaType"] as! Int))
+        let mediaType = PHAssetMediaType(rawValue: (params["mediaType"] as! Int))
+        let taskTitle = (params["taskTitle"] as? String) ?? ""
         if let sender = UIApplication.shared.keyWindow?.rootViewController {
             
             let deploy = ZLPhotoThemeColorDeploy.default()
@@ -159,6 +160,7 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
             deploy.separatorColor = UIColor.clear
             
             let config = ZLPhotoConfiguration.default()
+            config.navTaskTitle = taskTitle
             config.style = .dagongAlbumList
             config.statusBarStyle = .default
             config.navViewBlurEffect = .none
