@@ -64,11 +64,17 @@ class _HomeState extends State<Home> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        IconButton(
-          icon: Icon(Icons.add_photo_alternate),
+        CupertinoButton(
+          child: Row(
+            children: [
+              Icon(Icons.add_photo_alternate),
+              Text('Remini single picture'),
+            ],
+          ),
           onPressed: () async {
             CameraAlbum.showPhotoLibrary(
                 taskTitle: "照片单选",
+                takeTitle: "Take a picture",
                 onSelected: (var paths, var dataList) {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return NewPage(
@@ -80,12 +86,18 @@ class _HomeState extends State<Home> {
                 });
           },
         ),
-        IconButton(
-          icon: Icon(Icons.add_photo_alternate),
+        CupertinoButton(
+          child: Row(
+            children: [
+              Icon(Icons.add_photo_alternate),
+              Text('Remini single video'),
+            ],
+          ),
           onPressed: () async {
             CameraAlbum.showPhotoLibrary(
                 mediaType: MediaType.video,
                 taskTitle: "视频单选",
+                takeTitle: "Take a video",
                 onSelected: (var paths, var dataList) {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return NewPage(
@@ -97,8 +109,13 @@ class _HomeState extends State<Home> {
                 });
           },
         ),
-        IconButton(
-          icon: Icon(Icons.add_photo_alternate_outlined),
+        CupertinoButton(
+          child: Row(
+            children: [
+              Icon(Icons.add_photo_alternate),
+              Text('Remini multiple picture'),
+            ],
+          ),
           onPressed: () async {
             CameraAlbum.showPhotoLibrary(
                 maxSelectCount: 9,
@@ -107,21 +124,7 @@ class _HomeState extends State<Home> {
                     return NewPage(
                       MediaType.image,
                       paths,
-                    );
-                  }));
-                });
-          },
-        ),
-        IconButton(
-          icon: Icon(Icons.add_to_queue),
-          onPressed: () async {
-            CameraAlbum.showPhotoLibrary(
-                mediaType: MediaType.video,
-                onSelected: (var paths, var dataList) {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return NewPage(
-                      MediaType.video,
-                      paths,
+                      dataList: dataList,
                     );
                   }));
                 });

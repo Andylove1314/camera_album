@@ -60,6 +60,7 @@ class CameraAlbum {
       {MediaType mediaType = MediaType.image,
       int maxSelectCount = 1,
       String taskTitle = "",
+      String takeTitle = "",
       void Function(List<String> pathList, List<Uint8List> dataList)
           onSelected}) async {
     _channel.setMethodCallHandler((MethodCall call) async {
@@ -81,6 +82,7 @@ class CameraAlbum {
       'mediaType': mediaType.index,
       'maxSelectCount': maxSelectCount,
       'taskTitle': taskTitle,
+      'takeTitle': takeTitle,
     });
   }
 

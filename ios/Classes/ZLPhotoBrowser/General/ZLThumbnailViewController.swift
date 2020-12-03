@@ -51,6 +51,7 @@ class ZLThumbnailViewController: UIViewController {
     
     // + TODO:修改源码
     var dagongNavView: DGEmbedAlbumListNavView?
+    var dagongBottomView: DGBottomView!
     // + TODO:修改源码
     
     var embedAlbumListView: ZLEmbedAlbumListView?
@@ -210,7 +211,12 @@ class ZLThumbnailViewController: UIViewController {
             showBottomView = false
             insets.bottom = 0
         }
-        let bottomViewH = showBottomView ? ZLLayout.bottomToolViewH : 0
+        // + TODO:修改源码
+//        let bottomViewH = showBottomView ? ZLLayout.bottomToolViewH : 0
+        let showDGBottom = ZLPhotoConfiguration.default().bottomTakeTitle != ""
+        let bottomViewH = showBottomView ? ZLLayout.bottomToolViewH : (showDGBottom ? 87 : 0)
+        self.dagongBottomView.frame = CGRect(x: 0, y: self.view.frame.height-insets.bottom-bottomViewH, width: self.view.bounds.width, height: bottomViewH+insets.bottom)
+        // + TODO:修改源码
         
         let totalWidth = self.view.frame.width - insets.left - insets.right
         self.collectionView.frame = CGRect(x: insets.left, y: 0, width: totalWidth, height: self.view.frame.height)
@@ -271,6 +277,14 @@ class ZLThumbnailViewController: UIViewController {
         ZLThumbnailPhotoCell.zl_register(self.collectionView)
         self.collectionView.register(ZLThumbnailColViewFooter.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: NSStringFromClass(ZLThumbnailColViewFooter.classForCoder()))
         ZLAddPhotoCell.zl_register(self.collectionView)
+        
+        // + TODO:修改源码
+        self.dagongBottomView = DGBottomView()
+        self.dagongBottomView.takeBlock = {
+            self.showCamera()
+        }
+        self.view.addSubview(self.dagongBottomView)
+        // + TODO:修改源码
         
         self.bottomView = UIView()
         self.bottomView.backgroundColor = .bottomToolViewBgColor
@@ -1271,6 +1285,110 @@ class DGEmbedAlbumListNavView: UIView {
         }
     }
     
+}
+
+// MARK: 大觥底部报摄面板
+class DGBottomView: UIView {
+    
+    var takeBtn: UIButton?
+    
+    var takeBlock: ( () -> Void )?
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupUI()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        self.takeBtn?.frame = CGRect(x: 0, y: 0, width: frame.width, height: 87)
+        self.takeBtn?.imagePosition(style: .top, spacing: 10)
+    }
+    
+    func setupUI() {
+        backgroundColor = zlRGB(247, 247, 247)
+        
+        if ZLPhotoConfiguration.default().bottomTakeTitle != "" {
+            self.takeBtn = UIButton(type: .custom)
+            self.takeBtn?.titleLabel?.font = ZLLayout.navTitleFont
+            self.takeBtn?.setImage(getImage("dg_takeCamera"), for: .normal)
+            self.takeBtn?.setTitle(ZLPhotoConfiguration.default().bottomTakeTitle, for: .normal)
+            self.takeBtn?.setTitleColor(zlRGB(68, 68, 68), for: .normal)
+            self.takeBtn?.addTarget(self, action: #selector(takeBtnBtnClick), for: .touchUpInside)
+            self.addSubview(self.takeBtn!)
+        }
+    }
+    
+    @objc func takeBtnBtnClick() {
+        self.takeBlock?()
+    }
+    
+}
+
+extension UIButton {
+    //MARK: -定义button相对label的位置
+    enum RGButtonImagePosition {
+            case top          //图片在上，文字在下，垂直居中对齐
+            case bottom       //图片在下，文字在上，垂直居中对齐
+            case left         //图片在左，文字在右，水平居中对齐
+            case right        //图片在右，文字在左，水平居中对齐
+    }
+    /// - Description 设置Button图片的位置
+        /// - Parameters:
+        ///   - style: 图片位置
+        ///   - spacing: 按钮图片与文字之间的间隔
+        func imagePosition(style: RGButtonImagePosition, spacing: CGFloat) {
+            //得到imageView和titleLabel的宽高
+            let imageWidth = self.imageView?.frame.size.width
+            let imageHeight = self.imageView?.frame.size.height
+            
+            var labelWidth: CGFloat! = 0.0
+            var labelHeight: CGFloat! = 0.0
+            
+            labelWidth = self.titleLabel?.intrinsicContentSize.width
+            labelHeight = self.titleLabel?.intrinsicContentSize.height
+            
+            //初始化imageEdgeInsets和labelEdgeInsets
+            var imageEdgeInsets = UIEdgeInsets.zero
+            var labelEdgeInsets = UIEdgeInsets.zero
+            
+            //根据style和space得到imageEdgeInsets和labelEdgeInsets的值
+            switch style {
+            case .top:
+                //上 左 下 右
+                imageEdgeInsets = UIEdgeInsets(top: -labelHeight-spacing/2, left: 0, bottom: 0, right: -labelWidth)
+                labelEdgeInsets = UIEdgeInsets(top: 0, left: -imageWidth!, bottom: -imageHeight!-spacing/2, right: 0)
+                break;
+                
+            case .left:
+                imageEdgeInsets = UIEdgeInsets(top: 0, left: -spacing/2, bottom: 0, right: spacing)
+                labelEdgeInsets = UIEdgeInsets(top: 0, left: spacing/2, bottom: 0, right: -spacing/2)
+                break;
+                
+            case .bottom:
+                imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: -labelHeight!-spacing/2, right: -labelWidth)
+                labelEdgeInsets = UIEdgeInsets(top: -imageHeight!-spacing/2, left: -imageWidth!, bottom: 0, right: 0)
+                break;
+                
+            case .right:
+                imageEdgeInsets = UIEdgeInsets(top: 0, left: labelWidth+spacing/2, bottom: 0, right: -labelWidth-spacing/2)
+                labelEdgeInsets = UIEdgeInsets(top: 0, left: -imageWidth!-spacing/2, bottom: 0, right: imageWidth!+spacing/2)
+                break;
+                
+            }
+            
+            self.titleEdgeInsets = labelEdgeInsets
+            self.imageEdgeInsets = imageEdgeInsets
+            
+        }
+     
+
+
 }
 // + TODO:修改源码
 

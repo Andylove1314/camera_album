@@ -40,6 +40,8 @@ public class ZLPhotoConfiguration: NSObject {
     // + TODO:修改源码
     /// 大觥专用的任务标题
     @objc public var navTaskTitle: String = ""
+    /// 大觥专用的底部拍摄照片或视频的标题
+    @objc public var bottomTakeTitle: String = ""
     // + TODO:修改源码
     
     /// Framework style.
