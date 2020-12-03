@@ -173,6 +173,7 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
             config.showSelectedPhotoPreview = false
             config.showPreviewButtonInAlbum = false
             config.allowMixSelect = false
+            config.sortAscending = false
             if maxSelectCount == 1 {
                 config.showSelectedIndex = false
                 config.allowSlideSelect = false
