@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -61,7 +62,7 @@ class CameraAlbum {
       int maxSelectCount = 1,
       String taskTitle = "",
       String takeTitle = "",
-      void Function(List<String> pathList, List<Uint8List> dataList) onSelected,
+      void Function(List<CameraAlbumModel>) onSelected,
       VoidCallback openCamera}) async {
     _channel.setMethodCallHandler((MethodCall call) async {
       String method = call.method;
@@ -70,9 +71,20 @@ class CameraAlbum {
       switch (method) {
         case method_onSelectedHandler:
           List paths = arguments["paths"];
+          List durations = arguments["durations"];
           List dataList = arguments["datas"];
-          onSelected(paths.map((e) => "$e").toList(),
-              dataList?.map((e) => e as Uint8List)?.toList());
+
+          List<CameraAlbumModel> list = [];
+          for (int index = 0; index < paths.length; index++) {
+            list.add(
+              CameraAlbumModel()
+                ..path = paths != null ? '${paths[index]}' : ""
+                ..duration = durations != null ? durations[index] as double : 0
+                ..byte = dataList != null ? dataList[index] as Uint8List : null,
+            );
+          }
+
+          onSelected(list);
           break;
         case method_callCamera:
           if (openCamera != null) {
@@ -260,4 +272,16 @@ class CameraAlbum {
       }
     });
   }
+}
+
+class CameraAlbumModel {
+  double duration;
+  String path;
+  Uint8List byte;
+
+  Map toJson() => {
+        "duration": duration,
+        "path": path,
+        "byte": byte,
+      };
 }

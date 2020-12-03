@@ -75,12 +75,12 @@ class _HomeState extends State<Home> {
             CameraAlbum.showPhotoLibrary(
                 taskTitle: "照片单选",
                 takeTitle: "Take a picture",
-                onSelected: (var paths, var dataList) {
+                onSelected: (List<CameraAlbumModel> list) {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return NewPage(
                       MediaType.image,
-                      paths,
-                      dataList: dataList,
+                      list.map((e) => e.path).toList(),
+                      dataList: list.map((e) => e.byte).toList(),
                     );
                   }));
                 },
@@ -105,21 +105,23 @@ class _HomeState extends State<Home> {
                 mediaType: MediaType.video,
                 taskTitle: "视频单选",
                 takeTitle: "Take a video",
-                onSelected: (var paths, var dataList) {
+                onSelected: (List<CameraAlbumModel> list) {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return NewPage(
                       MediaType.video,
-                      paths,
-                      dataList: dataList,
+                      list.map((e) => e.path).toList(),
+                      durs: list.map((e) => e.duration).toList(),
+                      dataList: list.map((e) => e.byte).toList(),
                     );
                   }));
-                }, openCamera: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return CameraDemo(
-                  isRecordVideo: true,
-                );
-              }));
-            });
+                },
+                openCamera: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return CameraDemo(
+                      isRecordVideo: true,
+                    );
+                  }));
+                });
           },
         ),
         CupertinoButton(
@@ -132,12 +134,12 @@ class _HomeState extends State<Home> {
           onPressed: () async {
             CameraAlbum.showPhotoLibrary(
                 maxSelectCount: 9,
-                onSelected: (var paths, var dataList) {
+                onSelected: (List<CameraAlbumModel> list) {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return NewPage(
                       MediaType.image,
-                      paths,
-                      dataList: dataList,
+                      list.map((e) => e.path).toList(),
+                      dataList: list.map((e) => e.byte).toList(),
                     );
                   }));
                 });

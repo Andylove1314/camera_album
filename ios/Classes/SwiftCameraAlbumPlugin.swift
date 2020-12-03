@@ -197,6 +197,7 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
             ac.selectImageBlock = { (images, assets, isOriginal) in
                 debugPrint("\(images)  -  \(assets) - \(isOriginal)")
                 var paths: [String] = []
+                var durations: [Double] = []
                 var datas: [FlutterStandardTypedData] = []
                 var index: Int = 0
                 assets.forEach { (asset) in
@@ -250,9 +251,10 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
                                 debugPrint(error);
                             } else {
                                 paths.append(path)
+                                durations.append(asset.duration)
                                 index = index + 1
                                 if index == assets.count {
-                                    SwiftCameraAlbumPlugin.channel.invokeMethod("onSelectedHandler", arguments: ["paths": paths])
+                                    SwiftCameraAlbumPlugin.channel.invokeMethod("onSelectedHandler", arguments: ["paths": paths, "durations": durations])
                                 }
                             }
                         }
