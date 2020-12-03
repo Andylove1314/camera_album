@@ -427,6 +427,10 @@ public class ZLPhotoConfiguration: NSObject {
     /// The display relationship between the album list and the thumbnail interface is push.
     case externalAlbumList
     
+    // TODO: +
+    /// 自定义大觥科技专用
+    case dagongAlbumList
+    // TODO: +
 }
 
 

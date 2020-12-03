@@ -49,6 +49,10 @@ class ZLThumbnailViewController: UIViewController {
     
     var embedNavView: ZLEmbedAlbumListNavView?
     
+    // + TODO:修改源码
+    var dagongNavView: DGEmbedAlbumListNavView?
+    // + TODO:修改源码
+    
     var embedAlbumListView: ZLEmbedAlbumListView?
     
     var collectionView: UICollectionView!
@@ -187,6 +191,9 @@ class ZLThumbnailViewController: UIViewController {
         let navViewFrame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: insets.top + 44)
         self.externalNavView?.frame = navViewFrame
         self.embedNavView?.frame = navViewFrame
+        // + TODO:修改源码
+        self.dagongNavView?.frame = navViewFrame
+        // + TODO:修改源码
         
         self.embedAlbumListView?.frame = CGRect(x: 0, y: navViewFrame.maxY, width: self.view.bounds.width, height: self.view.bounds.height-navViewFrame.maxY)
         
@@ -352,6 +359,46 @@ class ZLThumbnailViewController: UIViewController {
             }
             
             self.view.addSubview(self.externalNavView!)
+            // + TODO:修改源码
+        } else if ZLPhotoConfiguration.default().style == .dagongAlbumList {
+            self.dagongNavView = DGEmbedAlbumListNavView(title: self.albumList.title)
+            
+            self.dagongNavView?.selectAlbumBlock = { [weak self] in
+                if self?.embedAlbumListView?.isHidden == true {
+                    self?.embedAlbumListView?.show(reloadAlbumList: self?.hasTakeANewAsset ?? false)
+                    self?.hasTakeANewAsset = false
+                } else {
+                    self?.embedAlbumListView?.hide()
+                }
+            }
+            
+            self.dagongNavView?.cancelBlock = { [weak self] in
+                let nav = self?.navigationController as? ZLImageNavController
+                nav?.cancelBlock?()
+                nav?.dismiss(animated: true, completion: nil)
+            }
+            
+            self.view.addSubview(self.dagongNavView!)
+            
+            self.embedAlbumListView = ZLEmbedAlbumListView(selectedAlbum: self.albumList)
+            self.embedAlbumListView?.isHidden = true
+            
+            self.embedAlbumListView?.selectAlbumBlock = { [weak self] (album) in
+                guard self?.albumList != album else {
+                    return
+                }
+                self?.albumList = album
+                self?.dagongNavView?.title = album.title
+                self?.loadPhotos()
+                self?.dagongNavView?.reset()
+            }
+            
+            self.embedAlbumListView?.hideBlock = { [weak self] in
+                self?.dagongNavView?.reset()
+            }
+            
+            self.view.addSubview(self.embedAlbumListView!)
+            // + TODO:修改源码
         }
     }
     
@@ -1092,6 +1139,125 @@ extension ZLThumbnailViewController: PHPhotoLibraryChangeObserver {
     
 }
 
+// + TODO:修改源码
+// MARK: 大觥 album list nav view
+class DGEmbedAlbumListNavView: UIView {
+    
+    static let titleViewH: CGFloat = 32
+    
+    static let arrowH: CGFloat = 20
+    
+    var title: String {
+        didSet {
+            self.albumTitleLabel.text = title
+            self.refreshTitleViewFrame()
+        }
+    }
+    
+    var titleBgControl: UIControl!
+    
+    var albumTitleLabel: UILabel!
+    
+    var arrow: UIImageView!
+    
+    var backBtn: UIButton!
+    
+    var selectAlbumBlock: ( () -> Void )?
+    
+    var cancelBlock: ( () -> Void )?
+    
+    init(title: String) {
+        self.title = title
+        super.init(frame: .zero)
+        self.setupUI()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        var insets = UIEdgeInsets.zero
+        if #available(iOS 11.0, *) {
+            insets = self.safeAreaInsets
+        }
+        
+        self.refreshTitleViewFrame()
+        self.backBtn.frame = CGRect(x: insets.left, y: insets.top, width: 60, height: 44)
+    }
+    
+    func refreshTitleViewFrame() {
+        var insets = UIEdgeInsets.zero
+        if #available(iOS 11.0, *) {
+            insets = self.safeAreaInsets
+        }
+        
+        let albumTitleW = min(self.bounds.width / 2, self.title.boundingRect(font: ZLLayout.navTitleFont, limitSize: CGSize(width: CGFloat.greatestFiniteMagnitude, height: 44)).width)
+        let titleBgControlW = albumTitleW + ZLEmbedAlbumListNavView.arrowH + 20
+        
+        UIView.animate(withDuration: 0.25) {
+            self.titleBgControl.frame = CGRect(x: (self.frame.width-titleBgControlW)/2, y: insets.top+(44-ZLEmbedAlbumListNavView.titleViewH)/2, width: titleBgControlW, height: ZLEmbedAlbumListNavView.titleViewH)
+            self.albumTitleLabel.frame = CGRect(x: 10, y: 0, width: albumTitleW, height: ZLEmbedAlbumListNavView.titleViewH)
+            self.arrow.frame = CGRect(x: self.albumTitleLabel.frame.maxX+5, y: (ZLEmbedAlbumListNavView.titleViewH-ZLEmbedAlbumListNavView.arrowH)/2.0, width: ZLEmbedAlbumListNavView.arrowH, height: ZLEmbedAlbumListNavView.arrowH)
+        }
+    }
+    
+    func setupUI() {
+        self.backgroundColor = UIColor.white
+        
+        self.titleBgControl = UIControl()
+        self.titleBgControl.backgroundColor = UIColor(red: 244/255, green: 244/255, blue: 244/255, alpha: 1)
+        self.titleBgControl.layer.cornerRadius = ZLEmbedAlbumListNavView.titleViewH / 2
+        self.titleBgControl.layer.masksToBounds = true
+        self.titleBgControl.addTarget(self, action: #selector(titleBgControlClick), for: .touchUpInside)
+        self.addSubview(titleBgControl)
+        
+        self.albumTitleLabel = UILabel()
+        self.albumTitleLabel.textColor = UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1)
+        self.albumTitleLabel.font = ZLLayout.navTitleFont
+        self.albumTitleLabel.text = self.title
+        self.albumTitleLabel.textAlignment = .center
+        self.titleBgControl.addSubview(self.albumTitleLabel)
+        
+        self.arrow = UIImageView(image: getImage("dg_downArrow"))
+        self.arrow.clipsToBounds = true
+        self.arrow.contentMode = .scaleAspectFill
+        self.titleBgControl.addSubview(self.arrow)
+        
+        self.backBtn = UIButton(type: .custom)
+        self.backBtn.setImage(getImage("dg_navBack"), for: .normal)
+        self.backBtn.imageEdgeInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 0)
+        self.backBtn.addTarget(self, action: #selector(cancelBtnClick), for: .touchUpInside)
+        self.addSubview(self.backBtn)
+    }
+    
+    @objc func titleBgControlClick() {
+        self.selectAlbumBlock?()
+        if self.arrow.transform == .identity {
+            UIView.animate(withDuration: 0.25) {
+                self.arrow.transform = CGAffineTransform(rotationAngle: .pi)
+            }
+        } else {
+            UIView.animate(withDuration: 0.25) {
+                self.arrow.transform = .identity
+            }
+        }
+    }
+    
+    @objc func cancelBtnClick() {
+        self.cancelBlock?()
+    }
+    
+    func reset() {
+        UIView.animate(withDuration: 0.25) {
+            self.arrow.transform = .identity
+        }
+    }
+    
+}
+// + TODO:修改源码
 
 // MARK: embed album list nav view
 class ZLEmbedAlbumListNavView: UIView {

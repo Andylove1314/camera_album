@@ -154,8 +154,14 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
             
             let deploy = ZLPhotoThemeColorDeploy.default()
             deploy.thumbnailBgColor = UIColor.white
+            deploy.albumListBgColor = UIColor.white
+            deploy.albumListTitleColor = UIColor.black
+            deploy.separatorColor = UIColor.clear
             
             let config = ZLPhotoConfiguration.default()
+            config.style = .dagongAlbumList
+            config.statusBarStyle = .default
+            config.navViewBlurEffect = .none
             config.themeColorDeploy = deploy
             config.allowEditImage = false
             config.allowTakePhotoInLibrary = false
@@ -168,6 +174,7 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
             config.allowMixSelect = false
             if maxSelectCount == 1 {
                 config.showSelectedIndex = false
+                config.allowSlideSelect = false
             }
             switch mediaType {
             case .image:
