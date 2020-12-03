@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -80,7 +79,7 @@ class CameraAlbum {
               CameraAlbumModel()
                 ..path = paths != null ? '${paths[index]}' : ""
                 ..duration = durations != null ? durations[index] as double : 0
-                ..byte = dataList != null ? dataList[index] as Uint8List : null,
+                ..bytes = dataList != null ? dataList[index] as Uint8List : null,
             );
           }
 
@@ -277,11 +276,11 @@ class CameraAlbum {
 class CameraAlbumModel {
   double duration;
   String path;
-  Uint8List byte;
+  Uint8List bytes;
 
   Map toJson() => {
         "duration": duration,
         "path": path,
-        "byte": byte,
+        "bytes": bytes,
       };
 }
