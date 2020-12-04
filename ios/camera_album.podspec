@@ -15,7 +15,7 @@ https://github.com/longitachi/ZLPhotoBrowser
   s.author           = { 'Your Company' => 'email@example.com' }
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
-  s.resources        = ['Resources/Gallery.bundle', 'Classes/ZLPhotoBrowser/*.{png,bundle}']
+  s.resources        = ['Resources/*.bundle']
   s.dependency 'Flutter'
   s.platform         = :ios, '10.0'
 
