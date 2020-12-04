@@ -177,6 +177,7 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
             config.allowMixSelect = false
             config.sortAscending = false
             config.maxSelectVideoDuration = 60*60*24
+            ZLPhotoConfiguration.default().timeout = 120
             if maxSelectCount == 1 {
                 config.showSelectedIndex = false
                 config.allowSlideSelect = false
@@ -197,6 +198,12 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
             let ac = ZLPhotoPreviewSheet()
             ac.selectImageBlock = { (images, assets, isOriginal) in
                 debugPrint("\(images)  -  \(assets) - \(isOriginal)")
+                let hud = ZLProgressHUD(style: ZLPhotoConfiguration.default().hudStyle)
+                hud.timeoutBlock = {
+                    showAlertView(localLanguageTextValue(.timeout), sender)
+                }
+                hud.show(timeout: ZLPhotoConfiguration.default().timeout)
+                
                 var originPaths: [String] = []
                 var durations: [Double] = []
                 var previewPaths: [String] = []
@@ -248,6 +255,7 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
                             
                             index = index + 1
                             if index == assets.count {
+                                hud.hide()
                                 SwiftCameraAlbumPlugin.channel.invokeMethod("onSelectedHandler", arguments: ["paths": originPaths, "previewPaths": previewPaths])
                             }
                         }
@@ -268,6 +276,7 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
                                 durations.append(asset.duration)
                                 index = index + 1
                                 if index == assets.count {
+                                    hud.hide()
                                     SwiftCameraAlbumPlugin.channel.invokeMethod("onSelectedHandler", arguments: ["paths": originPaths, "durations": durations])
                                 }
                             }
