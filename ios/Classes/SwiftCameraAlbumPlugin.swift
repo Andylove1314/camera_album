@@ -206,7 +206,7 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
                     case .image:
                         ZLPhotoManager.fetchOriginalImageData(for: asset) { (data, info, isDegraded) in
                             let isHEIC: Bool = data.imageFormat == .HEIC || data.imageFormat == .HEIF
-                            debugPrint("isDegraded: \(isDegraded)    isHEIC: \(isHEIC)")
+                            debugPrint("isDegraded: \(isDegraded)    isHEIC: \(isHEIC)    imageFormat: \(data.imageFormat)")
                             var imageData = data
                             if isHEIC {
                                 if let ciImage = CIImage(data: data) {
