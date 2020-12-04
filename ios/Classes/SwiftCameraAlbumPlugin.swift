@@ -152,7 +152,10 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
         let mediaType = PHAssetMediaType(rawValue: (params["mediaType"] as! Int))
         let taskTitle = (params["taskTitle"] as? String) ?? ""
         let takeTitle = (params["takeTitle"] as? String) ?? ""
-        if let sender = UIApplication.shared.keyWindow?.rootViewController {
+        
+        let controller = UIApplication.shared.keyWindow?.rootViewController as? FlutterViewController
+
+        if let sender = controller {
             
             let deploy = ZLPhotoThemeColorDeploy.default()
             deploy.thumbnailBgColor = UIColor.white
