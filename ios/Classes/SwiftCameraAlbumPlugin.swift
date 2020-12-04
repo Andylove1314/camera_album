@@ -197,9 +197,9 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
             let ac = ZLPhotoPreviewSheet()
             ac.selectImageBlock = { (images, assets, isOriginal) in
                 debugPrint("\(images)  -  \(assets) - \(isOriginal)")
-                var paths: [String] = []
+                var originPaths: [String] = []
                 var durations: [Double] = []
-                var datas: [FlutterStandardTypedData] = []
+                var previewPaths: [String] = []
                 var index: Int = 0
                 assets.forEach { (asset) in
                     switch mediaType {
@@ -228,14 +228,27 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
                                 }
                             }
                             
-                            let path = tmpNwdn + asset.localIdentifier.replacingOccurrences(of: "/", with: "")
-                            try? FileManager.default.removeItem(atPath: path)
-                            try? imageData.write(to: URL(fileURLWithPath: path), options: .atomic)
-                            paths.append(path)
-                            datas.append(FlutterStandardTypedData(bytes: images[index].jpegData(compressionQuality: 1)!))
+                            let originPath = tmpNwdn + asset.localIdentifier.replacingOccurrences(of: "/", with: "")
+                            let previewPath = originPath + "preivew"
+                            
+                            // 保存预览图
+                            if (imageData.imageFormat == .GIF) {
+                                previewPaths.append(originPath)
+                            } else {
+                                let pngData = images[index].pngData()
+                                try? FileManager.default.removeItem(atPath: previewPath)
+                                try? pngData?.write(to: URL(fileURLWithPath: previewPath), options: .atomic)
+                                previewPaths.append(previewPath)
+                            }
+                            
+                            // 保存源图
+                            try? FileManager.default.removeItem(atPath: originPath)
+                            try? imageData.write(to: URL(fileURLWithPath: originPath), options: .atomic)
+                            originPaths.append(originPath)
+                            
                             index = index + 1
                             if index == assets.count {
-                                SwiftCameraAlbumPlugin.channel.invokeMethod("onSelectedHandler", arguments: ["paths": paths, "datas": datas])
+                                SwiftCameraAlbumPlugin.channel.invokeMethod("onSelectedHandler", arguments: ["paths": originPaths, "previewPaths": previewPaths])
                             }
                         }
                     case .video:
@@ -251,11 +264,11 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
                             if let error = error {
                                 debugPrint(error);
                             } else {
-                                paths.append(path)
+                                originPaths.append(path)
                                 durations.append(asset.duration)
                                 index = index + 1
                                 if index == assets.count {
-                                    SwiftCameraAlbumPlugin.channel.invokeMethod("onSelectedHandler", arguments: ["paths": paths, "durations": durations])
+                                    SwiftCameraAlbumPlugin.channel.invokeMethod("onSelectedHandler", arguments: ["paths": originPaths, "durations": durations])
                                 }
                             }
                         }

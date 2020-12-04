@@ -80,7 +80,7 @@ class _HomeState extends State<Home> {
                     return NewPage(
                       MediaType.image,
                       list.map((e) => e.path).toList(),
-                      dataList: list.map((e) => e.bytes).toList(),
+                      previewPaths: list.map((e) => e.previewPath).toList(),
                     );
                   }));
                 },
@@ -111,7 +111,7 @@ class _HomeState extends State<Home> {
                       MediaType.video,
                       list.map((e) => e.path).toList(),
                       durs: list.map((e) => e.duration).toList(),
-                      dataList: list.map((e) => e.bytes).toList(),
+                      previewPaths: list.map((e) => e.previewPath).toList(),
                     );
                   }));
                 },
@@ -139,7 +139,7 @@ class _HomeState extends State<Home> {
                     return NewPage(
                       MediaType.image,
                       list.map((e) => e.path).toList(),
-                      dataList: list.map((e) => e.bytes).toList(),
+                      previewPaths: list.map((e) => e.previewPath).toList(),
                     );
                   }));
                 });

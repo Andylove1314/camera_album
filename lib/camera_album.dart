@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:camera_album/camera_album_config.dart';
 import 'package:camera_album/ui_kit_album.dart';
@@ -70,16 +69,17 @@ class CameraAlbum {
       switch (method) {
         case method_onSelectedHandler:
           List paths = arguments["paths"];
+          List previewPaths = arguments["previewPaths"];
           List durations = arguments["durations"];
-          List dataList = arguments["datas"];
 
           List<CameraAlbumModel> list = [];
           for (int index = 0; index < paths.length; index++) {
             list.add(
               CameraAlbumModel()
-                ..path = paths != null ? '${paths[index]}' : ""
-                ..duration = durations != null ? durations[index] as double : 0
-                ..bytes = dataList != null ? dataList[index] as Uint8List : null,
+                ..path = paths != null ? '${paths[index]}' : ''
+                ..previewPath =
+                    previewPaths != null ? '${previewPaths[index]}' : ''
+                ..duration = durations != null ? durations[index] as double : 0,
             );
           }
 
@@ -276,11 +276,11 @@ class CameraAlbum {
 class CameraAlbumModel {
   double duration;
   String path;
-  Uint8List bytes;
+  String previewPath;
 
   Map toJson() => {
         "duration": duration,
         "path": path,
-        "bytes": bytes,
+        "previewPath": previewPath,
       };
 }
