@@ -7,10 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 class NewPage extends StatefulWidget {
-  List paths;
-  List durs;
-  List previewPaths;
-  MediaType mediaType;
+  final List paths;
+  final List durs;
+  final List previewPaths;
+  final MediaType mediaType;
 
   NewPage(this.mediaType, this.paths, {this.durs, this.previewPaths});
 

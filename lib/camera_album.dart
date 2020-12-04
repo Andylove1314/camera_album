@@ -68,15 +68,15 @@ class CameraAlbum {
       print('$method -> $arguments');
       switch (method) {
         case method_onSelectedHandler:
-          List paths = arguments["paths"];
+          List originPaths = arguments["paths"];
           List previewPaths = arguments["previewPaths"];
           List durations = arguments["durations"];
 
           List<CameraAlbumModel> list = [];
-          for (int index = 0; index < paths.length; index++) {
+          for (int index = 0; index < originPaths.length; index++) {
             list.add(
               CameraAlbumModel()
-                ..path = paths != null ? '${paths[index]}' : ''
+                ..originPath = originPaths != null ? '${originPaths[index]}' : ''
                 ..previewPath =
                     previewPaths != null ? '${previewPaths[index]}' : ''
                 ..duration = durations != null ? durations[index] as double : 0,
@@ -275,12 +275,12 @@ class CameraAlbum {
 
 class CameraAlbumModel {
   double duration;
-  String path;
+  String originPath;
   String previewPath;
 
   Map toJson() => {
         "duration": duration,
-        "path": path,
+        "originPath": originPath,
         "previewPath": previewPath,
       };
 }
