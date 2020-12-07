@@ -199,95 +199,16 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
                 break
             }
             let ac = ZLPhotoPreviewSheet()
-            ac.selectImageBlock = { (images, assets, isOriginal) in
+            ac.selectImageBlock = { (images, assets, isOriginal, originPaths, previewPaths, durations) in
                 debugPrint("\(images)  -  \(assets) - \(isOriginal)")
-                let hud = ZLProgressHUD(style: ZLPhotoConfiguration.default().hudStyle)
-                hud.timeoutBlock = {
-                    showAlertView(localLanguageTextValue(.timeout), sender)
-                }
-                hud.show(timeout: ZLPhotoConfiguration.default().timeout)
                 
-                var originPaths: [String] = []
-                var durations: [Double] = []
-                var previewPaths: [String] = []
-                var index: Int = 0
-                assets.forEach { (asset) in
-                    switch mediaType {
-                    case .image:
-                        ZLPhotoManager.fetchOriginalImageData(for: asset) { (data, info, isDegraded) in
-                            let isHEIC: Bool = data.imageFormat == .HEIC || data.imageFormat == .HEIF
-                            debugPrint("isDegraded: \(isDegraded)    isHEIC: \(isHEIC)    imageFormat: \(data.imageFormat)")
-                            var imageData = data
-                            if isHEIC {
-                                if let ciImage = CIImage(data: data) {
-                                    let context = CIContext()
-                                    if let colorSpace = ciImage.colorSpace {
-                                        if #available(iOS 10.0, *) {
-                                            if let data = context.jpegRepresentation(of: ciImage, colorSpace: colorSpace) {
-                                                imageData = data
-                                            }
-                                        } else {
-                                            /*heic文件是目前苹果公司专门制作出来的一种图片格式们目前只适合苹果用户专用，和我们熟知的JPEG、PNG等同类，HEIC是一种图像格式，由苹果公司在近几年推出，iOS11、MacOS High Sierra（10.13）以及更新的版本支持该图片格式。并不是所有的iOS设备都默认支持HEIC图像格式，只有使用A9芯片及以上的设备才可以，比如搭载最新的A11仿生的芯片的iPhone X、iPhone8、iPhone8 Plus会默认使用HEIC图像格式。
-
-                                            作者：规规这小子真帅
-                                            链接：https://www.zhihu.com/question/266966789/answer/356730794
-                                            来源：知乎
-                                            著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。*/
-                                        }
-                                    }
-                                }
-                            }
-                            
-                            let originPath = tmpNwdn + asset.localIdentifier.replacingOccurrences(of: "/", with: "")
-                            let previewPath = originPath + "preivew"
-                            
-                            // 保存预览图
-                            if (imageData.imageFormat == .GIF) {
-                                previewPaths.append(originPath)
-                            } else {
-                                let pngData = images[index].pngData()
-                                try? FileManager.default.removeItem(atPath: previewPath)
-                                try? pngData?.write(to: URL(fileURLWithPath: previewPath), options: .atomic)
-                                previewPaths.append(previewPath)
-                            }
-                            
-                            // 保存源图
-                            try? FileManager.default.removeItem(atPath: originPath)
-                            try? imageData.write(to: URL(fileURLWithPath: originPath), options: .atomic)
-                            originPaths.append(originPath)
-                            
-                            index = index + 1
-                            if index == assets.count {
-                                hud.hide()
-                                SwiftCameraAlbumPlugin.channel.invokeMethod("onSelectedHandler", arguments: ["paths": originPaths, "previewPaths": previewPaths])
-                            }
-                        }
-                    case .video:
-                        // https://blog.csdn.net/qq_22157341/article/details/80758683
-                        if let assetResource = PHAssetResource.assetResources(for: asset).first {
-                        let fileName = assetResource.originalFilename
-                            let path = tmpNwdn + fileName
-                            try? FileManager.default.removeItem(atPath: path)
-                        
-                        let options = PHAssetResourceRequestOptions()
-                            options.isNetworkAccessAllowed = true;
-                        PHAssetResourceManager.default().writeData(for: assetResource, toFile: URL(fileURLWithPath: path), options: options) { (error) in
-                            if let error = error {
-                                debugPrint(error);
-                            } else {
-                                originPaths.append(path)
-                                durations.append(asset.duration)
-                                index = index + 1
-                                if index == assets.count {
-                                    hud.hide()
-                                    SwiftCameraAlbumPlugin.channel.invokeMethod("onSelectedHandler", arguments: ["paths": originPaths, "durations": durations])
-                                }
-                            }
-                        }
-                    }
-                    default:
-                        break;
-                    }
+                switch mediaType {
+                case .image:
+                    SwiftCameraAlbumPlugin.channel.invokeMethod("onSelectedHandler", arguments: ["paths": originPaths, "previewPaths": previewPaths])
+                case .video:
+                    SwiftCameraAlbumPlugin.channel.invokeMethod("onSelectedHandler", arguments: ["paths": originPaths, "durations": durations])
+                default:
+                    break
                 }
             }
         

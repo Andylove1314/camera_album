@@ -84,7 +84,9 @@ public class ZLPhotoPreviewSheet: UIView {
     ///  - params1: images for asset.
     ///  - params2: selected assets
     ///  - params3: is full image
-    @objc public var selectImageBlock: ( ([UIImage], [PHAsset], Bool) -> Void )?
+    // + TODO:修改源码
+    @objc public var selectImageBlock: ( ([UIImage], [PHAsset], Bool, [String], [String], [Double]) -> Void )?
+    // + TODO:修改源码
     
     /// Callback for photos that failed to parse
     /// block params
@@ -490,7 +492,9 @@ public class ZLPhotoPreviewSheet: UIView {
     
     func requestSelectPhoto(viewController: UIViewController? = nil) {
         guard !self.arrSelectedModels.isEmpty else {
-            self.selectImageBlock?([], [], self.isSelectOriginal)
+            // + TODO:修改源码
+            self.selectImageBlock?([], [], self.isSelectOriginal, [], [], [])
+            // + TODO:修改源码
             self.hide()
             viewController?.dismiss(animated: true, completion: nil)
             return
@@ -523,7 +527,9 @@ public class ZLPhotoPreviewSheet: UIView {
         
         guard ZLPhotoConfiguration.default().shouldAnialysisAsset else {
             hud.hide()
-            self.selectImageBlock?([], self.arrSelectedModels.map { $0.asset }, self.isSelectOriginal)
+            // + TODO:修改源码
+            self.selectImageBlock?([], self.arrSelectedModels.map { $0.asset }, self.isSelectOriginal, [], [], [])
+            // + TODO:修改源码
             self.arrSelectedModels.removeAll()
             self.hide()
             viewController?.dismiss(animated: true, completion: nil)
@@ -532,13 +538,21 @@ public class ZLPhotoPreviewSheet: UIView {
         
         var images: [UIImage?] = Array(repeating: nil, count: self.arrSelectedModels.count)
         var assets: [PHAsset?] = Array(repeating: nil, count: self.arrSelectedModels.count)
+        // + TODO:修改源码
+        var originPaths: [String?] = Array(repeating: nil, count: self.arrSelectedModels.count)
+        var previewPaths: [String?] = Array(repeating: nil, count: self.arrSelectedModels.count)
+        var durations: [Double?] = Array(repeating: nil, count: self.arrSelectedModels.count)
+        // + TODO:修改源码
         var errorAssets: [PHAsset] = []
         var errorIndexs: [Int] = []
         
         var sucCount = 0
         let totalCount = self.arrSelectedModels.count
         for (i, m) in self.arrSelectedModels.enumerated() {
-            let operation = ZLFetchImageOperation(model: m, isOriginal: self.isSelectOriginal) { [weak self] (image, asset) in
+            let operation = ZLFetchImageOperation(model: m, isOriginal: self.isSelectOriginal) {
+                // + TODO:修改源码
+                [weak self] (image, asset, originPath, previewPath, duration) in
+                // + TODO:修改源码
                 guard !timeout else { return }
                 
                 sucCount += 1
@@ -546,6 +560,11 @@ public class ZLPhotoPreviewSheet: UIView {
                 if let image = image {
                     images[i] = image
                     assets[i] = asset ?? m.asset
+                    // + TODO:修改源码
+                    originPaths[i] = originPath
+                    previewPaths[i] = previewPath
+                    durations[i] = duration
+                    // + TODO:修改源码
                     zl_debugPrint("ZLPhotoBrowser: suc request \(i)")
                 } else {
                     errorAssets.append(m.asset)
@@ -556,9 +575,16 @@ public class ZLPhotoPreviewSheet: UIView {
                 guard sucCount >= totalCount else { return }
                 let sucImages = images.compactMap { $0 }
                 let sucAssets = assets.compactMap { $0 }
+                // + TODO:修改源码
+                let sucOriginPaths = originPaths.compactMap { $0 }
+                let sucPreviewPaths = previewPaths.compactMap { $0 }
+                let sucDurations = durations.compactMap { $0 }
+                // + TODO:修改源码
                 hud.hide()
                 
-                self?.selectImageBlock?(sucImages, sucAssets, self?.isSelectOriginal ?? false)
+                // + TODO:修改源码
+                self?.selectImageBlock?(sucImages, sucAssets, self?.isSelectOriginal ?? false, sucOriginPaths, sucPreviewPaths, sucDurations)
+                // + TODO:修改源码
                 self?.arrSelectedModels.removeAll()
                 if !errorAssets.isEmpty {
                     self?.selectImageRequestErrorBlock?(errorAssets, errorIndexs)
