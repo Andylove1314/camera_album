@@ -250,8 +250,10 @@ class ZLFetchImageOperation: Operation {
                     if let error = error {
                         debugPrint(error);
                     } else {
-                        self.completion(self.scaleImage(image.fixOrientation()), nil, path, nil, asset.duration)
-                        self.fetchFinish()
+                        DispatchQueue.main.async {
+                            self.completion(self.scaleImage(image.fixOrientation()), nil, path, nil, asset.duration)
+                            self.fetchFinish()
+                        }
                     }
                 }
             }
