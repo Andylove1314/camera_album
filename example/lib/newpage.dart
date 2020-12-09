@@ -8,10 +8,10 @@ import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 
 class NewPage extends StatefulWidget {
-  final List paths;
-  final List durs;
-  final List previewPaths;
-  final MediaType mediaType;
+  List paths;
+  List durs;
+  List previewPaths;
+  MediaType mediaType;
 
   NewPage(this.mediaType, this.paths, {this.durs, this.previewPaths});
 
@@ -25,6 +25,40 @@ class _NewPagePageState extends State<NewPage> {
       const MethodChannel('edit_page_channel');
 
   @override
+  void initState() {
+    _channel.setMethodCallHandler((call) {
+      String method = call.method;
+      Map arguments = call.arguments;
+      print('$method -> $arguments');
+      if (call.method == "selected") {
+        setState(() {
+          List originPaths = arguments["paths"];
+          List previewPaths = arguments["previewPaths"];
+          List durations = arguments["durations"];
+
+          List<CameraAlbumModel> list = [];
+          for (int index = 0; index < originPaths.length; index++) {
+            list.add(
+              CameraAlbumModel()
+                ..originPath =
+                    originPaths != null ? '${originPaths[index]}' : ''
+                ..previewPath =
+                    previewPaths != null ? '${previewPaths[index]}' : ''
+                ..duration = durations != null ? durations[index] as double : 0,
+            );
+          }
+          widget.mediaType = MediaType.image;
+          widget.paths = originPaths;
+          widget.previewPaths = previewPaths;
+          widget.durs = durations;
+        });
+      }
+      return;
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
@@ -33,7 +67,7 @@ class _NewPagePageState extends State<NewPage> {
               try {
                 await _channel.invokeMethod("pop");
               } catch (e) {
-                Navigator.of(context).pop() ;
+                Navigator.of(context).pop();
               }
             },
           ),

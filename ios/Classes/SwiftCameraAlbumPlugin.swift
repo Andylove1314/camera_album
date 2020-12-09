@@ -23,7 +23,7 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
     
     let instance = SwiftCameraAlbumPlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
-//    flutterEngine.run(withEntrypoint: nil, initialRoute: "/about" + "?a=123")
+    SwiftCameraAlbumPlugin.flutterEngine.run(withEntrypoint: nil, initialRoute: "/editPage")
     
     let _ = delete(atPath: tmpNwdn)
     let _ = creatDir(atPath: tmpNwdn)
