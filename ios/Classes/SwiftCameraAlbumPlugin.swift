@@ -9,6 +9,8 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
     
   static var channel: FlutterMethodChannel!
     
+    static var flutterEngine = FlutterEngine(name: "showPhotoLibraryEngine")
+    
   public static func register(with registrar: FlutterPluginRegistrar) {
     channel = FlutterMethodChannel(name: "flutter/camera_album", binaryMessenger: registrar.messenger())
     
@@ -21,6 +23,7 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
     
     let instance = SwiftCameraAlbumPlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
+//    flutterEngine.run(withEntrypoint: nil, initialRoute: "/about" + "?a=123")
     
     let _ = delete(atPath: tmpNwdn)
     let _ = creatDir(atPath: tmpNwdn)

@@ -22,6 +22,7 @@ dependencies:
     # the parent directory to use the current plugin's version. 
     path: ../
   video_player: 0.10.11+1
+  fluro: 1.6.3 # https://github.com/theyakka/fluro
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

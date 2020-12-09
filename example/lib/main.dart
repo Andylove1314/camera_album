@@ -6,6 +6,8 @@ import 'package:camera_album/camera_album.dart';
 
 import 'android_camera_widget.dart';
 import 'newpage.dart';
+import 'routes/routes.dart';
+import 'package:fluro/fluro.dart' as fluro;
 
 void main() {
   runApp(MyApp());
@@ -18,14 +20,17 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   @override
+  void initState() {
+    /// 配置路由
+    Routes.configureRouters();
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Home(),
-      ),
+      onGenerateRoute: fluro.Router.appRouter.generator,
     );
   }
 }
@@ -38,331 +43,344 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        CupertinoButton(
-          child: Row(
-            children: [
-              Icon(Icons.add_photo_alternate),
-              Text('Remini single picture'),
-            ],
-          ),
-          onPressed: () async {
-            CameraAlbum.showPhotoLibrary(
-                taskTitle: "照片单选",
-                takeTitle: "Take a picture",
-                onSelected: (List<CameraAlbumModel> list) {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return NewPage(
-                      MediaType.image,
-                      list.map((e) => e.originPath).toList(),
-                      previewPaths: list.map((e) => e.previewPath).toList(),
-                    );
-                  }));
-                },
-                openCamera: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return CameraDemo(
-                      isRecordVideo: false,
-                    );
-                  }));
-                });
-          },
-        ),
-        CupertinoButton(
-          child: Row(
-            children: [
-              Icon(Icons.add_photo_alternate),
-              Text('Remini single video'),
-            ],
-          ),
-          onPressed: () async {
-            CameraAlbum.showPhotoLibrary(
-                mediaType: MediaType.video,
-                taskTitle: "视频单选",
-                takeTitle: "Take a video",
-                onSelected: (List<CameraAlbumModel> list) {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return NewPage(
-                      MediaType.video,
-                      list.map((e) => e.originPath).toList(),
-                      durs: list.map((e) => e.duration).toList(),
-                      previewPaths: list.map((e) => e.previewPath).toList(),
-                    );
-                  }));
-                },
-                openCamera: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return CameraDemo(
-                      isRecordVideo: true,
-                    );
-                  }));
-                });
-          },
-        ),
-        CupertinoButton(
-          child: Row(
-            children: [
-              Icon(Icons.add_photo_alternate),
-              Text('Remini multiple picture'),
-            ],
-          ),
-          onPressed: () async {
-            CameraAlbum.showPhotoLibrary(
-                maxSelectCount: 9,
-                onSelected: (List<CameraAlbumModel> list) {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return NewPage(
-                      MediaType.image,
-                      list.map((e) => e.originPath).toList(),
-                      previewPaths: list.map((e) => e.previewPath).toList(),
-                    );
-                  }));
-                });
-          },
-        ),
-        IconButton(
-            icon: Icon(Icons.photo),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Plugin example app'),
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          CupertinoButton(
+            child: Row(
+              children: [
+                Icon(Icons.add_photo_alternate),
+                Text('Remini single picture'),
+              ],
+            ),
             onPressed: () async {
-              CameraAlbum.openAlbum(
-                  config: CameraAlbumConfig(
-                      actionId: 'ssshshhshsh',
-                      title: 'Native Gallery',
-                      inType: 'image',
-                      firstCamera: false,
-                      showBottomCamera: true,
-                      showGridCamera: true,
-                      showAlbum: true,
-                      isMulti: true,
-                      multiCount: 5,
-                      cute: false,
-                      customCamera: true,
-                      guides: [
-                        [
-                          'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/VHByy0e26624d87a5a1156eea6711d5125858.jpg',
-                          'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/VHByy0e26624d87a5a1156eea6711d5125858.jpg'
-                        ],
-                        [
-                          'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/Vt8Rtc3d879d7ce5278fb0655ab0d90503d86.jpg',
-                          'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/Vt8Rtc3d879d7ce5278fb0655ab0d90503d86.jpg'
-                        ],
-                        [
-                          'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/djwxl6cc4e8157b1bc1d90dd1a34268572d1a.jpg',
-                          'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/djwxl6cc4e8157b1bc1d90dd1a34268572d1a.jpg'
-                        ]
-                      ]),
-                  context: context,
-                  androidView: true,
-                  callback: (backs) {
-                    print('callback2： -> $backs');
+              CameraAlbum.showPhotoLibrary(
+                  taskTitle: "照片单选",
+                  takeTitle: "Take a picture",
+                  onSelected: (List<CameraAlbumModel> list) {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
                       return NewPage(
                         MediaType.image,
-                        backs.paths,
+                        list.map((e) => e.originPath).toList(),
+                        previewPaths: list.map((e) => e.previewPath).toList(),
                       );
                     }));
                   },
-                  callCamera: () {
-                    print('open custom camera');
-                  },
-                  onLimitCallback: () {
-                    print("超出限制");
-                    showDialog(
-                        context: context,
-                        builder: (c) {
-                          return AlertDialog(
-                            title: Text('超出限制'),
-                            actions: <Widget>[
-                              RaisedButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text('ok')),
-                            ],
-                          );
-                        });
+                  openCamera: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return CameraDemo(
+                        isRecordVideo: false,
+                      );
+                    }));
                   });
-            }),
-        IconButton(
-            icon: Icon(Icons.photo_library),
+            },
+          ),
+          CupertinoButton(
+            child: Row(
+              children: [
+                Icon(Icons.add_photo_alternate),
+                Text('Remini single video'),
+              ],
+            ),
             onPressed: () async {
-              CameraAlbum.openAlbum(
-                  config: CameraAlbumConfig(
-                      actionId: 'ssshshhshsh',
-                      autoShowGuide: false,
-                      title: 'Native Gallery',
-                      inType: 'image',
-                      firstCamera: false,
-                      showBottomCamera: true,
-                      showGridCamera: true,
-                      customCamera: true,
-                      showAlbum: true,
-                      isMulti: true,
-                      multiCount: 5,
-                      bottomActionTitle: 'fuck camera',
-                      guides: [
-                        [
-                          'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/VHByy0e26624d87a5a1156eea6711d5125858.jpg',
-                          'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/VHByy0e26624d87a5a1156eea6711d5125858.jpg'
-                        ],
-                        [
-                          'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/Vt8Rtc3d879d7ce5278fb0655ab0d90503d86.jpg',
-                          'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/Vt8Rtc3d879d7ce5278fb0655ab0d90503d86.jpg'
-                        ],
-                        [
-                          'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/djwxl6cc4e8157b1bc1d90dd1a34268572d1a.jpg',
-                          'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/djwxl6cc4e8157b1bc1d90dd1a34268572d1a.jpg'
-                        ]
-                      ]),
-                  context: context,
-                  callback: (backs) {
+              CameraAlbum.showPhotoLibrary(
+                  mediaType: MediaType.video,
+                  taskTitle: "视频单选",
+                  takeTitle: "Take a video",
+                  onSelected: (List<CameraAlbumModel> list) {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return NewPage(
+                        MediaType.video,
+                        list.map((e) => e.originPath).toList(),
+                        durs: list.map((e) => e.duration).toList(),
+                        previewPaths: list.map((e) => e.previewPath).toList(),
+                      );
+                    }));
+                  },
+                  openCamera: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return CameraDemo(
+                        isRecordVideo: true,
+                      );
+                    }));
+                  });
+            },
+          ),
+          CupertinoButton(
+            child: Row(
+              children: [
+                Icon(Icons.add_photo_alternate),
+                Text('Remini multiple picture'),
+              ],
+            ),
+            onPressed: () async {
+              CameraAlbum.showPhotoLibrary(
+                  maxSelectCount: 9,
+                  onSelected: (List<CameraAlbumModel> list) {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
                       return NewPage(
                         MediaType.image,
-                        backs.paths,
-                      );
-                    }));
-                  },
-                  onLimitCallback: () {
-                    print("超出限制");
-                    showDialog(
-                        context: context,
-                        builder: (c) {
-                          return AlertDialog(
-                            title: Text('超出限制'),
-                            actions: <Widget>[
-                              RaisedButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text('ok')),
-                            ],
-                          );
-                        });
-                  });
-            }),
-        IconButton(
-            icon: Icon(Icons.video_label),
-            onPressed: () async {
-              CameraAlbum.openAlbum(
-                  config: CameraAlbumConfig(
-                      title: 'Paint video',
-                      inType: 'video',
-                      firstCamera: false,
-                      showBottomCamera: true,
-                      showGridCamera: true,
-                      showAlbum: true,
-                      isMulti: true,
-                      multiCount: 1,
-                      guides: [
-                        [
-                          'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/VHByy0e26624d87a5a1156eea6711d5125858.jpg',
-                          'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/VHByy0e26624d87a5a1156eea6711d5125858.jpg'
-                        ],
-                        [
-                          'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/Vt8Rtc3d879d7ce5278fb0655ab0d90503d86.jpg',
-                          'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/Vt8Rtc3d879d7ce5278fb0655ab0d90503d86.jpg'
-                        ],
-                        [
-                          'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/djwxl6cc4e8157b1bc1d90dd1a34268572d1a.jpg',
-                          'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/djwxl6cc4e8157b1bc1d90dd1a34268572d1a.jpg'
-                        ]
-                      ]),
-                  context: context,
-                  callback: (backs) {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return NewPage(
-                        MediaType.video,
-                        backs.paths,
+                        list.map((e) => e.originPath).toList(),
+                        previewPaths: list.map((e) => e.previewPath).toList(),
                       );
                     }));
                   });
-            }),
-        IconButton(
-            icon: Icon(Icons.video_library),
-            onPressed: () async {
-              CameraAlbum.openAlbum(
-                  config: CameraAlbumConfig(
-                      actionId: '你好',
-                      title: 'Paint video',
-                      inType: 'video',
-                      firstCamera: false,
-                      showBottomCamera: true,
-                      showGridCamera: true,
-                      showAlbum: true,
-                      isMulti: true,
-                      multiCount: 5,
-                      guides: [
-                        [
-                          'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/VHByy0e26624d87a5a1156eea6711d5125858.jpg',
-                          'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/VHByy0e26624d87a5a1156eea6711d5125858.jpg'
-                        ],
-                        [
-                          'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/Vt8Rtc3d879d7ce5278fb0655ab0d90503d86.jpg',
-                          'https://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/remini/s/2020/1595847490451_439384610.mp4'
-                        ],
-                        [
-                          'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/djwxl6cc4e8157b1bc1d90dd1a34268572d1a.jpg',
-                          'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/djwxl6cc4e8157b1bc1d90dd1a34268572d1a.jpg'
-                        ]
-                      ]),
-                  context: context,
-                  callback: (backs) {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return NewPage(
-                        MediaType.video,
-                        backs.paths,
-                      );
-                    }));
-                  });
-            }),
-        IconButton(
-            icon: Icon(Icons.photo_camera),
-            onPressed: () async {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return CameraDemo(
-                  isRecordVideo: false,
-                );
-              }));
-            }),
-        IconButton(
-            icon: Icon(Icons.video_call),
-            onPressed: () async {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return CameraDemo(
-                  isRecordVideo: true,
-                );
-              }));
-            }),
-        GestureDetector(
-          child: Row(
-            children: <Widget>[Icon(Icons.camera), Text('android camera view')],
+            },
           ),
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return AndroidCameraPage();
-            }));
-          },
-        ),
-        IconButton(
-            icon: Icon(Icons.image),
-            onPressed: () async {
-              CameraAlbum.requestLastImage('image').then((imge) {
-                print('last img:$imge');
+          IconButton(
+              icon: Icon(Icons.photo),
+              onPressed: () async {
+                CameraAlbum.openAlbum(
+                    config: CameraAlbumConfig(
+                        actionId: 'ssshshhshsh',
+                        title: 'Native Gallery',
+                        inType: 'image',
+                        firstCamera: false,
+                        showBottomCamera: true,
+                        showGridCamera: true,
+                        showAlbum: true,
+                        isMulti: true,
+                        multiCount: 5,
+                        cute: false,
+                        customCamera: true,
+                        guides: [
+                          [
+                            'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/VHByy0e26624d87a5a1156eea6711d5125858.jpg',
+                            'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/VHByy0e26624d87a5a1156eea6711d5125858.jpg'
+                          ],
+                          [
+                            'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/Vt8Rtc3d879d7ce5278fb0655ab0d90503d86.jpg',
+                            'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/Vt8Rtc3d879d7ce5278fb0655ab0d90503d86.jpg'
+                          ],
+                          [
+                            'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/djwxl6cc4e8157b1bc1d90dd1a34268572d1a.jpg',
+                            'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/djwxl6cc4e8157b1bc1d90dd1a34268572d1a.jpg'
+                          ]
+                        ]),
+                    context: context,
+                    androidView: true,
+                    callback: (backs) {
+                      print('callback2： -> $backs');
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return NewPage(
+                          MediaType.image,
+                          backs.paths,
+                        );
+                      }));
+                    },
+                    callCamera: () {
+                      print('open custom camera');
+                    },
+                    onLimitCallback: () {
+                      print("超出限制");
+                      showDialog(
+                          context: context,
+                          builder: (c) {
+                            return AlertDialog(
+                              title: Text('超出限制'),
+                              actions: <Widget>[
+                                RaisedButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text('ok')),
+                              ],
+                            );
+                          });
+                    });
+              }),
+          IconButton(
+              icon: Icon(Icons.photo_library),
+              onPressed: () async {
+                CameraAlbum.openAlbum(
+                    config: CameraAlbumConfig(
+                        actionId: 'ssshshhshsh',
+                        autoShowGuide: false,
+                        title: 'Native Gallery',
+                        inType: 'image',
+                        firstCamera: false,
+                        showBottomCamera: true,
+                        showGridCamera: true,
+                        customCamera: true,
+                        showAlbum: true,
+                        isMulti: true,
+                        multiCount: 5,
+                        bottomActionTitle: 'fuck camera',
+                        guides: [
+                          [
+                            'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/VHByy0e26624d87a5a1156eea6711d5125858.jpg',
+                            'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/VHByy0e26624d87a5a1156eea6711d5125858.jpg'
+                          ],
+                          [
+                            'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/Vt8Rtc3d879d7ce5278fb0655ab0d90503d86.jpg',
+                            'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/Vt8Rtc3d879d7ce5278fb0655ab0d90503d86.jpg'
+                          ],
+                          [
+                            'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/djwxl6cc4e8157b1bc1d90dd1a34268572d1a.jpg',
+                            'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/djwxl6cc4e8157b1bc1d90dd1a34268572d1a.jpg'
+                          ]
+                        ]),
+                    context: context,
+                    callback: (backs) {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return NewPage(
+                          MediaType.image,
+                          backs.paths,
+                        );
+                      }));
+                    },
+                    onLimitCallback: () {
+                      print("超出限制");
+                      showDialog(
+                          context: context,
+                          builder: (c) {
+                            return AlertDialog(
+                              title: Text('超出限制'),
+                              actions: <Widget>[
+                                RaisedButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text('ok')),
+                              ],
+                            );
+                          });
+                    });
+              }),
+          IconButton(
+              icon: Icon(Icons.video_label),
+              onPressed: () async {
+                CameraAlbum.openAlbum(
+                    config: CameraAlbumConfig(
+                        title: 'Paint video',
+                        inType: 'video',
+                        firstCamera: false,
+                        showBottomCamera: true,
+                        showGridCamera: true,
+                        showAlbum: true,
+                        isMulti: true,
+                        multiCount: 1,
+                        guides: [
+                          [
+                            'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/VHByy0e26624d87a5a1156eea6711d5125858.jpg',
+                            'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/VHByy0e26624d87a5a1156eea6711d5125858.jpg'
+                          ],
+                          [
+                            'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/Vt8Rtc3d879d7ce5278fb0655ab0d90503d86.jpg',
+                            'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/Vt8Rtc3d879d7ce5278fb0655ab0d90503d86.jpg'
+                          ],
+                          [
+                            'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/djwxl6cc4e8157b1bc1d90dd1a34268572d1a.jpg',
+                            'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/djwxl6cc4e8157b1bc1d90dd1a34268572d1a.jpg'
+                          ]
+                        ]),
+                    context: context,
+                    callback: (backs) {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return NewPage(
+                          MediaType.video,
+                          backs.paths,
+                        );
+                      }));
+                    });
+              }),
+          IconButton(
+              icon: Icon(Icons.video_library),
+              onPressed: () async {
+                CameraAlbum.openAlbum(
+                    config: CameraAlbumConfig(
+                        actionId: '你好',
+                        title: 'Paint video',
+                        inType: 'video',
+                        firstCamera: false,
+                        showBottomCamera: true,
+                        showGridCamera: true,
+                        showAlbum: true,
+                        isMulti: true,
+                        multiCount: 5,
+                        guides: [
+                          [
+                            'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/VHByy0e26624d87a5a1156eea6711d5125858.jpg',
+                            'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/VHByy0e26624d87a5a1156eea6711d5125858.jpg'
+                          ],
+                          [
+                            'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/Vt8Rtc3d879d7ce5278fb0655ab0d90503d86.jpg',
+                            'https://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/remini/s/2020/1595847490451_439384610.mp4'
+                          ],
+                          [
+                            'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/djwxl6cc4e8157b1bc1d90dd1a34268572d1a.jpg',
+                            'http://nwdn-hd2.oss-cn-shanghai.aliyuncs.com/back/2020-03/20/djwxl6cc4e8157b1bc1d90dd1a34268572d1a.jpg'
+                          ]
+                        ]),
+                    context: context,
+                    callback: (backs) {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return NewPage(
+                          MediaType.video,
+                          backs.paths,
+                        );
+                      }));
+                    });
+              }),
+          IconButton(
+              icon: Icon(Icons.photo_camera),
+              onPressed: () async {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return NewPage(
-                    MediaType.image,
-                    ['$imge'],
+                  return CameraDemo(
+                    isRecordVideo: false,
                   );
                 }));
-              });
-            }),
-      ],
+              }),
+          IconButton(
+              icon: Icon(Icons.video_call),
+              onPressed: () async {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return CameraDemo(
+                    isRecordVideo: true,
+                  );
+                }));
+              }),
+          GestureDetector(
+            child: Row(
+              children: <Widget>[
+                Icon(Icons.camera),
+                Text('android camera view')
+              ],
+            ),
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return AndroidCameraPage();
+              }));
+            },
+          ),
+          IconButton(
+              icon: Icon(Icons.image),
+              onPressed: () async {
+                CameraAlbum.requestLastImage('image').then((imge) {
+                  print('last img:$imge');
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return NewPage(
+                      MediaType.image,
+                      ['$imge'],
+                    );
+                  }));
+                });
+              }),
+        ],
+      ),
     );
   }
 }

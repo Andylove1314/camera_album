@@ -591,7 +591,14 @@ public class ZLPhotoPreviewSheet: UIView {
                 }
                 self?.arrDataSources.removeAll()
                 self?.hide()
-                viewController?.dismiss(animated: true, completion: nil)
+                // + TODO:修改源码
+//                viewController?.dismiss(animated: true, completion: nil)
+                
+                SwiftCameraAlbumPlugin.flutterEngine.run(withEntrypoint: nil, initialRoute: "/editPage" + "?paths=\(sucImages)")
+                let flutterViewController =
+                    FlutterViewController(engine: SwiftCameraAlbumPlugin.flutterEngine, nibName: nil, bundle: nil)
+                viewController?.present(flutterViewController, animated: true, completion: nil)
+                // + TODO:修改源码
             }
             self.fetchImageQueue.addOperation(operation)
         }
