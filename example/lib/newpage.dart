@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:camera_album/camera_album.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 
 class NewPage extends StatefulWidget {
@@ -19,10 +20,24 @@ class NewPage extends StatefulWidget {
 }
 
 class _NewPagePageState extends State<NewPage> {
+  /// channel
+  static const MethodChannel _channel =
+      const MethodChannel('edit_page_channel');
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          leading: BackButton(
+            onPressed: () async {
+              try {
+                await _channel.invokeMethod("pop");
+              } catch (e) {
+                Navigator.of(context).pop() ;
+              }
+            },
+          ),
+        ),
         body: Container(
           child: SingleChildScrollView(
             child: Column(

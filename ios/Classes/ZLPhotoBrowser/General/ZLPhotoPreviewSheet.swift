@@ -598,6 +598,14 @@ public class ZLPhotoPreviewSheet: UIView {
                 let flutterViewController =
                     FlutterViewController(engine: SwiftCameraAlbumPlugin.flutterEngine, nibName: nil, bundle: nil)
                 viewController?.present(flutterViewController, animated: true, completion: nil)
+                let channel = FlutterMethodChannel(name: "edit_page_channel", binaryMessenger: flutterViewController as! FlutterBinaryMessenger)
+                channel.setMethodCallHandler { (call, result) in
+                    if call.method == "pop" {
+                    viewController?.dismiss(animated: true, completion: {
+                        result(true)
+                    })
+                    }
+                }
                 // + TODO:修改源码
             }
             self.fetchImageQueue.addOperation(operation)

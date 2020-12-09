@@ -225,6 +225,11 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
         } else {
             result([])
         }
+    case "pop":
+        let controller = UIApplication.shared.keyWindow?.rootViewController as? FlutterViewController
+        controller?.dismiss(animated: true, completion: {
+            
+        })
     default: break
     }
   }
