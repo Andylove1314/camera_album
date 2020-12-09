@@ -592,20 +592,23 @@ public class ZLPhotoPreviewSheet: UIView {
                 self?.arrDataSources.removeAll()
                 self?.hide()
                 // + TODO:修改源码
-//                viewController?.dismiss(animated: true, completion: nil)
-                
-                let flutterViewController =
-                    FlutterViewController(engine: SwiftCameraAlbumPlugin.flutterEngine, nibName: nil, bundle: nil)
-                viewController?.present(flutterViewController, animated: true, completion: nil)
-                let channel = FlutterMethodChannel(name: "edit_page_channel", binaryMessenger: flutterViewController as! FlutterBinaryMessenger)
-                channel.invokeMethod("selected", arguments: ["paths": originPaths, "previewPaths": previewPaths])
-                channel.setMethodCallHandler { (call, result) in
-                    if call.method == "pop" {
-                    viewController?.dismiss(animated: true, completion: {
-                        result(true)
-                    })
+                if ZLPhotoConfiguration.default().maxSelectCount > 1 {
+                    viewController?.dismiss(animated: true, completion: nil)
+                } else {
+                    let flutterViewController =
+                        FlutterViewController(engine: SwiftCameraAlbumPlugin.flutterEngine, nibName: nil, bundle: nil)
+                    viewController?.present(flutterViewController, animated: true, completion: nil)
+                    let channel = FlutterMethodChannel(name: "edit_page_channel", binaryMessenger: flutterViewController as! FlutterBinaryMessenger)
+                    channel.invokeMethod("selected", arguments: ["paths": originPaths, "previewPaths": previewPaths])
+                    channel.setMethodCallHandler { (call, result) in
+                        if call.method == "pop" {
+                        viewController?.dismiss(animated: true, completion: {
+                            result(true)
+                        })
+                        }
                     }
                 }
+                
                 // + TODO:修改源码
             }
             self.fetchImageQueue.addOperation(operation)

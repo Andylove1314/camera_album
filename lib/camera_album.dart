@@ -68,22 +68,25 @@ class CameraAlbum {
       print('$method -> $arguments');
       switch (method) {
         case method_onSelectedHandler:
-          List originPaths = arguments["paths"];
-          List previewPaths = arguments["previewPaths"];
-          List durations = arguments["durations"];
+          if (maxSelectCount > 1) {
+            List originPaths = arguments["paths"];
+            List previewPaths = arguments["previewPaths"];
+            List durations = arguments["durations"];
 
-          List<CameraAlbumModel> list = [];
-          for (int index = 0; index < originPaths.length; index++) {
-            list.add(
-              CameraAlbumModel()
-                ..originPath = originPaths != null ? '${originPaths[index]}' : ''
-                ..previewPath =
-                    previewPaths != null ? '${previewPaths[index]}' : ''
-                ..duration = durations != null ? durations[index] as double : 0,
-            );
+            List<CameraAlbumModel> list = [];
+            for (int index = 0; index < originPaths.length; index++) {
+              list.add(
+                CameraAlbumModel()
+                  ..originPath =
+                      originPaths != null ? '${originPaths[index]}' : ''
+                  ..previewPath =
+                      previewPaths != null ? '${previewPaths[index]}' : ''
+                  ..duration =
+                      durations != null ? durations[index] as double : 0,
+              );
+            }
+            onSelected(list);
           }
-
-          onSelected(list);
           break;
         case method_callCamera:
           if (openCamera != null) {
