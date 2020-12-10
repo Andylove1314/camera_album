@@ -183,6 +183,7 @@ class ZLThumbnailViewController: UIViewController {
         // + TODO:修改源码
         let nav = self.navigationController as? ZLImageNavController
         nav?.arrSelectedModels.removeAll()
+        self.arrDataSources.forEach { $0.isSelected = false }
         self.collectionView.reloadData()
         // + TODO:修改源码
     }
