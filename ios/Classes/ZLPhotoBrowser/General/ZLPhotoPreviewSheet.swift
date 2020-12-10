@@ -77,6 +77,8 @@ public class ZLPhotoPreviewSheet: UIView {
     
     private weak var sender: UIViewController?
     
+    private var nav: ZLImageNavController!
+    
     private var fetchImageQueue: OperationQueue = OperationQueue()
     
     /// Success callback
@@ -597,14 +599,12 @@ public class ZLPhotoPreviewSheet: UIView {
                 } else {
                     let flutterViewController =
                         FlutterViewController(engine: SwiftCameraAlbumPlugin.flutterEngine, nibName: nil, bundle: nil)
-                    viewController?.present(flutterViewController, animated: true, completion: nil)
+                    self?.nav?.pushViewController(flutterViewController, animated: true)
                     let channel = FlutterMethodChannel(name: "edit_page_channel", binaryMessenger: flutterViewController as! FlutterBinaryMessenger)
                     channel.invokeMethod("selected", arguments: ["paths": originPaths, "previewPaths": previewPaths])
                     channel.setMethodCallHandler { (call, result) in
                         if call.method == "pop" {
-                        viewController?.dismiss(animated: true, completion: {
-                            result(true)
-                        })
+                            flutterViewController.navigationController?.popViewController(animated: true)
                         }
                     }
                 }
@@ -711,7 +711,7 @@ public class ZLPhotoPreviewSheet: UIView {
     }
     
     func getImageNav(rootViewController: UIViewController) -> ZLImageNavController {
-        let nav = ZLImageNavController(rootViewController: rootViewController)
+        nav = ZLImageNavController(rootViewController: rootViewController)
         nav.modalPresentationStyle = .fullScreen
         nav.selectImageBlock = { [weak self, weak nav] in
             self?.isSelectOriginal = nav?.isSelectedOriginal ?? false
