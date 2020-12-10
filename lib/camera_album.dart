@@ -60,6 +60,7 @@ class CameraAlbum {
       int maxSelectCount = 1,
       String taskTitle = "",
       String takeTitle = "",
+      String data,
       void Function(List<CameraAlbumModel>) onSelected,
       VoidCallback openCamera}) async {
     _channel.setMethodCallHandler((MethodCall call) async {
@@ -77,12 +78,15 @@ class CameraAlbum {
             for (int index = 0; index < originPaths.length; index++) {
               list.add(
                 CameraAlbumModel()
-                  ..originPath =
-                      originPaths?.isNotEmpty == true ? '${originPaths[index]}' : ''
-                  ..previewPath =
-                      previewPaths?.isNotEmpty == true ? '${previewPaths[index]}' : ''
-                  ..duration =
-                      durations?.isNotEmpty == true ? durations[index] as double : 0,
+                  ..originPath = originPaths?.isNotEmpty == true
+                      ? '${originPaths[index]}'
+                      : ''
+                  ..previewPath = previewPaths?.isNotEmpty == true
+                      ? '${previewPaths[index]}'
+                      : ''
+                  ..duration = durations?.isNotEmpty == true
+                      ? durations[index] as double
+                      : 0,
               );
             }
             onSelected(list);
@@ -102,6 +106,7 @@ class CameraAlbum {
       'maxSelectCount': maxSelectCount,
       'taskTitle': taskTitle,
       'takeTitle': takeTitle,
+      'data': data,
     });
   }
 
