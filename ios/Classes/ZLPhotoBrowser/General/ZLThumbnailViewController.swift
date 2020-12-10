@@ -219,6 +219,11 @@ class ZLThumbnailViewController: UIViewController {
         }
         // + TODO:修改源码
 //        let bottomViewH = showBottomView ? ZLLayout.bottomToolViewH : 0
+        if #available(iOS 11.0, *) {
+            insets.bottom = self.view.safeAreaInsets.bottom
+        } else {
+            // Fallback on earlier versions
+        }
         let showDGBottom = ZLPhotoConfiguration.default().bottomTakeTitle != ""
         let bottomViewH = showBottomView ? ZLLayout.bottomToolViewH : (showDGBottom ? 87 : 0)
         self.dagongBottomView.frame = CGRect(x: 0, y: self.view.frame.height-insets.bottom-bottomViewH, width: self.view.bounds.width, height: bottomViewH+insets.bottom)
