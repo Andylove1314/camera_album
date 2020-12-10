@@ -29,29 +29,36 @@ class _NewPagePageState extends State<NewPage> {
     _channel.setMethodCallHandler((call) {
       String method = call.method;
       Map arguments = call.arguments;
-      print('$method -> $arguments');
+      print('${_channel.name} -> $method -> $arguments');
       if (call.method == "selected") {
-        setState(() {
-          List originPaths = arguments["paths"];
-          List previewPaths = arguments["previewPaths"];
-          List durations = arguments["durations"];
+        int mediaType = arguments['mediaType'];
+        List originPaths = arguments["paths"];
+        List previewPaths = arguments["previewPaths"];
+        List durations = arguments["durations"];
 
-          List<CameraAlbumModel> list = [];
-          for (int index = 0; index < originPaths.length; index++) {
-            list.add(
-              CameraAlbumModel()
-                ..originPath =
-                    originPaths != null ? '${originPaths[index]}' : ''
-                ..previewPath =
-                    previewPaths != null ? '${previewPaths[index]}' : ''
-                ..duration = durations != null ? durations[index] as double : 0,
-            );
-          }
-          widget.mediaType = MediaType.image;
-          widget.paths = originPaths;
-          widget.previewPaths = previewPaths;
-          widget.durs = durations;
-        });
+        List<CameraAlbumModel> list = [];
+        for (int index = 0; index < originPaths.length; index++) {
+          list.add(
+            CameraAlbumModel()
+              ..originPath =
+                  originPaths?.isNotEmpty == true ? '${originPaths[index]}' : ''
+              ..previewPath = previewPaths?.isNotEmpty == true
+                  ? '${previewPaths[index]}'
+                  : ''
+              ..duration = durations?.isNotEmpty == true
+                  ? durations[index] as double
+                  : 0,
+          );
+        }
+        widget.mediaType = mediaType == 1
+            ? MediaType.image
+            : mediaType == 2
+                ? MediaType.video
+                : MediaType.unknown;
+        widget.paths = originPaths;
+        widget.previewPaths = previewPaths;
+        widget.durs = durations;
+        setState(() {});
       }
       return;
     });
@@ -61,34 +68,31 @@ class _NewPagePageState extends State<NewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          leading: BackButton(
-            onPressed: () async {
-              try {
-                await _channel.invokeMethod("pop");
-              } catch (e) {
-                Navigator.of(context).pop();
-              }
-            },
-          ),
+      appBar: AppBar(
+        leading: BackButton(
+          onPressed: () async {
+            try {
+              await _channel.invokeMethod("pop");
+            } catch (e) {
+              Navigator.of(context).pop();
+            }
+          },
         ),
-        body: Container(
-          child: SingleChildScrollView(
-            child: Column(
-              children: widget.mediaType == MediaType.video
-                  ? _getVideos()
-                  : _getImages(),
-            ),
-          ),
-        ));
-  }
-
-  List<Widget> _getVideos() {
-    var images = List<Widget>();
-    widget?.paths?.forEach((path) {
-      images.add(VideoPlay(file: File(path)));
-    });
-    return images;
+      ),
+      body: Container(
+        child: SingleChildScrollView(
+          child: widget.mediaType == MediaType.unknown
+              ? Text('unknown')
+              : Column(
+                  children: widget.mediaType == MediaType.video
+                      ? widget.paths
+                          .map((e) => VideoPlay(file: File(e)))
+                          .toList()
+                      : _getImages(),
+                ),
+        ),
+      ),
+    );
   }
 
   List<Widget> _getImages() {

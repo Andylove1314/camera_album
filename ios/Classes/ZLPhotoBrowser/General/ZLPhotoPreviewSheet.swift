@@ -75,9 +75,11 @@ public class ZLPhotoPreviewSheet: UIView {
     
     private var panCell: ZLThumbnailPhotoCell?
     
-    private weak var sender: UIViewController?
+    // + TODO:修改源码
+    public weak var sender: UIViewController?
     
-    private var nav: ZLImageNavController!
+    var nav: ZLImageNavController!
+    // + TODO:修改源码
     
     private var fetchImageQueue: OperationQueue = OperationQueue()
     
@@ -594,21 +596,7 @@ public class ZLPhotoPreviewSheet: UIView {
                 self?.arrDataSources.removeAll()
                 self?.hide()
                 // + TODO:修改源码
-                if ZLPhotoConfiguration.default().maxSelectCount > 1 {
-                    viewController?.dismiss(animated: true, completion: nil)
-                } else {
-                    let flutterViewController =
-                        FlutterViewController(engine: SwiftCameraAlbumPlugin.flutterEngine, nibName: nil, bundle: nil)
-                    self?.nav?.pushViewController(flutterViewController, animated: true)
-                    let channel = FlutterMethodChannel(name: "edit_page_channel", binaryMessenger: flutterViewController as! FlutterBinaryMessenger)
-                    channel.invokeMethod("selected", arguments: ["paths": originPaths, "previewPaths": previewPaths])
-                    channel.setMethodCallHandler { (call, result) in
-                        if call.method == "pop" {
-                            flutterViewController.navigationController?.popViewController(animated: true)
-                        }
-                    }
-                }
-                
+//                viewController?.dismiss(animated: true, completion: nil)
                 // + TODO:修改源码
             }
             self.fetchImageQueue.addOperation(operation)

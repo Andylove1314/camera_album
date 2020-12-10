@@ -78,11 +78,11 @@ class CameraAlbum {
               list.add(
                 CameraAlbumModel()
                   ..originPath =
-                      originPaths != null ? '${originPaths[index]}' : ''
+                      originPaths?.isNotEmpty == true ? '${originPaths[index]}' : ''
                   ..previewPath =
-                      previewPaths != null ? '${previewPaths[index]}' : ''
+                      previewPaths?.isNotEmpty == true ? '${previewPaths[index]}' : ''
                   ..duration =
-                      durations != null ? durations[index] as double : 0,
+                      durations?.isNotEmpty == true ? durations[index] as double : 0,
               );
             }
             onSelected(list);

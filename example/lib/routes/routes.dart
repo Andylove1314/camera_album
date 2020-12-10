@@ -36,5 +36,5 @@ var rootHandler = Handler(
 
 var editPageHandler = Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
-  return NewPage(MediaType.image, []);
+  return NewPage(MediaType.unknown, []);
 });

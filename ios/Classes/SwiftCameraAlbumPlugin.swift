@@ -213,6 +213,20 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
                 default:
                     break
                 }
+                if ZLPhotoConfiguration.default().maxSelectCount > 1 {
+                    ac.sender?.dismiss(animated: true, completion: nil)
+                } else {
+                    let flutterViewController =
+                        FlutterViewController(engine: SwiftCameraAlbumPlugin.flutterEngine, nibName: nil, bundle: nil)
+                    ac.nav?.pushViewController(flutterViewController, animated: true)
+                    let channel = FlutterMethodChannel(name: "edit_page_channel", binaryMessenger: flutterViewController as! FlutterBinaryMessenger)
+                    channel.invokeMethod("selected", arguments: ["mediaType": mediaType?.rawValue ?? 0, "paths": originPaths, "previewPaths": previewPaths, "durations": durations])
+                    channel.setMethodCallHandler { (call, result) in
+                        if call.method == "pop" {
+                            flutterViewController.navigationController?.popViewController(animated: true)
+                        }
+                    }
+                }
             }
         
             ac.cancelBlock = {
