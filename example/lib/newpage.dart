@@ -100,18 +100,28 @@ class _NewPagePageState extends State<NewPage> {
     if (widget.previewPaths != null) {
       widget?.previewPaths?.forEach((path) {
         images.add(Stack(
+          alignment: Alignment.center,
           children: [
             Image.file(File(path)),
-            Text("预览图"),
+            RaisedButton(
+              color: Colors.green,
+              child: Text("预览图"),
+              onPressed: () {},
+            ),
           ],
         ));
       });
     } else {
       widget?.paths?.forEach((path) {
         images.add(Stack(
+          alignment: Alignment.center,
           children: [
             Image.file(File(path)),
-            Text("源图"),
+            RaisedButton(
+              color: Colors.red,
+              child: Text("源图"),
+              onPressed: () {},
+            ),
           ],
         ));
       });

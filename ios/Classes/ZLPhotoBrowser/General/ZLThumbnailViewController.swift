@@ -179,6 +179,12 @@ class ZLThumbnailViewController: UIViewController {
         super.viewDidAppear(animated)
         self.isLayoutOK = true
         self.isPreviewPush = false
+        
+        // + TODO:修改源码
+        let nav = self.navigationController as? ZLImageNavController
+        nav?.arrSelectedModels.removeAll()
+        self.collectionView.reloadData()
+        // + TODO:修改源码
     }
     
     override func viewDidLayoutSubviews() {
