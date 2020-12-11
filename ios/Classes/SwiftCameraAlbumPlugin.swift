@@ -28,9 +28,10 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-    let rootViewController = UIApplication.shared.keyWindow!.rootViewController as! FlutterViewController
+    let keyWindow = UIApplication.shared.keyWindow!
     switch call.method {
     case "requestImagePreview":
+        MBProgressHUD.showAdded(to: keyWindow, animated: true)
         let params = call.arguments as! NSDictionary
         let identifier = params["identifier"] as! String
         if let image = Image.initWith(identifier: identifier) {
@@ -42,11 +43,14 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
                     try? FileManager.default.removeItem(atPath: path)
                     try? image.jpegData(compressionQuality: 1)?.write(to: URL(fileURLWithPath: path), options: .atomic)
                     result(path)
+                    DispatchQueue.main.async {
+                        MBProgressHUD.hide(for: keyWindow, animated: true)
+                    }
                 }
             }
         }
     case "requestImageFile":
-        MBProgressHUD.showAdded(to: rootViewController.view, animated: true)
+        MBProgressHUD.showAdded(to: keyWindow, animated: true)
         let params = call.arguments as! NSDictionary
         let identifier = params["identifier"] as! String
 //        let isOrigin = params["origin"] as? Bool ?? false
@@ -70,7 +74,7 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
                         try? imageData.write(to: URL(fileURLWithPath: path), options: .atomic)
                         result(path)
                         DispatchQueue.main.async {
-                            MBProgressHUD.hide(for: rootViewController.view, animated: true)
+                            MBProgressHUD.hide(for: keyWindow, animated: true)
                         }
                         }
                     }
@@ -84,14 +88,14 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
                         try? image.jpegData(compressionQuality: 0.9)?.write(to: URL(fileURLWithPath: path), options: .atomic)
                         result(path)
                         DispatchQueue.main.async {
-                            MBProgressHUD.hide(for: rootViewController.view, animated: true)
+                            MBProgressHUD.hide(for: keyWindow, animated: true)
                         }
                     }
                 }
             }
         }
     case "requestVideoFile":
-        MBProgressHUD.showAdded(to: rootViewController.view, animated: true)
+        MBProgressHUD.showAdded(to: keyWindow, animated: true)
         let params = call.arguments as! NSDictionary
         let identifier = params["identifier"] as! String
         if let video = Video.initWith(identifier: identifier) {
@@ -110,7 +114,7 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
                     result(path)
                 }
                 DispatchQueue.main.async {
-                    MBProgressHUD.hide(for: rootViewController.view, animated: true)
+                    MBProgressHUD.hide(for: keyWindow, animated: true)
                 }
             }
             }

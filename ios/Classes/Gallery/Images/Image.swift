@@ -32,7 +32,6 @@ extension Image {
     public func resolveTargetSize(_ size: CGSize?, completion: @escaping (UIImage?, [AnyHashable : Any]?) -> Void) {
       let options = PHImageRequestOptions()
       options.isNetworkAccessAllowed = true
-//      options.isSynchronous = true
       options.deliveryMode = .highQualityFormat
 
       let targetSize = size ?? CGSize(
@@ -64,7 +63,6 @@ extension Image {
     public func resolveImageData(completion: @escaping (Data?, [AnyHashable : Any]?) -> Void) {
       let options = PHImageRequestOptions()
       options.isNetworkAccessAllowed = true
-//      options.isSynchronous = true
         options.resizeMode = .fast
         PHImageManager.default().requestImageData(for: asset, options: options) { (imageData, dataUTI, orientation, info) in
             // TODO: - iOS 11 HEIF/HEIC图片转JPG
