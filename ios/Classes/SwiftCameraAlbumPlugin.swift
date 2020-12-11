@@ -1,6 +1,7 @@
 import Flutter
 import UIKit
 import Photos
+import MBProgressHUD
 
 private let kNwdnAsset = "nwdn_asset/"
 let tmpNwdn = NSTemporaryDirectory() + kNwdnAsset
@@ -27,6 +28,7 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+    let rootViewController = UIApplication.shared.keyWindow!.rootViewController as! FlutterViewController
     switch call.method {
     case "requestImagePreview":
         let params = call.arguments as! NSDictionary
@@ -44,6 +46,7 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
             }
         }
     case "requestImageFile":
+        MBProgressHUD.showAdded(to: rootViewController.view, animated: true)
         let params = call.arguments as! NSDictionary
         let identifier = params["identifier"] as! String
 //        let isOrigin = params["origin"] as? Bool ?? false
@@ -66,6 +69,9 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
                         try? FileManager.default.removeItem(atPath: path)
                         try? imageData.write(to: URL(fileURLWithPath: path), options: .atomic)
                         result(path)
+                        DispatchQueue.main.async {
+                            MBProgressHUD.hide(for: rootViewController.view, animated: true)
+                        }
                         }
                     }
             } else {
@@ -77,11 +83,15 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
                         try? FileManager.default.removeItem(atPath: path)
                         try? image.jpegData(compressionQuality: 0.9)?.write(to: URL(fileURLWithPath: path), options: .atomic)
                         result(path)
+                        DispatchQueue.main.async {
+                            MBProgressHUD.hide(for: rootViewController.view, animated: true)
+                        }
                     }
                 }
             }
         }
     case "requestVideoFile":
+        MBProgressHUD.showAdded(to: rootViewController.view, animated: true)
         let params = call.arguments as! NSDictionary
         let identifier = params["identifier"] as! String
         if let video = Video.initWith(identifier: identifier) {
@@ -98,6 +108,9 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
                     print(error);
                 } else {
                     result(path)
+                }
+                DispatchQueue.main.async {
+                    MBProgressHUD.hide(for: rootViewController.view, animated: true)
                 }
             }
             }

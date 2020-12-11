@@ -1,7 +1,9 @@
 PODS:
   - camera_album (0.0.1):
     - Flutter
+    - MBProgressHUD (~> 1.2.0)
   - Flutter (1.0.0)
+  - MBProgressHUD (1.2.0)
   - video_player (0.0.1):
     - Flutter
   - video_player_web (0.0.1):
@@ -12,6 +14,10 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - video_player (from `.symlinks/plugins/video_player/ios`)
   - video_player_web (from `.symlinks/plugins/video_player_web/ios`)
+
+SPEC REPOS:
+  trunk:
+    - MBProgressHUD
 
 EXTERNAL SOURCES:
   camera_album:
@@ -24,11 +30,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/video_player_web/ios"
 
 SPEC CHECKSUMS:
-  camera_album: cc54a8e15c8ca493e22c2397b0ae35f92c1bc1f6
+  camera_album: 030f37a5d18eaae07cda388675440fdfe680a11c
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
   video_player_web: da8cadb8274ed4f8dbee8d7171b420dedd437ce7
 
 PODFILE CHECKSUM: c34e2287a9ccaa606aeceab922830efb9a6ff69a
 
-COCOAPODS: 1.9.3
+COCOAPODS: 1.10.0

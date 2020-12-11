@@ -77,7 +77,7 @@ class _HomeState extends State<Home> {
                       showGridCamera: true,
                       showAlbum: true,
                       isMulti: true,
-                      multiCount: 5,
+                      multiCount: 1,
                       cute: false,
                       customCamera: true,
                       guides: [
