@@ -61,8 +61,9 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
 //            print(image.asset.pixelWidth)
 //            print("高度:")
 //            print(image.asset.pixelHeight)
+            let gif = (image.asset.value(forKey: "filename") as? String)?.hasSuffix("GIF") == true
             let isOrigin = image.asset.pixelWidth < limit && image.asset.pixelHeight < limit
-            if isOrigin {
+            if gif {
                 // 取原图
                 image.resolveImageData { (imageData, info) in
                     if let imageData = imageData, let info = info, let fileName = info["PHImageFileUTIKey"] as? String {
@@ -79,13 +80,14 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
                         }
                     }
             } else {
-                image.resolveTargetSize(CGSize(width: 4096, height: 4096)) { (image, info) in
+                let size = isOrigin ? PHImageManagerMaximumSize : CGSize(width: 4096, height: 4096)
+                image.resolveTargetSize(size) { (image, info) in
                     if let image = image, let _ = info, let fileName = identifier.components(separatedBy: "/").first {
                                             
                         let path = tmpNwdn + fileName + ".jpeg"
                     
                         try? FileManager.default.removeItem(atPath: path)
-                        try? image.jpegData(compressionQuality: 0.9)?.write(to: URL(fileURLWithPath: path), options: .atomic)
+                        try? image.jpegData(compressionQuality: 0.5)?.write(to: URL(fileURLWithPath: path), options: .atomic)
                         result(path)
                         DispatchQueue.main.async {
                             MBProgressHUD.hide(for: keyWindow, animated: true)
@@ -106,7 +108,7 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
                 try? FileManager.default.removeItem(atPath: path)
             
             let options = PHAssetResourceRequestOptions()
-                options.isNetworkAccessAllowed = true;
+                options.isNetworkAccessAllowed = true
             PHAssetResourceManager.default().writeData(for: assetResource, toFile: URL(fileURLWithPath: path), options: options) { (error) in
                 if let error = error {
                     print(error);
