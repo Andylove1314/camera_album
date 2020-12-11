@@ -64,6 +64,8 @@ extension Image {
       let options = PHImageRequestOptions()
       options.isNetworkAccessAllowed = true
         options.resizeMode = .fast
+        options.isSynchronous = true
+        options.deliveryMode = .highQualityFormat
         PHImageManager.default().requestImageData(for: asset, options: options) { (imageData, dataUTI, orientation, info) in
             // TODO: - iOS 11 HEIF/HEIC图片转JPG
             // https://www.jianshu.com/p/a63c7d5d98a9
