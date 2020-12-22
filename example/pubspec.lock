@@ -154,6 +154,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.2.19-nullsafety.2"
+  thrio:
+    dependency: "direct main"
+    description:
+      name: thrio
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.4.1"
   typed_data:
     dependency: transitive
     description:
