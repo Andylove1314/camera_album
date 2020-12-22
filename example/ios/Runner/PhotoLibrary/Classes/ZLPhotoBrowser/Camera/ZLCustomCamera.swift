@@ -84,7 +84,7 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
     
     var videoInput: AVCaptureDeviceInput?
     
-    var imageOutput: AVCapturePhotoOutput!
+//    var imageOutput: AVCapturePhotoOutput!
     
     var movieFileOutput: AVCaptureMovieFileOutput!
     
@@ -315,13 +315,13 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
         self.retakeBtn.zl_enlargeValidTouchArea(inset: 30)
         self.view.addSubview(self.retakeBtn)
         
-        let cameraCount = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: .video, position: .unspecified).devices.count
+//        let cameraCount = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: .video, position: .unspecified).devices.count
         self.switchCameraBtn = UIButton(type: .custom)
         self.switchCameraBtn.setImage(getImage("zl_toggle_camera"), for: .normal)
         self.switchCameraBtn.addTarget(self, action: #selector(switchCameraBtnClick), for: .touchUpInside)
         self.switchCameraBtn.adjustsImageWhenHighlighted = false
         self.switchCameraBtn.zl_enlargeValidTouchArea(inset: 30)
-        self.switchCameraBtn.isHidden = cameraCount <= 1
+//        self.switchCameraBtn.isHidden = cameraCount <= 1
         self.view.addSubview(self.switchCameraBtn)
         
         self.editBtn = UIButton(type: .custom)
@@ -417,7 +417,7 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
         // 相机画面输入流
         self.videoInput = input
         // 照片输出流
-        self.imageOutput = AVCapturePhotoOutput()
+//        self.imageOutput = AVCapturePhotoOutput()
         
         // 音频输入流
         var audioInput: AVCaptureDeviceInput?
@@ -444,9 +444,9 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
             self.session.addInput(ai)
         }
         // 将输出流添加到session
-        if self.session.canAddOutput(self.imageOutput) {
-            self.session.addOutput(self.imageOutput)
-        }
+//        if self.session.canAddOutput(self.imageOutput) {
+//            self.session.addOutput(self.imageOutput)
+//        }
         if self.session.canAddOutput(self.movieFileOutput) {
             self.session.addOutput(self.movieFileOutput)
         }
@@ -460,17 +460,17 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
     }
     
     func getCamera(position: AVCaptureDevice.Position) -> AVCaptureDevice? {
-        let devices = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: .video, position: position).devices
-        for device in devices {
-            if device.position == position {
-                return device
-            }
-        }
+//        let devices = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: .video, position: position).devices
+//        for device in devices {
+//            if device.position == position {
+//                return device
+//            }
+//        }
         return nil
     }
     
     func getMicrophone() -> AVCaptureDevice? {
-        return AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInMicrophone], mediaType: .audio, position: .unspecified).devices.first
+        return nil;//AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInMicrophone], mediaType: .audio, position: .unspecified).devices.first
     }
     
     func addNotification() {
@@ -516,9 +516,9 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
     
     func startHideTipsLabelTimer() {
         self.cleanTimer()
-        self.hideTipsTimer = Timer.scheduledTimer(withTimeInterval: 3, repeats: false, block: { (timer) in
-            self.hideTipsLabel(animate: true)
-        })
+//        self.hideTipsTimer = Timer.scheduledTimer(withTimeInterval: 3, repeats: false, block: { (timer) in
+//            self.hideTipsLabel(animate: true)
+//        })
     }
     
     func cleanTimer() {
@@ -622,16 +622,16 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
     
     // 点击拍照
     @objc func takePicture() {
-        let connection = self.imageOutput.connection(with: .video)
-        connection?.videoOrientation = self.orientation
-        if self.videoInput?.device.position == .front, connection?.isVideoMirroringSupported == true {
-            connection?.isVideoMirrored = true
-        }
-        let setting = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecJPEG])
-        if self.videoInput?.device.hasFlash == true {
-            setting.flashMode = ZLPhotoConfiguration.default().cameraFlashMode.avFlashMode
-        }
-        self.imageOutput.capturePhoto(with: setting, delegate: self)
+//        let connection = self.imageOutput.connection(with: .video)
+//        connection?.videoOrientation = self.orientation
+//        if self.videoInput?.device.position == .front, connection?.isVideoMirroringSupported == true {
+//            connection?.isVideoMirrored = true
+//        }
+//        let setting = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecJPEG])
+//        if self.videoInput?.device.hasFlash == true {
+//            setting.flashMode = ZLPhotoConfiguration.default().cameraFlashMode.avFlashMode
+//        }
+//        self.imageOutput.capturePhoto(with: setting, delegate: self)
     }
     
     // 长按录像
@@ -845,7 +845,7 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
     func playRecordVideo(fileUrl: URL) {
         self.recordVideoPlayerLayer?.isHidden = false
         let player = AVPlayer(url: fileUrl)
-        player.automaticallyWaitsToMinimizeStalling = false
+//        player.automaticallyWaitsToMinimizeStalling = false
         self.recordVideoPlayerLayer?.player = player
         player.play()
     }
@@ -860,22 +860,22 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
 
 extension ZLCustomCamera: AVCapturePhotoCaptureDelegate {
     
-    public func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photoSampleBuffer: CMSampleBuffer?, previewPhoto previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
-        if photoSampleBuffer == nil || error != nil {
-            zl_debugPrint("拍照失败 \(error?.localizedDescription ?? "")")
-            return
-        }
-        
-        if let data = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: photoSampleBuffer!, previewPhotoSampleBuffer: previewPhotoSampleBuffer) {
-            self.session.stopRunning()
-            self.takedImage = UIImage(data: data)?.fixOrientation()
-            self.takedImageView.image = self.takedImage
-            self.takedImageView.isHidden = false
-            self.resetSubViewStatus()
-        } else {
-            zl_debugPrint("拍照失败，data为空")
-        }
-    }
+//    public func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photoSampleBuffer: CMSampleBuffer?, previewPhoto previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
+//        if photoSampleBuffer == nil || error != nil {
+//            zl_debugPrint("拍照失败 \(error?.localizedDescription ?? "")")
+//            return
+//        }
+//
+//        if let data = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: photoSampleBuffer!, previewPhotoSampleBuffer: previewPhotoSampleBuffer) {
+//            self.session.stopRunning()
+//            self.takedImage = UIImage(data: data)?.fixOrientation()
+//            self.takedImageView.image = self.takedImage
+//            self.takedImageView.isHidden = false
+//            self.resetSubViewStatus()
+//        } else {
+//            zl_debugPrint("拍照失败，data为空")
+//        }
+//    }
     
 }
 

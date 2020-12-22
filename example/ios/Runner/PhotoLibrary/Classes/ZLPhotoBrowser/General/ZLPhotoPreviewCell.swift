@@ -356,7 +356,7 @@ class ZLLivePhotoPewviewCell: ZLPreviewBaseCell {
         return self.imageView.image
     }
     
-    var livePhotoView: PHLivePhotoView!
+//    var livePhotoView: PHLivePhotoView!
     
     var imageView: UIImageView!
     
@@ -389,14 +389,14 @@ class ZLLivePhotoPewviewCell: ZLPreviewBaseCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        self.livePhotoView.frame = self.bounds
+//        self.livePhotoView.frame = self.bounds
         self.resizeImageView(imageView: self.imageView, asset: self.model.asset)
     }
     
     private func setupUI() {
-        self.livePhotoView = PHLivePhotoView()
-        self.livePhotoView.contentMode = .scaleAspectFit
-        self.contentView.addSubview(self.livePhotoView)
+//        self.livePhotoView = PHLivePhotoView()
+//        self.livePhotoView.contentMode = .scaleAspectFit
+//        self.contentView.addSubview(self.livePhotoView)
         
         self.imageView = UIImageView()
         self.imageView.contentMode = .scaleAspectFit
@@ -404,7 +404,7 @@ class ZLLivePhotoPewviewCell: ZLPreviewBaseCell {
     }
     
     override func previewVCScroll() {
-        self.livePhotoView.stopPlayback()
+//        self.livePhotoView.stopPlayback()
     }
     
     func loadNormalImage() {
@@ -438,18 +438,18 @@ class ZLLivePhotoPewviewCell: ZLPreviewBaseCell {
         self.onFetchingLivePhoto = true
         self.fetchLivePhotoDone = false
         
-        self.livePhotoRequestID = ZLPhotoManager.fetchLivePhoto(for: self.model.asset, completion: { (livePhoto, info, isDegraded) in
-            if !isDegraded {
-                self.fetchLivePhotoDone = true
-                self.livePhotoView.livePhoto = livePhoto
-                self.startPlayLivePhoto()
-            }
-        })
+//        self.livePhotoRequestID = ZLPhotoManager.fetchLivePhoto(for: self.model.asset, completion: { (livePhoto, info, isDegraded) in
+//            if !isDegraded {
+//                self.fetchLivePhotoDone = true
+//                self.livePhotoView.livePhoto = livePhoto
+//                self.startPlayLivePhoto()
+//            }
+//        })
     }
     
     func startPlayLivePhoto() {
         self.imageView.isHidden = true
-        self.livePhotoView.startPlayback(with: .full)
+//        self.livePhotoView.startPlayback(with: .full)
     }
     
     override func animateImageFrame(convertTo view: UIView) -> CGRect {

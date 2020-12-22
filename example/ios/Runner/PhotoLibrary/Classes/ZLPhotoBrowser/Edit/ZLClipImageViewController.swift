@@ -810,10 +810,10 @@ class ZLClipImageViewController: UIViewController {
     
     func startTimer() {
         self.cleanTimer()
-        self.resetTimer = Timer.scheduledTimer(withTimeInterval: 0.8, repeats: false, block: { (timer) in
-            self.cleanTimer()
-            self.endEditing()
-        })
+//        self.resetTimer = Timer.scheduledTimer(withTimeInterval: 0.8, repeats: false, block: { (timer) in
+//            self.cleanTimer()
+//            self.endEditing()
+//        })
     }
     
     func cleanTimer() {

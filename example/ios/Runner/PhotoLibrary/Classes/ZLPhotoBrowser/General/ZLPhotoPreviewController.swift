@@ -341,8 +341,8 @@ class ZLPhotoPreviewController: UIViewController {
             }
             if cell is ZLVideoPreviewCell {
                 (cell as! ZLVideoPreviewCell).pauseWhileTransition()
-            } else if cell is ZLLivePhotoPewviewCell {
-                (cell as! ZLLivePhotoPewviewCell).livePhotoView.stopPlayback()
+//            } else if cell is ZLLivePhotoPewviewCell {
+//                (cell as! ZLLivePhotoPewviewCell).livePhotoView.stopPlayback()
             } else if cell is ZLGifPreviewCell {
                 (cell as! ZLGifPreviewCell).pauseGif()
             }

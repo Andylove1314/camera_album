@@ -303,17 +303,17 @@ public class ZLPhotoManager: NSObject {
         }
     }
     
-    class func fetchLivePhoto(for asset: PHAsset, completion: @escaping ( (PHLivePhoto?, [AnyHashable: Any]?, Bool) -> Void )) -> PHImageRequestID {
-        let option = PHLivePhotoRequestOptions()
-        option.version = .current
-        option.deliveryMode = .opportunistic
-        option.isNetworkAccessAllowed = true
-        
-        return PHImageManager.default().requestLivePhoto(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFit, options: option) { (livePhoto, info) in
-            let isDegraded = (info?[PHImageResultIsDegradedKey] as? Bool ?? false)
-            completion(livePhoto, info, isDegraded)
-        }
-    }
+//    class func fetchLivePhoto(for asset: PHAsset, completion: @escaping ( (PHLivePhoto?, [AnyHashable: Any]?, Bool) -> Void )) -> PHImageRequestID {
+//        let option = PHLivePhotoRequestOptions()
+//        option.version = .current
+//        option.deliveryMode = .opportunistic
+//        option.isNetworkAccessAllowed = true
+//        
+//        return PHImageManager.default().requestLivePhoto(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFit, options: option) { (livePhoto, info) in
+//            let isDegraded = (info?[PHImageResultIsDegradedKey] as? Bool ?? false)
+//            completion(livePhoto, info, isDegraded)
+//        }
+//    }
     
     class func fetchVideo(for asset: PHAsset, progress: ( (CGFloat, Error?, UnsafeMutablePointer<ObjCBool>, [AnyHashable : Any]?) -> Void )? = nil, completion: @escaping ( (AVPlayerItem?, [AnyHashable: Any]?, Bool) -> Void )) -> PHImageRequestID {
         let option = PHVideoRequestOptions()

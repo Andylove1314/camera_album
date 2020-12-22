@@ -35,7 +35,7 @@ class ZLCameraCell: UICollectionViewCell {
     
     var videoInput: AVCaptureDeviceInput?
     
-    var photoOutput: AVCapturePhotoOutput?
+//    var photoOutput: AVCapturePhotoOutput?
     
     var previewLayer: AVCaptureVideoPreviewLayer?
     
@@ -101,9 +101,9 @@ class ZLCameraCell: UICollectionViewCell {
         if let input = self.videoInput {
             self.session?.removeInput(input)
         }
-        if let output = self.photoOutput {
-            self.session?.removeOutput(output)
-        }
+//        if let output = self.photoOutput {
+//            self.session?.removeOutput(output)
+//        }
         self.session = nil
         self.previewLayer?.removeFromSuperlayer()
         self.previewLayer = nil
@@ -115,16 +115,16 @@ class ZLCameraCell: UICollectionViewCell {
             return
         }
         self.videoInput = input
-        self.photoOutput = AVCapturePhotoOutput()
+//        self.photoOutput = AVCapturePhotoOutput()
         
         self.session = AVCaptureSession()
         
         if self.session?.canAddInput(input) == true {
             self.session?.addInput(input)
         }
-        if self.session?.canAddOutput(self.photoOutput!) == true {
-            self.session?.addOutput(self.photoOutput!)
-        }
+//        if self.session?.canAddOutput(self.photoOutput!) == true {
+//            self.session?.addOutput(self.photoOutput!)
+//        }
         
         self.previewLayer = AVCaptureVideoPreviewLayer(session: self.session!)
         self.contentView.layer.masksToBounds = true
@@ -136,12 +136,12 @@ class ZLCameraCell: UICollectionViewCell {
     }
     
     func backCamera() -> AVCaptureDevice? {
-        let devices = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: .video, position: .back).devices
-        for device in devices {
-            if device.position == .back {
-                return device
-            }
-        }
+//        let devices = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: .video, position: .back).devices
+//        for device in devices {
+//            if device.position == .back {
+//                return device
+//            }
+//        }
         return nil
     }
     
