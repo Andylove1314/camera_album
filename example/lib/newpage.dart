@@ -5,6 +5,7 @@ import 'package:camera_album/camera_album.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:thrio/thrio.dart';
 import 'package:video_player/video_player.dart';
 
 class NewPage extends StatefulWidget {
@@ -72,7 +73,7 @@ class _NewPagePageState extends State<NewPage> {
         leading: BackButton(
           onPressed: () async {
             try {
-              await _channel.invokeMethod("pop");
+              ThrioNavigator.pop();
             } catch (e) {
               Navigator.of(context).pop();
             }

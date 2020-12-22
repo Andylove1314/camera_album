@@ -85,13 +85,11 @@ let tmpNwdn = NSTemporaryDirectory() + kNwdnAsset
                 ac.selectImageBlock = { (images, assets, isOriginal, originPaths, previewPaths, durations) in
                     debugPrint("\(images)  -  \(assets) - \(isOriginal)")
                     
-                    if ZLPhotoConfiguration.default().maxSelectCount > 1 {
-                        ac.sender?.dismiss(animated: true, completion: nil)
-                    } else {
-                        ThrioNavigator.pushUrl("/image_edit", params: ["data": data, "mediaType": mediaType?.rawValue ?? 0, "paths": originPaths, "previewPaths": previewPaths, "durations": durations]) { (ok) in
-                            print("image_edit_poppedResult:\(ok)")
-                        }
-
+//                    if ZLPhotoConfiguration.default().maxSelectCount > 1 {
+//                        ac.sender?.dismiss(animated: true, completion: nil)
+//                    }
+                    ThrioNavigator.pushUrl("/image_edit", params: ["data": data, "mediaType": mediaType?.rawValue ?? 0, "paths": originPaths, "previewPaths": previewPaths, "durations": durations]) { (ok) in
+                        print("image_edit_poppedResult:\(ok)")
                     }
                 }
             

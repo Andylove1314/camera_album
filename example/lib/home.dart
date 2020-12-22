@@ -3,7 +3,6 @@ import 'package:camera_album/camera_album.dart';
 import 'package:camera_album_example/app_photo_library.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:thrio/thrio.dart';
 
 import 'android_camera_widget.dart';
 import 'newpage.dart';
@@ -34,24 +33,37 @@ class _HomeState extends State<Home> {
               AppPhotoLibrary.showPhotoLibrary(
                   taskTitle: "照片单选",
                   takeTitle: "Take a picture",
-                  onSelected: (List<CameraAlbumModel> list) {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                          return NewPage(
-                            MediaType.image,
-                            list.map((e) => e.originPath).toList(),
-                            previewPaths: list.map((e) => e.previewPath).toList(),
-                          );
-                        }));
-                  },
-                  openCamera: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                          return CameraDemo(
-                            isRecordVideo: false,
-                          );
-                        }));
-                  });
+                  );
+            },
+          ),
+          CupertinoButton(
+            child: Row(
+              children: [
+                Icon(Icons.add_photo_alternate),
+                Text('Thrio multiple picture'),
+              ],
+            ),
+            onPressed: () async {
+              AppPhotoLibrary.showPhotoLibrary(
+                maxSelectCount: 9,
+                  taskTitle: "照片多选",
+                  takeTitle: "pictures",
+                  );
+            },
+          ),
+          CupertinoButton(
+            child: Row(
+              children: [
+                Icon(Icons.wb_sunny),
+                Text('Thrio single video'),
+              ],
+            ),
+            onPressed: () async {
+              AppPhotoLibrary.showPhotoLibrary(
+                mediaType: MediaType.video,
+                taskTitle: "视频单选",
+                takeTitle: "Take a video",
+              );
             },
           ),
           CupertinoButton(

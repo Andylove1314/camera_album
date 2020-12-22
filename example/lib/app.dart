@@ -1,7 +1,9 @@
+import 'package:camera_album/camera_album.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:thrio/thrio.dart';
 
+import 'newpage.dart';
 import 'routes/routes.dart';
 import 'package:fluro/fluro.dart' as fluro;
 
@@ -58,15 +60,38 @@ class ImageEditModule
   @override
   void onPageBuilderSetting(ModuleContext moduleContext) {
     pageBuilder = (settings) {
-      return Scaffold(
-        appBar: AppBar(
-          leading: BackButton(
-            onPressed: () {
-              ThrioNavigator.pop();
-            },
-          ),
-        ),
-        backgroundColor: Colors.blue,
+
+      Map arguments = settings.arguments;
+      Map params = arguments["params"];
+      int mediaType = params['mediaType'];
+      List originPaths = params["paths"];
+      List previewPaths = params["previewPaths"];
+      List durations = params["durations"];
+
+      List<CameraAlbumModel> list = [];
+      for (int index = 0; index < originPaths.length; index++) {
+        list.add(
+          CameraAlbumModel()
+            ..originPath = originPaths?.isNotEmpty == true
+                ? '${originPaths[index]}'
+                : ''
+            ..previewPath = previewPaths?.isNotEmpty == true
+                ? '${previewPaths[index]}'
+                : ''
+            ..duration = durations?.isNotEmpty == true
+                ? durations[index] as double
+                : 0,
+        );
+      }
+
+      return NewPage(
+        mediaType == 1
+            ? MediaType.image
+            : mediaType == 2
+            ? MediaType.video
+            : MediaType.unknown,
+        list.map((e) => e.originPath).toList(),
+        previewPaths: list.map((e) => e.previewPath).toList(),
       );
     };
   }
