@@ -1,5 +1,5 @@
 import 'package:camera_album/camera_album.dart';
-import 'package:camera_album_example/main.dart';
+import 'package:camera_album_example/home.dart';
 import 'package:camera_album_example/newpage.dart';
 import 'package:flutter/material.dart' hide Router;
 

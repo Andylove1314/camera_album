@@ -157,7 +157,7 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
         let takeTitle = (params["takeTitle"] as? String) ?? ""
         let data = params["data"]
         
-        let controller = UIApplication.shared.keyWindow?.rootViewController as? FlutterViewController
+        let controller = UIApplication.shared.keyWindow?.rootViewController
 
         if let sender = controller {
             
@@ -220,6 +220,9 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
                     let flutterViewController =
                         FlutterViewController(engine: SwiftCameraAlbumPlugin.flutterEngine, nibName: nil, bundle: nil)
                     ac.nav?.pushViewController(flutterViewController, animated: true)
+//                    ThrioNavigator.pushUrl("/edit_page", params: 1) { (ok) in
+//                        print(ok)
+//                    }
                     let channel = FlutterMethodChannel(name: "edit_page_channel", binaryMessenger: flutterViewController as! FlutterBinaryMessenger)
                     channel.invokeMethod("selected", arguments: ["data": data, "mediaType": mediaType?.rawValue ?? 0, "paths": originPaths, "previewPaths": previewPaths, "durations": durations])
                     channel.setMethodCallHandler { (call, result) in

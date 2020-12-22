@@ -2,12 +2,15 @@ PODS:
   - camera_album (0.0.1):
     - Flutter
   - Flutter (1.0.0)
+  - thrio (1.4.1):
+    - Flutter
   - video_player (0.0.1):
     - Flutter
 
 DEPENDENCIES:
   - camera_album (from `.symlinks/plugins/camera_album/ios`)
   - Flutter (from `Flutter`)
+  - thrio (from `.symlinks/plugins/thrio/ios`)
   - video_player (from `.symlinks/plugins/video_player/ios`)
 
 EXTERNAL SOURCES:
@@ -15,12 +18,15 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/camera_album/ios"
   Flutter:
     :path: Flutter
+  thrio:
+    :path: ".symlinks/plugins/thrio/ios"
   video_player:
     :path: ".symlinks/plugins/video_player/ios"
 
 SPEC CHECKSUMS:
   camera_album: 301408376a9766d2cd372ed1928cc228b39c6f63
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  thrio: 4e28d859bf646ec1a14d7dd0442f923bce8c86c7
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
 
 PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
