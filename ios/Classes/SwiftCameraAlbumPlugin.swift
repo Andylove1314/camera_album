@@ -9,8 +9,6 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
     
   static var channel: FlutterMethodChannel!
     
-    static var flutterEngine = FlutterEngine(name: "showPhotoLibraryEngine")
-    
   public static func register(with registrar: FlutterPluginRegistrar) {
     channel = FlutterMethodChannel(name: "flutter/camera_album", binaryMessenger: registrar.messenger())
     
@@ -23,7 +21,6 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
     
     let instance = SwiftCameraAlbumPlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
-    SwiftCameraAlbumPlugin.flutterEngine.run(withEntrypoint: nil, initialRoute: "/editPage")
     
     let _ = delete(atPath: tmpNwdn)
     let _ = creatDir(atPath: tmpNwdn)
@@ -141,110 +138,6 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
         }
         }
     }
-    case "showPhotoLibrary":
-        /*
-         enum MediaType {
-           unknown, // 0
-           image, // 1
-           video, // 2
-           audio, // 3
-         }
-         */
-        let params = call.arguments as! NSDictionary
-        let maxSelectCount = params["maxSelectCount"] as! Int
-        let mediaType = PHAssetMediaType(rawValue: (params["mediaType"] as! Int))
-        let taskTitle = (params["taskTitle"] as? String) ?? ""
-        let takeTitle = (params["takeTitle"] as? String) ?? ""
-        let data = params["data"]
-        
-        let controller = UIApplication.shared.keyWindow?.rootViewController
-
-        if let sender = controller {
-            
-            let deploy = ZLPhotoThemeColorDeploy.default()
-            deploy.thumbnailBgColor = UIColor.white
-            deploy.albumListBgColor = UIColor.white
-            deploy.albumListTitleColor = UIColor.black
-            deploy.separatorColor = UIColor.clear
-            
-            let config = ZLPhotoConfiguration.default()
-            config.navTaskTitle = taskTitle
-            config.bottomTakeTitle = takeTitle
-            config.style = .dagongAlbumList
-            config.statusBarStyle = .default
-            config.themeColorDeploy = deploy
-            config.allowEditImage = false
-            config.allowTakePhotoInLibrary = false
-            config.maxSelectCount = maxSelectCount
-            config.showSelectBtnWhenSingleSelect = false
-            config.allowSelectOriginal = false
-            config.allowPreviewPhotos = false
-            config.showSelectedPhotoPreview = false
-            config.showPreviewButtonInAlbum = false
-            config.allowMixSelect = false
-            config.sortAscending = false
-            config.maxSelectVideoDuration = 60*60*24
-            ZLPhotoConfiguration.default().timeout = 120
-            if maxSelectCount == 1 {
-                config.showSelectedIndex = false
-                config.allowSlideSelect = false
-            } else {
-                config.showSelectedIndex = true
-                config.allowSlideSelect = true
-            }
-            switch mediaType {
-            case .image:
-                config.allowSelectVideo = false
-                config.allowSelectImage = true
-            case .video:
-                config.allowSelectVideo = true
-                config.allowSelectImage = false
-            default:
-                break
-            }
-            let ac = ZLPhotoPreviewSheet()
-            ac.selectImageBlock = { (images, assets, isOriginal, originPaths, previewPaths, durations) in
-                debugPrint("\(images)  -  \(assets) - \(isOriginal)")
-                
-                switch mediaType {
-                case .image:
-                    SwiftCameraAlbumPlugin.channel.invokeMethod("onSelectedHandler", arguments: ["paths": originPaths, "previewPaths": previewPaths])
-                case .video:
-                    SwiftCameraAlbumPlugin.channel.invokeMethod("onSelectedHandler", arguments: ["paths": originPaths, "durations": durations])
-                default:
-                    break
-                }
-                if ZLPhotoConfiguration.default().maxSelectCount > 1 {
-                    ac.sender?.dismiss(animated: true, completion: nil)
-                } else {
-                    let flutterViewController =
-                        FlutterViewController(engine: SwiftCameraAlbumPlugin.flutterEngine, nibName: nil, bundle: nil)
-                    ac.nav?.pushViewController(flutterViewController, animated: true)
-                    let channel = FlutterMethodChannel(name: "edit_page_channel", binaryMessenger: flutterViewController as! FlutterBinaryMessenger)
-                    channel.invokeMethod("selected", arguments: ["data": data, "mediaType": mediaType?.rawValue ?? 0, "paths": originPaths, "previewPaths": previewPaths, "durations": durations])
-                    channel.setMethodCallHandler { (call, result) in
-                        if call.method == "pop" {
-                            flutterViewController.navigationController?.popViewController(animated: true)
-                        }
-                    }
-                }
-            }
-        
-            ac.cancelBlock = {
-                debugPrint("cancel select")
-            }
-            ac.selectImageRequestErrorBlock = { (errorAssets, errorIndexs) in
-                debugPrint("fetch error assets: \(errorAssets), error indexs: \(errorIndexs)")
-            }
-            ac.showPhotoLibrary(sender: sender)
-        } else {
-            result([])
-        }
-    case "pop":
-        let controller = UIApplication.shared.keyWindow?.rootViewController as? FlutterViewController
-        controller?.dismiss(animated: true, completion: {
-            
-        })
     default: break
     }
   }
