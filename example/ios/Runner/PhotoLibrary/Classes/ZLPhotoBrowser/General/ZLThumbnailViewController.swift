@@ -170,6 +170,9 @@ class ZLThumbnailViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        thrio_hidesNavigationBar = true
+        
         self.navigationController?.navigationBar.isHidden = true
         self.collectionView.reloadItems(at: self.collectionView.indexPathsForVisibleItems)
         self.resetBottomToolBtnStatus()
