@@ -607,7 +607,9 @@ public class ZLPhotoPreviewSheet: UIView {
         ZLPhotoManager.getCameraRollAlbum(allowSelectImage: ZLPhotoConfiguration.default().allowSelectImage, allowSelectVideo: ZLPhotoConfiguration.default().allowSelectVideo) { [weak self] (cameraRoll) in
             guard let `self` = self else { return }
             let nav: ZLImageNavController
-            if ZLPhotoConfiguration.default().style == .embedAlbumList {
+            // + TODO:修改源码
+            if ZLPhotoConfiguration.default().style == .embedAlbumList || ZLPhotoConfiguration.default().style == .dagongAlbumList {
+            // + TODO:修改源码
                 let tvc = ZLThumbnailViewController(albumList: cameraRoll)
                 nav = self.getImageNav(rootViewController: tvc)
             } else {
