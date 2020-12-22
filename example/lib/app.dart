@@ -127,21 +127,21 @@ class ImageEditModule
 
   @override
   void didAppear(RouteSettings routeSettings) {
-    ThrioLogger.v('biz1 didAppear: $routeSettings');
+    ThrioLogger.v('image_edit didAppear: $routeSettings');
   }
 
   @override
   void didDisappear(RouteSettings routeSettings) {
-    ThrioLogger.v('biz1 didDisappear: $routeSettings');
+    ThrioLogger.v('image_edit didDisappear: $routeSettings');
   }
 
   @override
   void willAppear(RouteSettings routeSettings) {
-    ThrioLogger.v('biz1 willAppear: $routeSettings');
+    ThrioLogger.v('image_edit willAppear: $routeSettings');
   }
 
   @override
   void willDisappear(RouteSettings routeSettings) {
-    ThrioLogger.v('biz1 willDisappear: $routeSettings');
+    ThrioLogger.v('image_edit willDisappear: $routeSettings');
   }
 }
