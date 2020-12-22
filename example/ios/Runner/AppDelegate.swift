@@ -88,8 +88,8 @@ let tmpNwdn = NSTemporaryDirectory() + kNwdnAsset
                     if ZLPhotoConfiguration.default().maxSelectCount > 1 {
                         ac.sender?.dismiss(animated: true, completion: nil)
                     } else {
-                        ThrioNavigator.pushUrl("/edit_page", params: ["data": data, "mediaType": mediaType?.rawValue ?? 0, "paths": originPaths, "previewPaths": previewPaths, "durations": durations]) { (ok) in
-                            print("edit_page_poppedResult")
+                        ThrioNavigator.pushUrl("/image_edit", params: ["data": data, "mediaType": mediaType?.rawValue ?? 0, "paths": originPaths, "previewPaths": previewPaths, "durations": durations]) { (ok) in
+                            print("image_edit_poppedResult:\(ok)")
                         }
 
                     }

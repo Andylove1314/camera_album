@@ -36,7 +36,7 @@ class _MyAppState extends State<MyApp> {
 class Module with ThrioModule {
   @override
   void onModuleRegister(ModuleContext moduleContext) {
-    registerModule(ModuleEditPage(), moduleContext);
+    registerModule(ImageEditModule(), moduleContext);
   }
 
   @override
@@ -45,7 +45,7 @@ class Module with ThrioModule {
   }
 }
 
-class ModuleEditPage
+class ImageEditModule
     with
         ThrioModule,
         ModulePageBuilder,
@@ -53,7 +53,7 @@ class ModuleEditPage
         ModuleRouteTransitionsBuilder,
         NavigatorPageObserver {
   @override
-  String get key => "edit_page";
+  String get key => "image_edit";
 
   @override
   void onPageBuilderSetting(ModuleContext moduleContext) {
