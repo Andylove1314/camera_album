@@ -59,7 +59,7 @@
 		FE3555C22591E15800C91951 /* ZLTextStickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE3555952591E15800C91951 /* ZLTextStickerView.swift */; };
 		FE3555C32591E15800C91951 /* ZLEditVideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE3555962591E15800C91951 /* ZLEditVideoViewController.swift */; };
 		FE3555C42591E15800C91951 /* ZLPhotoBrowser.bundle in Resources */ = {isa = PBXBuildFile; fileRef = FE3555982591E15800C91951 /* ZLPhotoBrowser.bundle */; };
-		FE3555C62591E23200C91951 /* ImageFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE3555C52591E23200C91951 /* ImageFormat.swift */; };
+		FE84017E2592F0ED0036F1F1 /* ImageFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE84017D2592F0ED0036F1F1 /* ImageFormat.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -139,7 +139,7 @@
 		FE3555952591E15800C91951 /* ZLTextStickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZLTextStickerView.swift; sourceTree = "<group>"; };
 		FE3555962591E15800C91951 /* ZLEditVideoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZLEditVideoViewController.swift; sourceTree = "<group>"; };
 		FE3555982591E15800C91951 /* ZLPhotoBrowser.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ZLPhotoBrowser.bundle; sourceTree = "<group>"; };
-		FE3555C52591E23200C91951 /* ImageFormat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ImageFormat.swift; path = ../../../../../ios/Classes/Gallery/Images/ImageFormat.swift; sourceTree = "<group>"; };
+		FE84017D2592F0ED0036F1F1 /* ImageFormat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageFormat.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -239,7 +239,7 @@
 		FE35555D2591E15800C91951 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				FE3555C52591E23200C91951 /* ImageFormat.swift */,
+				FE84017D2592F0ED0036F1F1 /* ImageFormat.swift */,
 				FE35555E2591E15800C91951 /* ZLPhotoBrowser */,
 			);
 			path = Classes;
@@ -588,7 +588,7 @@
 				FE3555A32591E15800C91951 /* ZLAlbumListCell.swift in Sources */,
 				FE3555BF2591E15800C91951 /* ZLImageStickerView.swift in Sources */,
 				FE3555BE2591E15800C91951 /* ZLClipImageViewController.swift in Sources */,
-				FE3555C62591E23200C91951 /* ImageFormat.swift in Sources */,
+				FE84017E2592F0ED0036F1F1 /* ImageFormat.swift in Sources */,
 				FE3555B22591E15800C91951 /* ZLClipImageDismissAnimatedTransition.swift in Sources */,
 				FE3555B72591E15800C91951 /* Int+ZLPhotoBrowser.swift in Sources */,
 				FE3555B42591E15800C91951 /* UIControl+ZLPhotoBrowser.swift in Sources */,
