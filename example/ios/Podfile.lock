@@ -2,22 +2,33 @@ PODS:
   - camera_album (0.0.1):
     - Flutter
   - Flutter (1.0.0)
-  - thrio (1.4.1):
+  - image_cropper (0.0.3):
     - Flutter
+    - TOCropViewController (~> 2.5.4)
+  - thrio (1.4.2):
+    - Flutter
+  - TOCropViewController (2.5.5)
   - video_player (0.0.1):
     - Flutter
 
 DEPENDENCIES:
   - camera_album (from `.symlinks/plugins/camera_album/ios`)
   - Flutter (from `Flutter`)
+  - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
   - thrio (from `.symlinks/plugins/thrio/ios`)
   - video_player (from `.symlinks/plugins/video_player/ios`)
+
+SPEC REPOS:
+  trunk:
+    - TOCropViewController
 
 EXTERNAL SOURCES:
   camera_album:
     :path: ".symlinks/plugins/camera_album/ios"
   Flutter:
     :path: Flutter
+  image_cropper:
+    :path: ".symlinks/plugins/image_cropper/ios"
   thrio:
     :path: ".symlinks/plugins/thrio/ios"
   video_player:
@@ -26,7 +37,9 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   camera_album: 301408376a9766d2cd372ed1928cc228b39c6f63
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  thrio: 4e28d859bf646ec1a14d7dd0442f923bce8c86c7
+  image_cropper: c8f9b4157933c7bb965a66d1c5e6c8fd408c6eb4
+  thrio: d6d9f7bffb9eeb051376280dc357c093495391e8
+  TOCropViewController: da59f531f8ac8a94ef6d6c0fc34009350f9e8bfe
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
 
 PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c

@@ -5,6 +5,7 @@ import 'package:camera_album/camera_album.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:thrio/thrio.dart';
 import 'package:video_player/video_player.dart';
 
@@ -107,7 +108,9 @@ class _NewPagePageState extends State<NewPage> {
             RaisedButton(
               color: Colors.green,
               child: Text("预览图"),
-              onPressed: () {},
+              onPressed: () {
+                crop(path);
+              },
             ),
           ],
         ));
@@ -121,13 +124,38 @@ class _NewPagePageState extends State<NewPage> {
             RaisedButton(
               color: Colors.red,
               child: Text("源图"),
-              onPressed: () {},
+              onPressed: () {
+                crop(path);
+              },
             ),
           ],
         ));
       });
     }
     return images;
+  }
+
+  Future<void> crop(String sourcePath) async {
+    print("crop sourcePath: $sourcePath");
+    File croppedFile;
+    try{
+      croppedFile = await ImageCropper.cropImage(
+        sourcePath: sourcePath,
+        androidUiSettings: AndroidUiSettings(
+          toolbarColor: Colors.white,
+          statusBarColor: Colors.white,
+          toolbarTitle:
+          'plugin_pic_crop_title}',
+          toolbarWidgetColor: Color(0xff333333),
+        ),
+      );
+    }catch(e){
+//                          NwdnToast.tip('$e',crossPage: true);
+    }
+    //剪切图片
+    if (croppedFile != null) {
+      print("croppedFile: $croppedFile");
+    }
   }
 }
 
