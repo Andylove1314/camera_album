@@ -38,6 +38,21 @@ class GalleryView: UIView {
     
     var appBarHeight: CGFloat = 0
     
+    @available(iOS 14, *)
+    var showAddPhotoCell: Bool {
+        PHPhotoLibrary.authorizationStatus(for: .readWrite) == .limited
+    }
+    
+    /// 添加图片按钮的数量
+    /// the count of addPhotoButton & cameraButton
+    private var offset: Int {
+        if #available(iOS 14, *) {
+            return self.showAddPhotoCell ? 1 : 0
+        } else {
+            return 0
+        }
+    }
+    
     convenience init(frame: CGRect, mediaType: PHAssetMediaType, limit: Int, appBarHeight: CGFloat) {
         self.init(frame: frame)
         self.mediaType = mediaType
@@ -48,6 +63,10 @@ class GalleryView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
+        if #available(iOS 14.0, *), PHPhotoLibrary.authorizationStatus(for: .readWrite) == .limited {
+            PHPhotoLibrary.shared().register(self)
+        }
         
         arrowButton = ArrowButton()
         arrowButton.isHidden = true
@@ -70,6 +89,7 @@ class GalleryView: UIView {
         
         collectionView.register(ImageCell.self, forCellWithReuseIdentifier: String(describing: ImageCell.self))
         collectionView.register(VideoCell.self, forCellWithReuseIdentifier: String(describing: VideoCell.self))
+        collectionView.register(GalleryAddPhotoCell.self, forCellWithReuseIdentifier: "GalleryAddPhotoCell")
         
         addSubview(collectionView)
         collectionView.g_pin(on: .top, constant: kTop)
@@ -191,11 +211,19 @@ extension GalleryView: UICollectionViewDataSource, UICollectionViewDelegateFlowL
   // MARK: - UICollectionViewDataSource
 
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return imageItems.count
+    return imageItems.count + self.offset
   }
 
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-      let item = imageItems[(indexPath as NSIndexPath).item]
+    if #available(iOS 14, *) {
+        if self.showAddPhotoCell && indexPath.row == 0 {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GalleryAddPhotoCell", for: indexPath) as? GalleryAddPhotoCell else {
+                return UICollectionViewCell()
+            }
+            return cell
+        }
+    }
+    let item = imageItems[(indexPath as NSIndexPath).item - self.offset]
     if let item = item as? Video {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: VideoCell.self), for: indexPath)
         as! VideoCell
@@ -221,7 +249,14 @@ extension GalleryView: UICollectionViewDataSource, UICollectionViewDelegateFlowL
   }
 
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-     let item = imageItems[(indexPath as NSIndexPath).item]
+    if #available(iOS 14, *) {
+        if let viewController = UIApplication.shared.keyWindow?.rootViewController, collectionView.cellForItem(at: indexPath) is GalleryAddPhotoCell {
+            PHPhotoLibrary.shared().presentLimitedLibraryPicker(from: viewController)
+            return
+        }
+    }
+    
+    let item = imageItems[(indexPath as NSIndexPath).item - self.offset]
      if limit == 1 {
  //        item.resolve { (image, info) in
  //            guard let info = info else { return }
@@ -264,7 +299,7 @@ extension GalleryView: UICollectionViewDataSource, UICollectionViewDelegateFlowL
   }
 
   func configureFrameView(_ cell: ImageCell, indexPath: IndexPath) {
-    let item = imageItems [(indexPath as NSIndexPath).item]
+    let item = imageItems[(indexPath as NSIndexPath).item - self.offset]
     
     if limit > 1 {
         cell.checkImageView.isHidden = false
@@ -281,4 +316,45 @@ extension GalleryView: UICollectionViewDataSource, UICollectionViewDelegateFlowL
       cell.checkImageView.image = GalleryBundle.image("gallery_muilt_nomal_icon")
     }
   }
+}
+
+extension GalleryView: PHPhotoLibraryChangeObserver {
+    
+    public func photoLibraryDidChange(_ changeInstance: PHChange) {
+//        PHPhotoLibrary.shared().unregisterChangeObserver(self)
+        DispatchQueue.main.async {
+            self.check()
+        }
+    }
+    
+}
+
+class GalleryAddPhotoCell: UICollectionViewCell {
+    var imageView: UIImageView!
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.setupUI()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        self.imageView.frame = CGRect(x: 0, y: 0, width: self.bounds.width / 3, height: self.bounds.width / 3)
+        self.imageView.center = CGPoint(x: self.bounds.midX, y: self.bounds.midY)
+        
+    }
+    
+    func setupUI() {
+        self.layer.masksToBounds = true
+        self.layer.cornerRadius = 0
+        
+        self.imageView = UIImageView(image:GalleryBundle.image("gallery_addPhoto"))
+        self.imageView.contentMode = .scaleAspectFit
+        self.imageView.clipsToBounds = true
+        self.contentView.addSubview(self.imageView)
+        self.backgroundColor = UIColor(white: 0.3, alpha: 1)
+    }
 }
