@@ -40,7 +40,7 @@ class GalleryView: UIView {
     
     @available(iOS 14, *)
     var showAddPhotoCell: Bool {
-        PHPhotoLibrary.authorizationStatus(for: .readWrite) == .limited
+        PHPhotoLibrary.authorizationStatus(for: .readWrite) == .limited && (selectedAlbum == nil || selectedAlbum?.collection.assetCollectionSubtype == .smartAlbumUserLibrary)
     }
     
     /// 添加图片按钮的数量
