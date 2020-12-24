@@ -145,6 +145,20 @@ class GalleryView: UIView {
             self?.imageLibrary?.reload {
                 self?.loadingView.stopAnimating()
                 self?.loadingView.isHidden = true
+                if #available(iOS 14, *) {
+                    if self?.showAddPhotoCell == true {
+                        self?.emptyView.isHidden = true
+                        if let album = self?.imageLibrary?.albums.first {
+                            self?.arrowButton.isHidden = false
+                            self?.selectedAlbum = album
+                            self?.show(album: album)
+                        } else {
+                            self?.imageItems = []
+                            self?.collectionView.reloadData()
+                        }
+                        return
+                    }
+                }
                 if let album = self?.imageLibrary?.albums.first {
                     self?.arrowButton.isHidden = false
                     self?.selectedAlbum = album
