@@ -210,9 +210,9 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
                 
                 switch mediaType {
                 case .image:
-                    SwiftCameraAlbumPlugin.channel.invokeMethod("onSelected", arguments: ["paths": originPaths, "previewPaths": previewPaths])
+                    SwiftCameraAlbumPlugin.channel.invokeMethod("onMessage", arguments: ["paths": originPaths, "previewPaths": previewPaths, "durs": durations])
                 case .video:
-                    SwiftCameraAlbumPlugin.channel.invokeMethod("onSelected", arguments: ["paths": originPaths, "durs": durations])
+                    SwiftCameraAlbumPlugin.channel.invokeMethod("onMessage", arguments: ["paths": originPaths, "durs": durations])
                 default:
                     break
                 }
