@@ -144,9 +144,11 @@ class ZLAlbumListController: UIViewController, UITableViewDataSource, UITableVie
     }
     
     @objc func cancelBtnClick() {
-        let nav = self.navigationController as? ZLImageNavController
-        nav?.cancelBlock?()
-        nav?.dismiss(animated: true, completion: nil)
+        // + TODO:修改源码
+//        let nav = self.navigationController as? ZLImageNavController
+//        nav?.cancelBlock?()
+//        nav?.dismiss(animated: true, completion: nil)
+        // + TODO:修改源码
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

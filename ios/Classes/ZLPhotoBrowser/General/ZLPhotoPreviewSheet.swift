@@ -606,6 +606,29 @@ public class ZLPhotoPreviewSheet: UIView {
     func showThumbnailViewController() {
         ZLPhotoManager.getCameraRollAlbum(allowSelectImage: ZLPhotoConfiguration.default().allowSelectImage, allowSelectVideo: ZLPhotoConfiguration.default().allowSelectVideo) { [weak self] (cameraRoll) in
             guard let `self` = self else { return }
+            
+            // + TODO:修改源码
+            if ZLPhotoConfiguration.default().style == .dagongAlbumList {
+                let rnav = UIApplication.shared.keyWindow?.rootViewController as? UINavigationController
+                let tvc = ZLThumbnailViewController(albumList: cameraRoll)
+                
+                tvc.selectImageBlock = { [weak self] in
+//                    self?.isSelectOriginal = tvc.isSelectedOriginal ?? false
+                    self?.arrSelectedModels.removeAll()
+                    self?.arrSelectedModels.append(contentsOf: tvc.arrSelectedModels)
+                    self?.requestSelectPhoto(viewController: tvc)
+                }
+                
+                tvc.cancelBlock = { [weak self] in
+                    self?.cancelBlock?()
+                    self?.hide()
+                }
+                
+                rnav?.pushViewController(tvc, animated: true)
+                return
+            }
+            // + TODO:修改源码
+            
             let nav: ZLImageNavController
             if ZLPhotoConfiguration.default().style == .embedAlbumList {
                 let tvc = ZLThumbnailViewController(albumList: cameraRoll)

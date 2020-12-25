@@ -52,6 +52,13 @@ class ZLThumbnailViewController: UIViewController {
     // + TODO:修改源码
     var dagongNavView: DGEmbedAlbumListNavView?
     var dagongBottomView: DGBottomView!
+    
+    var arrSelectedModels: [ZLPhotoModel] = []
+    
+    var selectImageBlock: ( () -> Void )?
+    
+    var cancelBlock: ( () -> Void )?
+    
     // + TODO:修改源码
     
     var embedAlbumListView: ZLEmbedAlbumListView?
@@ -181,8 +188,8 @@ class ZLThumbnailViewController: UIViewController {
         self.isPreviewPush = false
         
         // + TODO:修改源码
-        let nav = self.navigationController as? ZLImageNavController
-        nav?.arrSelectedModels.removeAll()
+//        let nav = self.navigationController as? ZLImageNavController
+        arrSelectedModels.removeAll()
         self.arrDataSources.forEach { $0.isSelected = false }
         self.collectionView.reloadData()
         // + TODO:修改源码
@@ -330,7 +337,9 @@ class ZLThumbnailViewController: UIViewController {
         self.originalBtn.setImage(getImage("zl_btn_original_selected"), for: .selected)
         self.originalBtn.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
         self.originalBtn.isHidden = !(ZLPhotoConfiguration.default().allowSelectOriginal && ZLPhotoConfiguration.default().allowSelectImage)
-        self.originalBtn.isSelected = (self.navigationController as! ZLImageNavController).isSelectedOriginal
+        // + TODO:修改源码
+//        self.originalBtn.isSelected = (self.navigationController as! ZLImageNavController).isSelectedOriginal
+        // + TODO:修改源码
         self.bottomView.addSubview(self.originalBtn)
         
         self.doneBtn = createBtn(localLanguageTextValue(.done), #selector(doneBtnClick))
@@ -355,9 +364,13 @@ class ZLThumbnailViewController: UIViewController {
             }
             
             self.embedNavView?.cancelBlock = { [weak self] in
-                let nav = self?.navigationController as? ZLImageNavController
-                nav?.cancelBlock?()
-                nav?.dismiss(animated: true, completion: nil)
+                // + TODO:修改源码
+//                let nav = self?.navigationController as? ZLImageNavController
+//                nav?.cancelBlock?()
+//                nav?.dismiss(animated: true, completion: nil)
+                self?.cancelBlock?()
+                self?.navigationController?.popViewController(animated: true)
+                // + TODO:修改源码
             }
             
             self.view.addSubview(self.embedNavView!)
@@ -388,9 +401,13 @@ class ZLThumbnailViewController: UIViewController {
             }
             
             self.externalNavView?.cancelBlock = { [weak self] in
-                let nav = self?.navigationController as? ZLImageNavController
-                nav?.cancelBlock?()
-                nav?.dismiss(animated: true, completion: nil)
+                // + TODO:修改源码
+//                let nav = self?.navigationController as? ZLImageNavController
+//                nav?.cancelBlock?()
+//                nav?.dismiss(animated: true, completion: nil)
+                self?.cancelBlock?()
+                self?.navigationController?.popViewController(animated: true)
+                // + TODO:修改源码
             }
             
             self.view.addSubview(self.externalNavView!)
@@ -408,9 +425,13 @@ class ZLThumbnailViewController: UIViewController {
             }
             
             self.dagongNavView?.cancelBlock = { [weak self] in
-                let nav = self?.navigationController as? ZLImageNavController
-                nav?.cancelBlock?()
-                nav?.dismiss(animated: true, completion: nil)
+                // + TODO:修改源码
+//                let nav = self?.navigationController as? ZLImageNavController
+//                nav?.cancelBlock?()
+//                nav?.dismiss(animated: true, completion: nil)
+                self?.cancelBlock?()
+                self?.navigationController?.popViewController(animated: true)
+                // + TODO:修改源码
             }
             
             self.view.addSubview(self.dagongNavView!)
@@ -438,7 +459,9 @@ class ZLThumbnailViewController: UIViewController {
     }
     
     func loadPhotos() {
-        let nav = self.navigationController as! ZLImageNavController
+        // + TODO:修改源码
+//        let nav = self.navigationController as! ZLImageNavController
+        // + TODO:修改源码
         if self.albumList.models.isEmpty {
             let hud = ZLProgressHUD(style: ZLPhotoConfiguration.default().hudStyle)
             hud.show()
@@ -447,7 +470,9 @@ class ZLThumbnailViewController: UIViewController {
                 DispatchQueue.main.async {
                     self.arrDataSources.removeAll()
                     self.arrDataSources.append(contentsOf: self.albumList.models)
-                    markSelected(source: &self.arrDataSources, selected: &nav.arrSelectedModels)
+                    // + TODO:修改源码
+                    markSelected(source: &self.arrDataSources, selected: &self.arrSelectedModels)
+                    // + TODO:修改源码
                     hud.hide()
                     self.collectionView.reloadData()
                     self.scrollToBottom()
@@ -456,7 +481,9 @@ class ZLThumbnailViewController: UIViewController {
         } else {
             self.arrDataSources.removeAll()
             self.arrDataSources.append(contentsOf: self.albumList.models)
-            markSelected(source: &self.arrDataSources, selected: &nav.arrSelectedModels)
+            // + TODO:修改源码
+            markSelected(source: &self.arrDataSources, selected: &arrSelectedModels)
+            // + TODO:修改源码
             self.collectionView.reloadData()
             self.scrollToBottom()
         }
@@ -465,19 +492,26 @@ class ZLThumbnailViewController: UIViewController {
     // MARK: btn actions
     
     @objc func previewBtnClick() {
-        let nav = self.navigationController as! ZLImageNavController
-        let vc = ZLPhotoPreviewController(photos: nav.arrSelectedModels, index: 0)
-        self.show(vc, sender: nil)
+        // + TODO:修改源码
+//        let nav = self.navigationController as! ZLImageNavController
+//        let vc = ZLPhotoPreviewController(photos: nav.arrSelectedModels, index: 0)
+//        self.show(vc, sender: nil)
+        // + TODO:修改源码
     }
     
     @objc func originalPhotoClick() {
-        self.originalBtn.isSelected = !self.originalBtn.isSelected
-        (self.navigationController as? ZLImageNavController)?.isSelectedOriginal = self.originalBtn.isSelected
+        // + TODO:修改源码
+//        self.originalBtn.isSelected = !self.originalBtn.isSelected
+//        (self.navigationController as? ZLImageNavController)?.isSelectedOriginal = self.originalBtn.isSelected
+        // + TODO:修改源码
     }
     
     @objc func doneBtnClick() {
-        let nav = self.navigationController as? ZLImageNavController
-        nav?.selectImageBlock?()
+        // + TODO:修改源码
+//        let nav = self.navigationController as? ZLImageNavController
+//        nav?.selectImageBlock?()
+        self.selectImageBlock?()
+        // + TODO:修改源码
     }
     
     @objc func deviceOrientationChanged(_ notify: Notification) {
@@ -507,17 +541,23 @@ class ZLThumbnailViewController: UIViewController {
                 self.panSelectType = m.isSelected ? .cancel : .select
                 self.beginSlideIndexPath = indexPath
                 
-                if !m.isSelected, nav.arrSelectedModels.count < config.maxSelectCount, canAddModel(m, currentSelectCount: nav.arrSelectedModels.count, sender: self) {
+                // + TODO:修改源码
+                if !m.isSelected, arrSelectedModels.count < config.maxSelectCount, canAddModel(m, currentSelectCount: arrSelectedModels.count, sender: self) {
+                    // + TODO:修改源码
                     if self.shouldDirectEdit(m) {
                         self.panSelectType = .none
                         return
                     } else {
                         m.isSelected = true
-                        nav.arrSelectedModels.append(m)
+                        // + TODO:修改源码
+                        arrSelectedModels.append(m)
+                        // + TODO:修改源码
                     }
                 } else if m.isSelected {
                     m.isSelected = false
-                    nav.arrSelectedModels.removeAll { $0 == m }
+                    // + TODO:修改源码
+                    arrSelectedModels.removeAll { $0 == m }
+                    // + TODO:修改源码
                 }
                 
                 cell?.btnSelect.isSelected = m.isSelected
@@ -561,7 +601,8 @@ class ZLThumbnailViewController: UIViewController {
                 if self.panSelectType == .select {
                     if inSection,
                        !m.isSelected,
-                       canAddModel(m, currentSelectCount: nav.arrSelectedModels.count, sender: self, showAlert: false) {
+                       // + TODO:修改源码
+                       canAddModel(m, currentSelectCount: arrSelectedModels.count, sender: self, showAlert: false) {
                         m.isSelected = true
                     }
                 } else if self.panSelectType == .cancel {
@@ -575,11 +616,15 @@ class ZLThumbnailViewController: UIViewController {
                     m.isSelected = self.dicOriSelectStatus[path] ?? false
                 }
                 if !m.isSelected {
-                    nav.arrSelectedModels.removeAll { $0 == m}
+                    // + TODO:修改源码
+                    arrSelectedModels.removeAll { $0 == m}
+                    // + TODO:修改源码
                 } else {
-                    if !nav.arrSelectedModels.contains(where: { $0 == m }) {
-                        nav.arrSelectedModels.append(m)
+                    // + TODO:修改源码
+                    if !arrSelectedModels.contains(where: { $0 == m }) {
+                        arrSelectedModels.append(m)
                     }
+                    // + TODO:修改源码
                 }
                 
                 let c = self.collectionView.cellForItem(at: path) as? ZLThumbnailPhotoCell
@@ -597,11 +642,15 @@ class ZLThumbnailViewController: UIViewController {
     }
     
     func resetBottomToolBtnStatus() {
-        let nav = self.navigationController as! ZLImageNavController
-        if nav.arrSelectedModels.count > 0 {
+        // + TODO:修改源码
+//        let nav = self.navigationController as! ZLImageNavController
+        if arrSelectedModels.count > 0 {
+            // + TODO:修改源码
             self.previewBtn.isEnabled = true
             self.doneBtn.isEnabled = true
-            let doneTitle = localLanguageTextValue(.done) + "(" + String(nav.arrSelectedModels.count) + ")"
+            // + TODO:修改源码
+            let doneTitle = localLanguageTextValue(.done) + "(" + String(arrSelectedModels.count) + ")"
+            // + TODO:修改源码
             self.doneBtn.setTitle(doneTitle, for: .normal)
             self.doneBtn.backgroundColor = .bottomToolViewBtnNormalBgColor
         } else {
@@ -610,12 +659,16 @@ class ZLThumbnailViewController: UIViewController {
             self.doneBtn.setTitle(localLanguageTextValue(.done), for: .normal)
             self.doneBtn.backgroundColor = .bottomToolViewBtnDisableBgColor
         }
-        self.originalBtn.isSelected = nav.isSelectedOriginal
+        // + TODO:修改源码
+//        self.originalBtn.isSelected = nav.isSelectedOriginal
+        // + TODO:修改源码
         self.refreshDoneBtnFrame()
     }
     
     func refreshDoneBtnFrame() {
-        let selCount = (self.navigationController as? ZLImageNavController)?.arrSelectedModels.count ?? 0
+        // + TODO:修改源码
+        let selCount = arrSelectedModels.count ?? 0
+        // + TODO:修改源码
         var doneTitle = localLanguageTextValue(.done)
         if selCount > 0 {
             doneTitle += "(" + String(selCount) + ")"
@@ -713,10 +766,15 @@ class ZLThumbnailViewController: UIViewController {
         if !config.allowMixSelect, newModel.type == .video {
             canSelect = false
         }
-        if canSelect, canAddModel(newModel, currentSelectCount: nav?.arrSelectedModels.count ?? 0, sender: self, showAlert: false) {
+        // + TODO:修改源码
+        if canSelect, canAddModel(newModel, currentSelectCount: arrSelectedModels.count ?? 0, sender:
+                                    self, showAlert: false) {
+            // + TODO:修改源码
             if !self.shouldDirectEdit(newModel) {
                 newModel.isSelected = true
-                nav?.arrSelectedModels.append(newModel)
+                // + TODO:修改源码
+                arrSelectedModels.append(newModel)
+                // + TODO:修改源码
             }
         }
         
@@ -745,8 +803,10 @@ class ZLThumbnailViewController: UIViewController {
                         model.isSelected = true
                         model.editImage = ei
                         model.editImageModel = editImageModel
-                        nav?.arrSelectedModels.append(model)
-                        nav?.selectImageBlock?()
+                        // + TODO:修改源码
+                        self?.arrSelectedModels.append(model)
+                        self?.selectImageBlock?()
+                        // + TODO:修改源码
                     }
                 } else {
                     showAlertView(localLanguageTextValue(.imageLoadFailed), self)
@@ -777,8 +837,10 @@ class ZLThumbnailViewController: UIViewController {
                     if suc, asset != nil {
                         let m = ZLPhotoModel(asset: asset!)
                         m.isSelected = true
-                        nav?.arrSelectedModels.append(m)
-                        nav?.selectImageBlock?()
+                        // + TODO:修改源码
+                        self?.arrSelectedModels.append(m)
+                        self?.selectImageBlock?()
+                        // + TODO:修改源码
                     } else {
                         showAlertView(localLanguageTextValue(.saveVideoError), self)
                     }
@@ -888,20 +950,26 @@ extension ZLThumbnailViewController: UICollectionViewDataSource, UICollectionVie
         let nav = self.navigationController as? ZLImageNavController
         cell.selectedBlock = { [weak self, weak nav, weak cell] (isSelected) in
             if !isSelected {
-                let currentSelectCount = nav?.arrSelectedModels.count ?? 0
+                // + TODO:修改源码
+                let currentSelectCount = self?.arrSelectedModels.count ?? 0
+                // + TODO:修改源码
                 guard canAddModel(model, currentSelectCount: currentSelectCount, sender: self) else {
                     return
                 }
                 if self?.shouldDirectEdit(model) == false {
                     model.isSelected = true
-                    nav?.arrSelectedModels.append(model)
+                    // + TODO:修改源码
+                    self?.arrSelectedModels.append(model)
+                    // + TODO:修改源码
                     cell?.btnSelect.isSelected = true
                     self?.setCellIndex(cell, showIndexLabel: true, index: currentSelectCount+1, animate: true)
                 }
             } else {
                 cell?.btnSelect.isSelected = false
                 model.isSelected = false
-                nav?.arrSelectedModels.removeAll { $0 == model }
+                // + TODO:修改源码
+                self?.arrSelectedModels.removeAll { $0 == model }
+                // + TODO:修改源码
                 self?.refreshCellIndex()
             }
             self?.refreshCellMaskView()
@@ -910,7 +978,9 @@ extension ZLThumbnailViewController: UICollectionViewDataSource, UICollectionVie
         
         cell.indexLabel.isHidden = true
         if ZLPhotoConfiguration.default().showSelectedIndex {
-            for (index, selM) in (nav?.arrSelectedModels ?? []).enumerated() {
+            // + TODO:修改源码
+            for (index, selM) in (self.arrSelectedModels ?? []).enumerated() {
+                // + TODO:修改源码
                 if model == selM {
                     self.setCellIndex(cell, showIndexLabel: true, index: index + 1, animate: false)
                     break
@@ -994,8 +1064,10 @@ extension ZLThumbnailViewController: UICollectionViewDataSource, UICollectionVie
             ZLPhotoConfiguration.default().maxSelectCount == 1
         
         //当前未选择图片 或已经选择了一张并且点击的是已选择的图片
-        let nav = self.navigationController as? ZLImageNavController
-        let arrSelectedModels = nav?.arrSelectedModels ?? []
+        // + TODO:修改源码
+//        let nav = self.navigationController as? ZLImageNavController
+//        let arrSelectedModels = nav?.arrSelectedModels ?? []
+        // + TODO:修改源码
         let flag = arrSelectedModels.isEmpty || (arrSelectedModels.count == 1 && arrSelectedModels.first?.ident == model.ident)
         
         if canEditImage, flag {
@@ -1035,7 +1107,9 @@ extension ZLThumbnailViewController: UICollectionViewDataSource, UICollectionVie
             }
             let m = self.arrDataSources[row]
             
-            let arrSel = (self.navigationController as? ZLImageNavController)?.arrSelectedModels ?? []
+            // + TODO:修改源码
+            let arrSel = self.arrSelectedModels ?? []
+            // + TODO:修改源码
             var show = false
             var idx = 0
             for (index, selM) in arrSel.enumerated() {
@@ -1066,7 +1140,9 @@ extension ZLThumbnailViewController: UICollectionViewDataSource, UICollectionVie
             }
             let m = self.arrDataSources[row]
             
-            let arrSel = (self.navigationController as? ZLImageNavController)?.arrSelectedModels ?? []
+            // + TODO:修改源码
+            let arrSel = arrSelectedModels ?? []
+            // + TODO:修改源码
             var isSelected = false
             for selM in arrSel {
                 if m == selM {
@@ -1081,7 +1157,9 @@ extension ZLThumbnailViewController: UICollectionViewDataSource, UICollectionVie
     func setCellMaskView(_ cell: ZLThumbnailPhotoCell, isSelected: Bool, model: ZLPhotoModel) {
         cell.coverView.isHidden = true
         cell.enableSelect = true
-        let arrSel = (self.navigationController as? ZLImageNavController)?.arrSelectedModels ?? []
+        // + TODO:修改源码
+        let arrSel = arrSelectedModels ?? []
+        // + TODO:修改源码
         let config = ZLPhotoConfiguration.default()
         
         if isSelected {
@@ -1147,10 +1225,14 @@ extension ZLThumbnailViewController: PHPhotoLibraryChangeObserver {
             self.albumList.result = changes.fetchResultAfterChanges
             let nav = (self.navigationController as! ZLImageNavController)
             if changes.hasIncrementalChanges {
-                for sm in nav.arrSelectedModels {
+                // + TODO:修改源码
+                for sm in arrSelectedModels {
+                    // + TODO:修改源码
                     let isDelete = changeInstance.changeDetails(for: sm.asset)?.objectWasDeleted ?? false
                     if isDelete {
-                        nav.arrSelectedModels.removeAll { $0 == sm }
+                        // + TODO:修改源码
+                        arrSelectedModels.removeAll { $0 == sm }
+                        // + TODO:修改源码
                     }
                 }
                 if (!changes.removedObjects.isEmpty || !changes.insertedObjects.isEmpty) {
@@ -1159,10 +1241,14 @@ extension ZLThumbnailViewController: PHPhotoLibraryChangeObserver {
                 
                 self.loadPhotos()
             } else {
-                for sm in nav.arrSelectedModels {
+                // + TODO:修改源码
+                for sm in arrSelectedModels {
+                    // + TODO:修改源码
                     let isDelete = changeInstance.changeDetails(for: sm.asset)?.objectWasDeleted ?? false
                     if isDelete {
-                        nav.arrSelectedModels.removeAll { $0 == sm }
+                        // + TODO:修改源码
+                        arrSelectedModels.removeAll { $0 == sm }
+                        // + TODO:修改源码
                     }
                 }
                 self.albumList.models.removeAll()
