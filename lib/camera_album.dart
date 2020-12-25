@@ -156,7 +156,7 @@ class CameraAlbum {
       return '';
     }
 
-    if (Platform.isIOS || androidView) {
+    if (androidView) {
       Navigator.push(context, MaterialPageRoute(builder: (context) {
         MediaType mediaType =
             config.inType == "image" ? MediaType.image : MediaType.video;

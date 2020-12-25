@@ -9,8 +9,6 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
     
   static var channel: FlutterMethodChannel!
     
-    static var flutterEngine = FlutterEngine(name: "showPhotoLibraryEngine")
-    
   public static func register(with registrar: FlutterPluginRegistrar) {
     channel = FlutterMethodChannel(name: "flutter/camera_album", binaryMessenger: registrar.messenger())
     
@@ -23,7 +21,6 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
     
     let instance = SwiftCameraAlbumPlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
-    SwiftCameraAlbumPlugin.flutterEngine.run(withEntrypoint: nil, initialRoute: "/editPage")
     
     let _ = delete(atPath: tmpNwdn)
     let _ = creatDir(atPath: tmpNwdn)
@@ -141,7 +138,7 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
         }
         }
     }
-    case "showPhotoLibrary":
+    case "openAlbum":
         /*
          enum MediaType {
            unknown, // 0
@@ -151,15 +148,20 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
          }
          */
         let params = call.arguments as! NSDictionary
-        let maxSelectCount = params["maxSelectCount"] as! Int
-        let mediaType = PHAssetMediaType(rawValue: (params["mediaType"] as! Int))
-        let taskTitle = (params["taskTitle"] as? String) ?? ""
-        let takeTitle = (params["takeTitle"] as? String) ?? ""
-        let data = params["data"]
+        let maxSelectCount = params["multiCount"] as! Int
+        let mediaType = (params["inType"] as? String) == "video"
+            ? PHAssetMediaType.video
+                    : PHAssetMediaType.image
+        let taskTitle = (params["title"] as? String) ?? ""
+        let takeTitle = (params["bottomActionTitle"] as? String) ?? ""
+//        let data = params["data"]
         
-        let controller = UIApplication.shared.keyWindow?.rootViewController as? FlutterViewController
+        var topRootViewController = UIApplication.shared.keyWindow?.rootViewController
+        while ((topRootViewController?.presentedViewController) != nil) {
+            topRootViewController = topRootViewController?.presentedViewController;
+        }
 
-        if let sender = controller {
+        if let sender = topRootViewController {
             
             let deploy = ZLPhotoThemeColorDeploy.default()
             deploy.thumbnailBgColor = UIColor.white
@@ -208,26 +210,26 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
                 
                 switch mediaType {
                 case .image:
-                    SwiftCameraAlbumPlugin.channel.invokeMethod("onSelectedHandler", arguments: ["paths": originPaths, "previewPaths": previewPaths])
+                    SwiftCameraAlbumPlugin.channel.invokeMethod("onSelected", arguments: ["paths": originPaths, "previewPaths": previewPaths])
                 case .video:
-                    SwiftCameraAlbumPlugin.channel.invokeMethod("onSelectedHandler", arguments: ["paths": originPaths, "durations": durations])
+                    SwiftCameraAlbumPlugin.channel.invokeMethod("onSelected", arguments: ["paths": originPaths, "durs": durations])
                 default:
                     break
                 }
-                if ZLPhotoConfiguration.default().maxSelectCount > 1 {
-                    ac.sender?.dismiss(animated: true, completion: nil)
-                } else {
-                    let flutterViewController =
-                        FlutterViewController(engine: SwiftCameraAlbumPlugin.flutterEngine, nibName: nil, bundle: nil)
-                    ac.nav?.pushViewController(flutterViewController, animated: true)
-                    let channel = FlutterMethodChannel(name: "edit_page_channel", binaryMessenger: flutterViewController as! FlutterBinaryMessenger)
-                    channel.invokeMethod("selected", arguments: ["data": data, "mediaType": mediaType?.rawValue ?? 0, "paths": originPaths, "previewPaths": previewPaths, "durations": durations])
-                    channel.setMethodCallHandler { (call, result) in
-                        if call.method == "pop" {
-                            flutterViewController.navigationController?.popViewController(animated: true)
-                        }
-                    }
-                }
+//                if ZLPhotoConfiguration.default().maxSelectCount > 1 {
+//                    ac.sender?.dismiss(animated: true, completion: nil)
+//                } else {
+//                    let flutterViewController =
+//                        FlutterViewController(engine: SwiftCameraAlbumPlugin.flutterEngine, nibName: nil, bundle: nil)
+//                    ac.nav?.pushViewController(flutterViewController, animated: true)
+//                    let channel = FlutterMethodChannel(name: "edit_page_channel", binaryMessenger: flutterViewController as! FlutterBinaryMessenger)
+//                    channel.invokeMethod("selected", arguments: ["data": data, "mediaType": mediaType?.rawValue ?? 0, "paths": originPaths, "previewPaths": previewPaths, "durations": durations])
+//                    channel.setMethodCallHandler { (call, result) in
+//                        if call.method == "pop" {
+//                            flutterViewController.navigationController?.popViewController(animated: true)
+//                        }
+//                    }
+//                }
             }
         
             ac.cancelBlock = {
