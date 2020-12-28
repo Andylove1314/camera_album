@@ -526,7 +526,9 @@ class ZLThumbnailViewController: UIViewController {
             return
         }
         let config = ZLPhotoConfiguration.default()
-        let nav = self.navigationController as! ZLImageNavController
+        // + TODO:修改源码
+//        let nav = self.navigationController as! ZLImageNavController
+        // + TODO:修改源码
         
         let cell = self.collectionView.cellForItem(at: indexPath) as? ZLThumbnailPhotoCell
         let asc = config.sortAscending
