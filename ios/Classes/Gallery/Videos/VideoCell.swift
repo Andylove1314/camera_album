@@ -11,10 +11,11 @@ class VideoCell: ImageCell {
 
   func configure(_ video: Video) {
     super.configure(video.asset)
+    
+    let duration = video.asset.duration
 
-    video.fetchDuration { duration in
+//    video.fetchDuration { duration in
       DispatchQueue.main.async {
-        print(duration);
         if duration <= 0 {
             self.bottomOverlay.isHidden = true;
             self.cameraImageView.isHidden = true;
@@ -26,7 +27,7 @@ class VideoCell: ImageCell {
             self.durationLabel.text = "\(Utils.format(duration))"
         }
       }
-    }
+//    }
   }
     
     override init(frame: CGRect) {
