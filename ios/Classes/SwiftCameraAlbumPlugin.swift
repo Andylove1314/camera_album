@@ -62,8 +62,16 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
 //            print("高度:")
 //            print(image.asset.pixelHeight)
             let gif = (image.asset.value(forKey: "filename") as? String)?.hasSuffix("GIF") == true
-            let isOrigin = image.asset.pixelWidth < limit && image.asset.pixelHeight < limit
-            if gif {
+            /// 图片像素< 4096
+            let lessOrEqualSize4096 = image.asset.pixelWidth < limit && image.asset.pixelHeight < limit
+            
+            /// iPhone10,1
+            let device = Double(deviceMachine.replacingOccurrences(of: "iPhone", with: "").replacingOccurrences(of: ",", with: ".")) ?? 10
+            /// 判断<=iPhone7
+            let lessOrEqual7 = device < 10
+            print("device: \(device) lessOrEqual7: \(lessOrEqual7)")
+            
+            if gif || (!lessOrEqual7 && lessOrEqualSize4096) {
                 // 取原图
                 image.resolveImageData { (imageData, info) in
                     if let imageData = imageData, let info = info, let fileName = info["PHImageFileUTIKey"] as? String {
@@ -80,14 +88,14 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
                         }
                     }
             } else {
-                let size = isOrigin ? PHImageManagerMaximumSize : CGSize(width: 4096, height: 4096)
+                let size = lessOrEqualSize4096 ? PHImageManagerMaximumSize : CGSize(width: 4096, height: 4096)
                 image.resolveTargetSize(size) { (image, info) in
                     if let image = image, let _ = info, let fileName = identifier.components(separatedBy: "/").first {
                                             
                         let path = tmpNwdn + fileName + ".jpeg"
                     
                         try? FileManager.default.removeItem(atPath: path)
-                        try? image.jpegData(compressionQuality: 0.5)?.write(to: URL(fileURLWithPath: path), options: .atomic)
+                        try? image.jpegData(compressionQuality: lessOrEqual7 ? 0.75 : 1)?.write(to: URL(fileURLWithPath: path), options: .atomic)
                         result(path)
                         DispatchQueue.main.async {
                             MBProgressHUD.hide(for: keyWindow, animated: true)
@@ -195,4 +203,15 @@ public class SwiftCameraAlbumPlugin: NSObject, FlutterPlugin {
              return false
          }
      }
+    
+    var deviceMachine: String {
+        var systemInfo = utsname()
+        uname(&systemInfo)
+        let machineMirror = Mirror(reflecting: systemInfo.machine)
+        let identifier = machineMirror.children.reduce("") { identifier, element in
+            guard let value = element.value as? Int8, value != 0 else { return identifier }
+            return identifier + String(UnicodeScalar(UInt8(value)))
+        }
+        return identifier
+    }
 }
