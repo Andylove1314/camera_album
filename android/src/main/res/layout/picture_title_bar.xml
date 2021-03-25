@@ -16,7 +16,7 @@
             android:layout_centerHorizontal="true"
             android:ellipsize="end"
             android:gravity="center"
-            android:maxEms="8"
+            android:maxEms="30"
             android:maxLines="1"
             android:text="@string/picture_camera_roll"
             android:textColor="@color/picture_color_black"
