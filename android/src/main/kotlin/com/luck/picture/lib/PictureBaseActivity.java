@@ -45,7 +45,6 @@ import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.StringUtils;
 import com.luck.picture.lib.tools.ToastUtils;
-import com.luck.picture.lib.tools.VoiceUtils;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.model.CutInfo;
 
@@ -292,10 +291,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
             } else {
                 colorPrimaryDark = AttrsUtils.getTypeValueColor(this, R.attr.colorPrimaryDark);
             }
-        }
-
-        if (config.openClickSound) {
-            VoiceUtils.getInstance().init(getContext());
         }
     }
 
@@ -865,9 +860,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         } else {
             if (getContext() instanceof PictureSelectorActivity) {
                 releaseResultListener();
-                if (config.openClickSound) {
-                    VoiceUtils.getInstance().releaseSoundPool();
-                }
             }
         }
     }

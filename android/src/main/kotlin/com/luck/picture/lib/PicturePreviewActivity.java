@@ -29,7 +29,6 @@ import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.tools.StringUtils;
 import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.tools.ValueOf;
-import com.luck.picture.lib.tools.VoiceUtils;
 import com.luck.picture.lib.widget.PreviewViewPager;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.model.CutInfo;
@@ -707,7 +706,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             }
             isChangeSelectedData = true;
             if (isChecked) {
-                VoiceUtils.getInstance().play();
                 // 如果是单选，则清空已选中的并刷新列表(作单一选择)
                 if (config.selectionMode == PictureConfig.SINGLE) {
                     selectData.clear();
